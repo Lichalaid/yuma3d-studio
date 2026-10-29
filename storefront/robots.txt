@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://yuma3d-studio-concept.lisanzampella.chatgpt.site/sitemap.xml

@@ -1,0 +1,9 @@
+{
+  "name": "yuma3d-storefront",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "python3 tools/build-product-pages.py && python3 tools/build-checkout-worker.py",
+    "test": "node --test tests/checkout.test.mjs"
+  }
+}
