@@ -14,19 +14,11 @@ Boceto estático bilingüe (inglés por defecto y español), basado en el cuesti
 - Fabricación hasta 2 días, envío UPS USD 4,99, gratuito desde USD 50, entrega 3–5 días luego de producción. Retiro en Katy, TX 77449.
 - Bolsa de prueba almacenada en sessionStorage. La revisión prepara un correo dirigido al negocio para revisión y envío manual desde la aplicación de email del visitante. Sin cobros, pedidos confirmados ni correo automático.
 
-## Stripe: implementación propuesta
-Usar Payment Links para los productos, conservando la personalización en un pedido del servidor antes de salir a pagar. Asociar su ID opaco con `client_reference_id` del link; verificar los eventos de Stripe y el estado de pago mediante webhooks antes de confirmar producción. Manejar también pagos asíncronos.
-
-Una bolsa con combinaciones variables, cantidades, retiro y envío gratis por monto requiere definir con exactitud los links/precios y la lógica de envío. Para ese alcance, Stripe Checkout Sessions con precios validados en el servidor sería más mantenible que crear links para cada combinación. La elección no modifica el diseño.
-
-No incluir claves secretas en el frontend. No confiar en precios ni en estados de pago informados por el navegador. Klarna y Afterpay dependen de activación y elegibilidad; el boceto no promete su disponibilidad.
-
-Referencias consultadas:
-- https://docs.stripe.com/payment-links/url-parameters
-- https://docs.stripe.com/payment-links/customize
+## Pagos con Stripe
+Checkout completo: un solo pago de Stripe por bolsa, precios y personalización validados en el servidor, webhook firmado, email del pedido a Yuma y confirmación al comprador. Para activarlo, ver [ACTIVAR-STRIPE.md](ACTIVAR-STRIPE.md); el funcionamiento técnico está en [CHECKOUT-STRIPE.md](CHECKOUT-STRIPE.md).
 
 ## Confirmaciones pendientes
-1. Links de Stripe y cuenta de la clienta. El conector disponible solicitó reautenticación; no se modificó ninguna cuenta.
+1. Credenciales de Stripe de la clienta (clave restringida y webhook) y dominio de correo para Resend. Ver ACTIVAR-STRIPE.md.
 2. Colores de filamento para nombres: paleta ilustrativa, a validar.
 3. Precio e inclusión de accesorios, formatos de nacimiento y tipografía final.
 4. Para sumar los juguetes sensoriales al catálogo fotografiado, faltan fotos, formas/modelos, stock, edad recomendada y advertencias. No se inventaron certificaciones ni beneficios terapéuticos.
@@ -102,10 +94,11 @@ Los siete colores del cuestionario estaban confirmados para juguetes sensoriales
 
 `python3 tools/build-product-pages.py` también prepara catálogo en HTML, metadata, JSON-LD, sitemap y robots.txt. Para una publicación en otro dominio, ejecutar `SITE_ORIGIN=https://dominio-confirmado.com python3 tools/build-product-pages.py`; usar únicamente el dominio real conectado. El acceso del boceto alojado sigue privado: el SEO preparado no implica que Google pueda indexarlo todavía. El español se cambia en la misma URL; no se declaran versiones hreflang ficticias.
 
-La bolsa se resolverá con un solo pago por Checkout Session. Ver [CHECKOUT-STRIPE.md](CHECKOUT-STRIPE.md). No hay pagos activos ni envío automático de correos. La unidad de 2 × 3 del portafotos sigue pendiente.
+La bolsa se paga con una sola Checkout Session. Ver [CHECKOUT-STRIPE.md](CHECKOUT-STRIPE.md). La unidad de 2 × 3 del portafotos sigue pendiente.
 
-## Checkout único — 29/10/2026
+## Checkout y publicación — 29/10/2026 (revisión)
 
-El frontend fuente está en `storefront/`; `dist/` contiene el Worker generado. Ejecutar `python3 tools/build-checkout-worker.py`, `node --test tests/checkout.test.mjs` y `node scripts/validate-artifact.mjs`. No necesita dependencias.
-
-Servidor preparado para test/live con separación estricta de cuentas Yuma y modos. El botón queda oculto hasta configurar clave restringida, webhook accesible, correo transaccional y activación explícita. Se verificó que la cuenta real de Yuma puede cobrar. No se creó ninguna clave ni se realizaron cobros. El sitio sigue privado. Ver `CHECKOUT-STRIPE.md` para estado y requisitos.
+- `storefront/`: sitio. `worker/index.js` + `worker/checkout.js`: servidor de pagos.
+- Publicación en Cloudflare con Static Assets: `npm install` y `npm run deploy` (ver ACTIVAR-STRIPE.md).
+- `npm run build` genera además la versión de un solo archivo (`dist/server/index.js`) para el hosting privado de chatgpt.site.
+- Pruebas: `npm test` (unitarias y de contrato con la especificación OpenAPI de Stripe) y `npm run test:e2e` (compra completa en navegador contra el Worker local).

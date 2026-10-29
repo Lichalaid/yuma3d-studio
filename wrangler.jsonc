@@ -1,0 +1,21 @@
+// Cloudflare Workers: the storefront is served as Static Assets and /api/* runs worker/index.js.
+// Deploy from this folder with `npm run deploy`. Configuration values and secrets are NOT stored
+// here: load them with `npx wrangler secret bulk <file>` (see ACTIVAR-STRIPE.md) so a deploy never
+// overwrites them.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "yuma3d-studio",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./storefront",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+  // The single-file build embeds the storefront; with Static Assets the Worker does not need it.
+  "define": { "__STATIC_FILES__": "null" },
+  "observability": { "enabled": true }
+}

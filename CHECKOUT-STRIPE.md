@@ -1,52 +1,57 @@
-# Checkout único para Yuma 3D Studio
+# Checkout con Stripe — referencia técnica
 
-La bolsa actual suma productos, cantidades y envío. El servidor está preparado para crear **una Checkout Session por bolsa** en la cuenta de Stripe de Yuma. El comprador paga una vez por todo. Un enlace fijo por producto no representa las combinaciones de una bolsa dinámica.
+Para activar los pagos, seguí [ACTIVAR-STRIPE.md](ACTIVAR-STRIPE.md). Este documento explica cómo funciona.
 
-Revisión del 29/10/2026: backend Worker ESM preparado para pruebas y producción, con una sesión por carrito, validación de precios y personalizaciones, firma de webhooks y retorno verificado por API. Se confirmó que Yuma3Dstudio tiene cobros y transferencias habilitados, sin requisitos de verificación pendientes. El checkout permanece deshabilitado: todavía no se creó la clave restringida, el sitio sigue privado y falta el correo transaccional. No se realizaron cobros.
+## Flujo
 
-## Flujo objetivo de producción
+1. **Navegador.** La bolsa envía a `POST /api/checkout` los IDs de producto, las cantidades, los colores y textos elegidos, la entrega, el idioma y un `nonce` por intento. Ningún precio enviado por el navegador se usa.
+2. **Worker** (`worker/checkout.js`):
+   - Valida cada producto contra `catalog-products.json`: colores ofrecidos, campos obligatorios, letra inicial, nombre de hasta 15 letras y perfiles sociales.
+   - Calcula subtotal y envío: USD 4,99, o gratis desde USD 50 o con retiro.
+   - Crea **una** Checkout Session con todos los productos y una clave de idempotencia igual al hash de la solicitud.
+   - El pedido completo viaja comprimido en la metadata de la sesión. No hay base de datos.
+3. **Stripe Checkout:**
+   - Muestra cada producto con su descripción legible (por ejemplo `Initial: E · Name: Emma · Initial color: Blue`) y una miniatura JPEG (`assets/catalog/stripe/`, generada por `tools/prepare-stripe-images.py`) cuando el sitio está en https. Si Stripe objetara una imagen, el checkout se crea igual, sin fotos.
+   - Pide teléfono y dirección (EE.UU. y Puerto Rico); con retiro, no pide dirección.
+   - Muestra el plazo de entrega (3 a 7 días hábiles) y el aviso de fabricación a pedido.
+4. **Webhook** (`POST /api/stripe/webhook`):
+   - Verifica la firma con una tolerancia de 5 minutos.
+   - Vuelve a leer la sesión en Stripe y, solo con el pago confirmado (`paid`), envía los dos emails: el pedido a Yuma y la confirmación al comprador.
+   - Marca cada envío en la metadata (`shop_notified`, `buyer_notified`) para no repetirlo, y además usa claves de idempotencia en Resend.
+5. **Página de regreso** (`/checkout-result/`): consulta `GET /api/checkout/result`, que lee el estado en Stripe. El detalle del pedido solo lo ve el navegador que inició la compra (cookie `yuma_checkout`). Si el pago queda pendiente, la página vuelve a consultar sola.
 
-1. El navegador envía IDs de productos, cantidades, colores y textos elegidos, entrega e idioma a un endpoint propio. No envía un importe que el servidor deba aceptar como válido.
-2. El servidor valida cada campo contra la configuración del producto y consulta precios del catálogo canónico. Rechaza productos sin precio, cantidades inválidas y extras cuyo importe todavía no esté definido. Guarda un pedido pendiente con una instantánea completa de la personalización.
-3. Para el portafotos, primero se debe definir el precio y almacenar las imágenes en un espacio privado. El servidor guarda sus referencias en el pedido; no coloca imágenes privadas en URLs públicas ni en metadata de Stripe. Actualmente las imágenes son locales y el portafotos se cotiza.
-4. El servidor crea la Checkout Session con `mode: payment`, todos los `line_items` y sus cantidades, moneda USD, referencia del pedido, URLs de retorno y cancelación y una clave de idempotencia. Usa un cliente Stripe con una clave restringida de **Yuma**, guardada en variables del servidor. No se incluye la clave en HTML, JavaScript público, repositorio ni chat.
-5. El envío se calcula una sola vez en el servidor: USD 4,99; gratis desde USD 50 o para retiro. El cuestionario indica UPS, Estados Unidos y Puerto Rico. Confirmar que esa cobertura y tarifa siguen vigentes antes de activarlo. El checkout recoge la dirección para envíos; el retiro se coordina con Yuma.
-6. El navegador recibe únicamente la URL de Checkout y redirige al comprador. No se exige pagar cada artículo por separado. Los medios de pago se configuran en Stripe y se muestran según elegibilidad; no se prometen Klarna o Afterpay sin activación.
-7. Un webhook verifica la firma de Stripe y atiende `checkout.session.completed`, `checkout.session.async_payment_succeeded` y los fallos asíncronos. Marca el pedido pagado únicamente con pago confirmado y aplica idempotencia. La página de gracias no confirma pagos por sí sola.
-8. Tras el pago verificado, un proceso persistente envía a `yuma3dstudio@gmail.com` el pedido con cada personalización, cantidades, entrega y referencias privadas de fotos; envía también la confirmación al comprador. Los reintentos no deben duplicar pedidos ni correos. El código actual notifica al negocio mediante Resend cuando se configura. El recibo al comprador requiere activar los correos de Stripe; no está verificado.
+## Decisiones de robustez
 
-## Datos que faltan
+| Riesgo | Cómo se evita |
+| --- | --- |
+| Precios alterados desde el navegador | Precios, envío y totales se recalculan en el servidor. |
+| Pedido pagado sin aviso a Yuma | Si Resend falla, el webhook responde 503 y Stripe reintenta hasta 3 días. |
+| Emails duplicados por reintentos | Marcas en la metadata de Stripe más claves de idempotencia en Resend. |
+| Descuentos o impuestos que rompen la verificación | Se comparan el subtotal y el envío fijados por el servidor, no el total. Si no coinciden, igual se avisa a Yuma, con una advertencia. |
+| Otros cobros de la misma cuenta (Payment Links) | El webhook ignora las sesiones sin el formato de pedido de la tienda y responde 200. |
+| Pagos diferidos | Se espera `checkout.session.async_payment_succeeded`. Un `completed` sin pago confirmado no envía nada. |
+| Clave de otra cuenta o de otro modo | Solo acepta las cuentas de Yuma (`YUMA_ACCOUNTS`) y verifica la cuenta en Stripe, con caché de 10 minutos. |
+| Errores de Stripe sin diagnóstico | Cada error queda registrado con tipo, código, parámetro y `request_id` (`npm run logs`). La clave nunca se registra. |
+| Cortes momentáneos de Stripe | Reintentos con espera exponencial; todos los POST llevan clave de idempotencia. |
+| Abuso del endpoint de checkout | Exige origen propio y cookie de visitante. Admite un limitador opcional de Cloudflare (binding `CHECKOUT_LIMITER`). |
 
-- Configurar la integración y webhook en la cuenta de Stripe de la clienta, primero en un sandbox separado.
-- El hosting del backend ya está desplegado. Falta correo transaccional y almacenamiento privado de fotos para habilitar el portafotos.
-- Precio del portafotos, unidad de fotos 2 × 3 y cualquier cargo por accesorios.
-- Confirmación final de envíos, impuestos aplicables y dominio público. No activar Stripe Tax sin las inscripciones correspondientes.
+## Detalles de Cloudflare Workers
 
-## Referencias oficiales
+- `worker/index.js` solo exporta `default`: Workers trata cada export con nombre del módulo principal como un punto de entrada y no arranca si hay otro tipo de export.
+- El cliente de Stripe llama a `fetch` como función suelta. Llamarlo como método de otro objeto (`this.transport(...)`) provoca "Illegal invocation" en Workers; eso rompía la versión anterior en el primer cobro.
+- El sitio se sirve como Static Assets (`wrangler.jsonc`) y `/api/*` pasa por el Worker. La versión anterior embebía las imágenes en el Worker: 6,9 MB comprimidos, por encima del límite de 3 MB del plan gratis.
 
-- https://docs.stripe.com/payments/checkout
-- https://docs.stripe.com/api/checkout/sessions/create
-- https://docs.stripe.com/checkout/fulfillment
-- https://docs.stripe.com/keys
+## Pruebas
 
-## Código y verificación actuales
+- `tests/checkout.test.mjs`: precios, validaciones, idempotencia, reintentos, emails, webhooks, página de regreso, configuración y seguridad.
+- `tests/contract.test.mjs`:
+  - Cada solicitud a Stripe, de los 15 productos con precio, en los dos idiomas y con envío o retiro, se valida contra la especificación OpenAPI oficial de Stripe (`tests/fixtures/stripe-openapi-checkout.json`, versión `2026-10-28.endive`).
+  - Las firmas de webhook se generan con el SDK oficial de Stripe.
+- `tests/e2e/checkout.e2e.mjs`: Chromium real contra `wrangler dev` (el mismo motor que Cloudflare). Cubre compras con envío, con envío gratis y con retiro, cancelación y regreso, celular, reintento del webhook y precio manipulado.
 
-- `storefront/`: interfaz original, assets y páginas. Reemplaza el antiguo directorio fuente `dist/`.
-- `worker/index.js`: servidor. No contiene claves. Separa claves y sesiones por modo explícito; solo admite los identificadores conocidos de Yuma. Rechaza cualquier otra cuenta.
-- `tools/build-checkout-worker.py`: empaqueta el frontend y el servidor en `dist/server/index.js`.
-- `tests/checkout.test.mjs`: pruebas de precios, envío, validaciones, idempotencia, CSRF, separación de modos, bloqueo de cuentas ajenas, requisitos de activación y firmas de webhook (8 pruebas).
-- `POST /api/checkout`: crea una sesión con varios artículos y cantidades; ignora precios enviados por el navegador.
-- `GET /api/checkout/result`: verifica propietario por cookie, estado y detalle desde Stripe; no confía en el retorno por sí solo.
-- `POST /api/stripe/webhook`: firma con tolerancia de cinco minutos, verificación del pago y correo con idempotencia del proveedor si se configura. No debe considerarse operativo hasta tener endpoint accesible, secreto de webhook y servicio de correo.
+## Pendientes comerciales (no técnicos)
 
-El snapshot se comprime y divide dentro de los límites de metadata de Stripe; contiene productos y personalización, sin datos de tarjeta ni imágenes privadas. El portafotos y mayoreo siguen por consulta. Los adornos de inicial distintos de estrellas/sin adorno requieren cotización antes de pagar porque su precio no está confirmado.
-
-El sitio sigue privado. Stripe no puede entregar eventos a un endpoint protegido por el acceso de ChatGPT. Antes de activar producción hay que definir el dominio público y configurar y comprobar la entrega de webhooks. Nunca se cambia el acceso del sitio automáticamente.
-
-La autorización más reciente permitió completar y aceptar el planificador de Checkout alojado en la cuenta real de Yuma. Se preparó el asistente para una clave restringida con permisos mínimos, sin confirmar su creación. El navegador exige confirmación puntual para crear credenciales. No se conectó ninguna cuenta de Grind.
-
-La activación requiere `CHECKOUT_ENABLED=true`, `STRIPE_MODE=test|live`, `STRIPE_SECRET_KEY` del mismo modo, `STRIPE_ACCOUNT_ID` de Yuma correspondiente, `STRIPE_WEBHOOK_SECRET`, `ORDER_EMAIL_API_KEY` y `ORDER_EMAIL_FROM` verificado. La falta de cualquiera mantiene el botón oculto y el endpoint de creación responde 503. El webhook conserva los reintentos hasta notificar por correo; la página de retorno distingue pruebas de pagos reales. Las pruebas usan respuestas simuladas: aún falta verificar el circuito completo en Stripe.
-
-No hay clave secreta en el repositorio, archivos descargables ni chat. No se creó ni se rotó una clave de Stripe.
-
-El correo incluye el snapshot completo del pedido, además del resumen. Una prueba con personalización larga verifica que no se pierden datos por el límite de la descripción de Stripe y que reenviar el mismo evento no genera un segundo aviso.
+- Precio de los adornos de inicial que no son estrellas ni "sin adorno": hoy se cotizan.
+- Portafotos y mayoreo: siguen por consulta.
+- Sales tax de Texas: decidirlo con la clienta antes de activar `STRIPE_AUTOMATIC_TAX`.
+- Confirmar con Yuma la cobertura de envío (EE.UU. y Puerto Rico) y la tarifa.

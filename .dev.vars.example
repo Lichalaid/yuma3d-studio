@@ -1,0 +1,13 @@
+# Local trial with `npm run dev` (copy this file to .dev.vars; it is ignored by git).
+# Use ONLY Yuma's Stripe sandbox here (keys that start with rk_test_).
+CHECKOUT_ENABLED=true
+STRIPE_MODE=test
+STRIPE_ACCOUNT_ID=acct_1UVZa22S141stGeG
+STRIPE_SECRET_KEY=rk_test_REPLACE_ME
+# Printed by `stripe listen --forward-to localhost:8787/api/stripe/webhook`
+STRIPE_WEBHOOK_SECRET=whsec_REPLACE_ME
+# "log" prints the order emails in this terminal instead of sending them (test mode only).
+# To send real emails, remove ORDER_EMAIL_MODE and set the two Resend values below.
+ORDER_EMAIL_MODE=log
+ORDER_EMAIL_API_KEY=
+ORDER_EMAIL_FROM=
