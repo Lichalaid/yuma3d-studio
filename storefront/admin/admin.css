@@ -83,7 +83,7 @@ legend{font-weight:600;font-size:18px;padding:0;margin-bottom:4px}
 .form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
 .form-actions .danger{margin-left:auto}
 .sticky{position:sticky;bottom:0;background:var(--card);padding:12px 0 4px;border-top:1px solid var(--line)}
-.publish{border-radius:12px;padding:12px 14px;margin-bottom:12px;background:var(--lilac);font-size:15px}
+.publish{border-radius:12px;padding:12px 14px;margin-bottom:12px;background:var(--lilac);font-size:15px;position:sticky;top:78px;z-index:4;box-shadow:0 2px 10px rgba(52,59,49,.08)}
 .publish.ok{background:var(--sage)}
 .publish.error{background:#f6dedd;color:var(--red)}
 .cat-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:10px}

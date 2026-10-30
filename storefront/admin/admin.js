@@ -231,6 +231,7 @@ function openEditor(product) {
 function closeEditor() {
   editing = null; dirty = false;
   openTab('products');
+  window.scrollTo(0, 0);
 }
 
 $('#product-form').addEventListener('input', () => { dirty = true; });
