@@ -9,7 +9,7 @@ import base64, json, mimetypes, re, shutil
 
 root = Path(__file__).resolve().parent.parent
 CATALOG_IMPORT = "import CATALOG from '../catalog-products.json' with { type: 'json' };"
-FILES_TOKEN = '__STATIC_FILES__'
+FILES_TOKEN = "const FILES = typeof __STATIC_FILES__ === 'undefined' ? null : __STATIC_FILES__;"
 
 files = {}
 for path in sorted((root / 'storefront').rglob('*')):
@@ -19,8 +19,8 @@ for path in sorted((root / 'storefront').rglob('*')):
                       'data': base64.b64encode(path.read_bytes()).decode()}
 
 entry = (root / 'worker/index.js').read_text()
-assert "import { handleRequest } from './checkout.js';" in entry and 'export default { fetch: handleRequest };' in entry, \
-    'worker/index.js must only wire handleRequest from checkout.js'
+assert "import { handleRequest } from './checkout.js';" in entry, 'worker/index.js must wire handleRequest from checkout.js'
+# The admin panel (worker/admin.js) is not part of this preview build: it saves through GitHub (Vercel or Cloudflare).
 source = (root / 'worker/checkout.js').read_text()
 # Inline checkout.js: its named exports become plain declarations (Workers only accept handlers as exports).
 assert not re.search(r'^export\s+(default|\{|\*)', source, re.M), 'checkout.js may only use `export function/class/const`'
@@ -31,7 +31,7 @@ assert source.count(CATALOG_IMPORT) == 1, 'checkout.js must import the catalog e
 assert source.count(FILES_TOKEN) == 1, 'checkout.js must reference the embedded files exactly once'
 catalog = json.loads((root / 'catalog-products.json').read_text())
 source = source.replace(CATALOG_IMPORT, 'const CATALOG = ' + json.dumps(catalog, ensure_ascii=False, separators=(',', ':')) + ';')
-source = source.replace(FILES_TOKEN, json.dumps(files, separators=(',', ':')))
+source = source.replace(FILES_TOKEN, 'const FILES = ' + json.dumps(files, separators=(',', ':')) + ';')
 
 out = root / 'dist/server'
 out.mkdir(parents=True, exist_ok=True)

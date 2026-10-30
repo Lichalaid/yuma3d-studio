@@ -14,6 +14,12 @@ Boceto estático bilingüe (inglés por defecto y español), basado en el cuesti
 - Fabricación hasta 2 días, envío UPS USD 4,99, gratuito desde USD 50, entrega 3–5 días luego de producción. Retiro en Katy, TX 77449.
 - Bolsa de prueba almacenada en sessionStorage. La revisión prepara un correo dirigido al negocio para revisión y envío manual desde la aplicación de email del visitante. Sin cobros, pedidos confirmados ni correo automático.
 
+## Panel de administración
+
+En `/admin/` la dueña carga y edita productos (fotos, nombre, descripción, precio, categoría, colores, partes y textos personalizables), los oculta, borra y ordena, y gestiona las categorías. Cada cambio se guarda en GitHub y Vercel lo publica solo. Activación: [PANEL-ADMIN.md](PANEL-ADMIN.md). Guía de uso para la clienta: [GUIA-PARA-YUMA.md](GUIA-PARA-YUMA.md).
+
+La tienda se genera con `node scripts/build-site.mjs` desde `catalog-products.json` y `catalog-categories.json`. Reemplaza a `tools/build-product-pages.py` y `tools/prepare-seo.py`, con el mismo resultado y sin Python.
+
 ## Pagos con Stripe
 Checkout completo: un solo pago de Stripe por bolsa, precios y personalización validados en el servidor, webhook firmado, email del pedido a Yuma y confirmación al comprador. Para activarlo, ver [ACTIVAR-STRIPE.md](ACTIVAR-STRIPE.md); el funcionamiento técnico está en [CHECKOUT-STRIPE.md](CHECKOUT-STRIPE.md).
 
@@ -24,7 +30,7 @@ Checkout completo: un solo pago de Stripe por bolsa, precios y personalización 
 4. Para sumar los juguetes sensoriales al catálogo fotografiado, faltan fotos, formas/modelos, stock, edad recomendada y advertencias. No se inventaron certificaciones ni beneficios terapéuticos.
 5. Política de devoluciones para stock, productos dañados, errores de fabricación y cancelaciones. Solo se incluyó la condición suministrada de no devolución de personalizados.
 6. Dirección, horarios y condiciones de retiro. No asumir condiciones adicionales al cuestionario.
-7. Backend y panel privado para editar catálogo, precios y fotos: fuera de este boceto. No usar un panel sin autenticación.
+7. Panel privado: listo en `/admin/`. Falta activarlo en Vercel con el token de GitHub y la contraseña (PANEL-ADMIN.md).
 8. Disponibilidad y conexión de yuma3dstudio.com: no verificada.
 9. Tratamiento definitivo de las imágenes. Se conservaron originales; no se inventaron productos ni reseñas.
 
@@ -69,7 +75,7 @@ Cada `personalization` declara `type`, `colors` y `color_fields` bilingües. El 
 
 ## Páginas de producto y componentes
 
-El catálogo ahora enlaza a 16 páginas reales en `/products/<id>/`, generadas con `python3 tools/build-product-pages.py`. Ejecutar ese comando al cambiar la plantilla o el catálogo, antes de publicar. Cada página incluye título y datos SEO propios, galería, precio, descripción, cantidad y personalización. El HTML único descargable conserva navegación por hash con fichas a pantalla completa.
+El catálogo ahora enlaza a 16 páginas reales en `/products/<id>/`, generadas con `npm run build:site` (antes `tools/build-product-pages.py`). Ejecutar ese comando al cambiar la plantilla o el catálogo, antes de publicar. Cada página incluye título y datos SEO propios, galería, precio, descripción, cantidad y personalización. El HTML único descargable conserva navegación por hash con fichas a pantalla completa.
 
 Los colores ahora se eligen por componente (base, nombre, luna, cada estrella, cada nube y partes específicas del modelo). Un selector permite aplicar un color inicial a todas las partes y luego cambiar cada una. Los borradores y el idioma se conservan en sessionStorage entre páginas. La bolsa guarda un snapshot de componentes, etiquetas, colores y nombres; la consulta de mayoreo incluye esa configuración. El porta lipgloss tiene diseño con textura o vaso con tapa y asa. Inicial + nombre contiene el personalizador dentro de su página y ofrece colores por adorno; cuatro estrellas en su vista ilustrativa.
 
@@ -92,7 +98,7 @@ Los siete colores del cuestionario estaban confirmados para juguetes sensoriales
 
 17 productos y 18 fotos: el portafotos tiene una URL propia, colores y hasta cuatro imágenes locales. Precio a consultar hasta recibirlo. Animaciones suaves de estrella, nube y luna con soporte de movimiento reducido. Navegación móvil y ajustes para iPhone/iPad. Autor del sitio: Lisandro Zampella / Grind Leads LLC.
 
-`python3 tools/build-product-pages.py` también prepara catálogo en HTML, metadata, JSON-LD, sitemap y robots.txt. Para una publicación en otro dominio, ejecutar `SITE_ORIGIN=https://dominio-confirmado.com python3 tools/build-product-pages.py`; usar únicamente el dominio real conectado. El acceso del boceto alojado sigue privado: el SEO preparado no implica que Google pueda indexarlo todavía. El español se cambia en la misma URL; no se declaran versiones hreflang ficticias.
+`npm run build:site` también prepara catálogo en HTML, metadata, JSON-LD, sitemap y robots.txt. En Vercel usa solo el dominio de producción; en otro hosting, `SITE_ORIGIN=https://dominio-confirmado.com npm run build:site`, usando únicamente el dominio real conectado. El acceso del boceto alojado sigue privado: el SEO preparado no implica que Google pueda indexarlo todavía. El español se cambia en la misma URL; no se declaran versiones hreflang ficticias.
 
 La bolsa se paga con una sola Checkout Session. Ver [CHECKOUT-STRIPE.md](CHECKOUT-STRIPE.md). La unidad de 2 × 3 del portafotos sigue pendiente.
 

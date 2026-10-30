@@ -4,18 +4,19 @@
 //   npm run stripe:check          creates a test checkout, verifies it and expires it
 //   npm run stripe:check -- --keep   leaves it open and prints the URL to pay with 4242 4242 4242 4242
 //
-// Reads STRIPE_SECRET_KEY (and optional flags) from the environment or from .dev.vars.
+// Reads STRIPE_SECRET_KEY (and optional flags) from the environment, .env.local (Vercel) or .dev.vars (Cloudflare).
 import { readFileSync, existsSync } from 'node:fs';
 
 globalThis.__STATIC_FILES__ = null;
 const { StripeClient, createSession, decodeOrder, checkoutConfig } = await import('../worker/checkout.js');
 
 const fileVars = {};
-const devVars = new URL('../.dev.vars', import.meta.url);
-if (existsSync(devVars)) {
-  for (const line of readFileSync(devVars, 'utf8').split('\n')) {
+for (const name of ['../.dev.vars', '../.env.local']) {
+  const file = new URL(name, import.meta.url);
+  if (!existsSync(file)) continue;
+  for (const line of readFileSync(file, 'utf8').split('\n')) {
     const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
-    if (match) fileVars[match[1]] = match[2].replace(/^["']|["']$/g, '');
+    if (match && !line.trim().startsWith('#')) fileVars[match[1]] = match[2].replace(/^["']|["']$/g, '');
   }
 }
 const env = { ...fileVars, ...process.env };

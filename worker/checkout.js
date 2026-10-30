@@ -13,8 +13,8 @@
 import CATALOG from '../catalog-products.json' with { type: 'json' };
 
 // Storefront files embedded by tools/build-checkout-worker.py for the single-file build.
-// With Cloudflare Static Assets (wrangler.jsonc) this is null and env.ASSETS serves the site.
-const FILES = __STATIC_FILES__;
+// With Cloudflare Static Assets (wrangler.jsonc) or on Vercel this is null: the host serves the site.
+const FILES = typeof __STATIC_FILES__ === 'undefined' ? null : __STATIC_FILES__;
 
 export const STRIPE_API_VERSION = '2026-09-30.endive';
 export const YUMA_ACCOUNTS = Object.freeze({ test: 'acct_1UVZa22S141stGeG', live: 'acct_1UVgaICbK0UdCU0G' });
@@ -36,7 +36,8 @@ const COLOR_NAMES = {
   rainbow: { en: 'Rainbow', es: 'Arcoíris' }, yellow: { en: 'Yellow', es: 'Amarillo' }, green: { en: 'Green', es: 'Verde' },
   purple: { en: 'Purple', es: 'Morado' }, white: { en: 'White', es: 'Blanco' }, black: { en: 'Black', es: 'Negro' },
 };
-const PRODUCTS = new Map(CATALOG.map(product => [product.id, product]));
+// Hidden products (admin panel) stay in the file but cannot be bought.
+const PRODUCTS = new Map(CATALOG.filter(product => !product.hidden).map(product => [product.id, product]));
 const enc = new TextEncoder();
 
 // Messages shown to buyers, in both store languages.

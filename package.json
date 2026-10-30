@@ -3,20 +3,24 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "dev": "node scripts/dev-server.mjs",
+    "admin:password": "node scripts/admin-password.mjs",
     "test": "node --test tests/*.test.mjs",
-    "test:e2e": "node tests/e2e/checkout.e2e.mjs",
+    "test:e2e": "node tests/e2e/admin.e2e.mjs && E2E_SERVER=node node tests/e2e/checkout.e2e.mjs",
+    "test:e2e:cloudflare": "node tests/e2e/checkout.e2e.mjs",
     "stripe:check": "node scripts/stripe-smoke-test.mjs",
-    "logs": "wrangler tail",
-    "build:pages": "python3 tools/build-product-pages.py && python3 tools/prepare-stripe-images.py",
-    "build": "python3 tools/build-product-pages.py && python3 tools/prepare-stripe-images.py && python3 tools/build-checkout-worker.py && node scripts/validate-artifact.mjs"
+    "build:site": "node scripts/build-site.mjs",
+    "build:pages": "node scripts/build-site.mjs && python3 tools/prepare-stripe-images.py",
+    "build": "npm run build:pages && python3 tools/build-checkout-worker.py && node scripts/validate-artifact.mjs",
+    "dev:cloudflare": "wrangler dev",
+    "deploy:cloudflare": "wrangler deploy",
+    "logs:cloudflare": "wrangler tail"
   },
   "devDependencies": {
     "stripe": "^23.1.0",
     "wrangler": "^4.156.0"
   },
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   }
 }

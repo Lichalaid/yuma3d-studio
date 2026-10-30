@@ -1,0 +1,30 @@
+[
+  {
+    "id": "names",
+    "name": {
+      "en": "Names",
+      "es": "Nombres"
+    }
+  },
+  {
+    "id": "keychains",
+    "name": {
+      "en": "Keychains",
+      "es": "Llaveros"
+    }
+  },
+  {
+    "id": "business",
+    "name": {
+      "en": "For businesses",
+      "es": "Para negocios"
+    }
+  },
+  {
+    "id": "other",
+    "name": {
+      "en": "Other designs",
+      "es": "Otros diseños"
+    }
+  }
+]

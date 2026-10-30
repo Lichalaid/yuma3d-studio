@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Panel | Yuma 3D Studio</title>
+<link rel="icon" type="image/png" href="/assets/logo-original.png">
+<link rel="stylesheet" href="/admin/admin.css">
+<script src="/admin/admin.js" defer></script>
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="/admin/"><img src="/assets/logo-original.png" alt="Yuma 3D Studio" width="92" height="46"><span>Panel</span></a>
+  <nav id="bar-actions" hidden><a href="/" target="_blank" rel="noopener">Ver tienda ↗</a><button type="button" id="logout">Salir</button></nav>
+</header>
+
+<main id="login-view" class="narrow" hidden>
+  <h1>Entrar al panel</h1>
+  <p class="muted">Desde aquí cargas y editas los productos de la tienda.</p>
+  <form id="login-form" class="card">
+    <label for="password">Contraseña</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+    <button class="primary" type="submit">Entrar</button>
+    <p class="error" id="login-error" role="alert"></p>
+  </form>
+</main>
+
+<main id="setup-view" class="narrow" hidden>
+  <h1>El panel todavía no está activado</h1>
+  <p>Faltan estas variables en Vercel (Settings → Environment Variables):</p>
+  <ul id="setup-missing"></ul>
+  <p class="muted">Los pasos están en PANEL-ADMIN.md.</p>
+</main>
+
+<main id="app-view" class="wide" hidden>
+  <div id="publish" class="publish" role="status" aria-live="polite" hidden></div>
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" data-tab="products" aria-selected="true">Productos</button>
+    <button type="button" role="tab" data-tab="categories" aria-selected="false">Categorías</button>
+  </div>
+
+  <section id="products-tab">
+    <div class="section-head">
+      <h1>Productos <span class="count" id="product-count"></span></h1>
+      <button type="button" class="primary" id="new-product">+ Nuevo producto</button>
+    </div>
+    <input type="search" id="product-search" placeholder="Buscar producto…" aria-label="Buscar producto">
+    <ol class="product-list" id="product-list"></ol>
+  </section>
+
+  <section id="categories-tab" hidden>
+    <div class="section-head"><h1>Categorías</h1></div>
+    <p class="muted">Son los filtros del catálogo. Solo aparecen en la tienda las categorías que tienen productos visibles.</p>
+    <form id="categories-form" class="card">
+      <div id="category-rows"></div>
+      <button type="button" class="ghost" id="add-category">+ Nueva categoría</button>
+      <div class="form-actions"><button class="primary" type="submit">Guardar categorías</button></div>
+      <p class="error" id="categories-error" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="editor" hidden>
+    <div class="section-head">
+      <button type="button" class="ghost" id="editor-back">← Volver</button>
+      <h1 id="editor-title">Nuevo producto</h1>
+    </div>
+    <form id="product-form" class="card form" novalidate>
+      <fieldset>
+        <legend>Fotos</legend>
+        <p class="hint">La primera es la principal. Se recortan a formato cuadrado sin cortar el producto. JPG, PNG, WebP o fotos del celular.</p>
+        <div class="photos" id="photos"></div>
+        <label class="upload ghost" for="photo-input">+ Agregar fotos</label>
+        <input id="photo-input" type="file" accept="image/*" multiple hidden>
+      </fieldset>
+
+      <fieldset>
+        <legend>Nombre y descripción</legend>
+        <label for="name-es">Nombre *</label>
+        <input id="name-es" maxlength="80" required placeholder="Ej.: Llavero corazón con nombre">
+        <label for="desc-es">Descripción *</label>
+        <textarea id="desc-es" rows="5" required placeholder="Qué es, cómo se personaliza, medidas…"></textarea>
+        <p class="hint">Deja una línea en blanco para separar párrafos.</p>
+        <details id="english" class="english">
+          <summary>Versión en inglés <span class="muted">(opcional: si la dejas vacía, se muestra el texto en español)</span></summary>
+          <label for="name-en">Nombre en inglés</label>
+          <input id="name-en" maxlength="80" placeholder="Ej.: Heart name keychain">
+          <label for="desc-en">Descripción en inglés</label>
+          <textarea id="desc-en" rows="5"></textarea>
+        </details>
+      </fieldset>
+
+      <fieldset>
+        <legend>Precio y categoría</legend>
+        <div class="row">
+          <div><label for="price">Precio (USD)</label><input id="price" inputmode="decimal" placeholder="Ej.: 15"></div>
+          <div><label for="category">Categoría</label><select id="category"></select></div>
+        </div>
+        <label class="check"><input type="checkbox" id="quote"> Precio a consultar (no se puede pagar online; el cliente consulta por WhatsApp)</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Colores</legend>
+        <p class="hint">Marca los colores que ofreces para este producto.</p>
+        <div class="swatches" id="swatches"></div>
+        <div class="inline-actions"><button type="button" class="link" id="all-colors">Todos</button><button type="button" class="link" id="no-colors">Ninguno</button></div>
+        <div id="parts-block">
+          <h3>Partes que el cliente colorea</h3>
+          <p class="hint">El cliente elige un color para cada parte. Ej.: «Base» y «Letras». Si no agregas partes, no se eligen colores.</p>
+          <div id="part-rows"></div>
+          <button type="button" class="ghost" id="add-part">+ Agregar parte</button>
+          <h3>Textos que escribe el cliente</h3>
+          <p class="hint">Por ejemplo, el nombre que va en el llavero.</p>
+          <div id="text-rows"></div>
+          <button type="button" class="ghost" id="add-text">+ Agregar texto</button>
+        </div>
+        <p class="note" id="special-note" hidden>Este producto tiene opciones especiales (diseños, adornos, redes o fotos) que se mantienen como están. Aquí puedes cambiar los colores disponibles.</p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Publicación</legend>
+        <label class="check"><input type="checkbox" id="visible" checked> Visible en la tienda</label>
+      </fieldset>
+
+      <p class="error" id="form-error" role="alert"></p>
+      <div class="form-actions sticky">
+        <button class="primary" type="submit" id="save">Guardar y publicar</button>
+        <button type="button" class="ghost" id="cancel">Cancelar</button>
+        <button type="button" class="danger" id="delete" hidden>Borrar producto</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<dialog id="confirm">
+  <form method="dialog">
+    <p id="confirm-text"></p>
+    <div class="form-actions"><button value="ok" class="danger" id="confirm-ok">Borrar</button><button value="cancel" class="ghost">Cancelar</button></div>
+  </form>
+</dialog>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

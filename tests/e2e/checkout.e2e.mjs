@@ -31,8 +31,12 @@ const vars = {
 };
 const env = { ...process.env, WRANGLER_SEND_METRICS: 'false' };
 for (const key of ['HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy']) delete env[key];
+// E2E_SERVER=node runs the same purchases against scripts/dev-server.mjs (Vercel's Node runtime and routing).
+const onNode = process.env.E2E_SERVER === 'node';
 const wranglerBin = new URL('../../node_modules/wrangler/bin/wrangler.js', import.meta.url).pathname;
-const wrangler = spawn(process.execPath, [wranglerBin, 'dev', '--port', String(WORKER_PORT), '--ip', '127.0.0.1', ...Object.entries(vars).flatMap(([k, v]) => ['--var', `${k}:${v}`])], { cwd: new URL('../..', import.meta.url).pathname, env, stdio: ['ignore', 'pipe', 'pipe'] });
+const wrangler = onNode
+  ? spawn(process.execPath, [new URL('../../scripts/dev-server.mjs', import.meta.url).pathname, '--port', String(WORKER_PORT)], { cwd: new URL('../..', import.meta.url).pathname, env: { ...env, ...vars, DEV_SERVER_QUIET: '1', ADMIN_STORE: 'local' }, stdio: ['ignore', 'pipe', 'pipe'] })
+  : spawn(process.execPath, [wranglerBin, 'dev', '--port', String(WORKER_PORT), '--ip', '127.0.0.1', ...Object.entries(vars).flatMap(([k, v]) => ['--var', `${k}:${v}`])], { cwd: new URL('../..', import.meta.url).pathname, env, stdio: ['ignore', 'pipe', 'pipe'] });
 const workerLogs = [];
 wrangler.stdout.on('data', d => workerLogs.push(String(d)));
 wrangler.stderr.on('data', d => workerLogs.push(String(d)));
@@ -122,7 +126,7 @@ async function goToStripe(page, delivery) {
 
 let browser;
 try {
-  console.log('Starting wrangler dev (workerd) and fake Stripe/Resend…');
+  console.log(onNode ? 'Starting the Node dev server (Vercel runtime) and fake Stripe/Resend…' : 'Starting wrangler dev (workerd) and fake Stripe/Resend…');
   const status = await waitForWorker();
   const browserType = playwright.chromium;
   browser = await browserType.launch();
