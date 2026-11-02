@@ -264,7 +264,7 @@ function fieldsInput(list, previous = [], prefix, { text = false } = {}) {
 
 /** Can the panel edit the parts of this product? (special products keep their code-defined options) */
 export function partsEditable(product) {
-  return !product || (product.personalization?.type === 'colors' && !product.personalization.design_options?.length);
+  return !product || (product.personalization?.type === 'colors' && !product.personalization.design_options?.length && !product.personalization.accessory_groups?.length);
 }
 
 function uploadsOnlyHere(path, products) {

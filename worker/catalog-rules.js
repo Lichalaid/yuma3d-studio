@@ -118,6 +118,26 @@ export function catalogErrors(products, categories, { imageExists } = {}) {
       continue;
     }
     if ('color_mode' in config && config.color_mode !== 'bicolor') problem('modo de color inválido.');
+    if ('accessory_groups' in config) {
+      const groups = config.accessory_groups;
+      if (!Array.isArray(groups) || !groups.length || groups.length > 4) problem('grupos de accesorios inválidos.');
+      else {
+        const groupKeys = new Set();
+        for (const group of groups) {
+          if (!FIELD_KEY.test(group?.key || '') || groupKeys.has(group.key)) problem('hay un grupo de accesorios repetido o inválido.');
+          groupKeys.add(group?.key);
+          if (!bilingual(group?.label, 60)) problem('cada grupo de accesorios necesita nombre en español e inglés.');
+          if (!Number.isInteger(group?.max) || group.max < 1 || group.max > 5) problem('el máximo de accesorios va de 1 a 5.');
+          const ids = new Set();
+          if (!Array.isArray(group?.options) || !group.options.length || group.options.length > 20) { problem('cada grupo necesita entre 1 y 20 accesorios.'); continue; }
+          for (const option of group.options) {
+            if (!SLUG.test(option?.id || '') || ids.has(option.id)) problem('hay un accesorio repetido o inválido.');
+            ids.add(option?.id);
+            if (!bilingual(option?.label, 80)) problem('cada accesorio necesita nombre en español e inglés.');
+          }
+        }
+      }
+    }
     if ('send_after_payment' in config && !SEND_AFTER_PAYMENT.includes(config.send_after_payment)) problem('archivo a enviar después del pago inválido.');
     if (config.color_mode === 'bicolor' && config.colors?.includes('rainbow')) problem('el modo de dos colores no admite arcoíris.');
     if (!Array.isArray(config.colors) || !config.colors.every(c => PALETTE_IDS.includes(c)) || new Set(config.colors).size !== config.colors.length) {

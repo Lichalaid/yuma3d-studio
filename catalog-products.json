@@ -254,7 +254,12 @@
     "price_cents": 3500,
     "currency": "USD",
     "images": [
-      "assets/catalog/clean-v2/initial-name.webp"
+      "assets/catalog/clean-v2/initial-name.webp",
+      "assets/catalog/initial-name/kimberly-lazo-mariposa-flores.webp",
+      "assets/catalog/initial-name/alan-nacimiento-osito.webp",
+      "assets/catalog/initial-name/lia-ramas-flores.webp",
+      "assets/catalog/initial-name/sebastian-nacimiento-estrellas-osito.webp",
+      "assets/catalog/initial-name/ethan-nubes-globo-estrellas.webp"
     ],
     "source": {
       "file": "image(20261028-124119).png",
@@ -264,12 +269,12 @@
     },
     "description": {
       "en": [
-        "A freestanding decorative initial with a personalized name across the front. The catalog example pairs a blue capital E with white script lettering and small stars. Choose the initial and name you want, then select the accessory and preferred colors for your piece.",
-        "The initial-and-name piece measures 25 × 25 cm and is printed in PLA. Personalization is included in the listed price. Enter one initial and a name of up to 15 characters here, then choose the preferred color for each part of your design."
+        "A freestanding decorative initial with a personalized name across the front. Choose the letter and the name, and add up to 3 different accessories included in the price: stars, clouds, hot-air balloon, bow, teddy bear, branches, flowers, butterflies or the birth details with date, time and weight.",
+        "The piece measures 25 × 25 cm and is printed in PLA. Enter one initial and a name of up to 15 characters, then choose the color of each part and each accessory. The photos show accessory examples."
       ],
       "es": [
-        "Una inicial decorativa con base y un nombre personalizado en el frente. La referencia del catálogo combina una E celeste con letras blancas y pequeñas estrellas. Elige la letra y el nombre que quieres, y después selecciona el adorno y los colores deseados para tu pieza.",
-        "La pieza de inicial y nombre mide 25 × 25 cm y está impresa en PLA. La personalización está incluida en el precio indicado. Escribe aquí una letra inicial y un nombre de hasta 15 caracteres; después elige el color deseado para cada parte de tu diseño."
+        "Una inicial decorativa con base y un nombre personalizado en el frente. Elige la letra y el nombre, y agrega hasta 3 adornos diferentes incluidos en el precio: estrellas, nubes, globo, lazo, osito, ramas, flores, mariposas o el detalle de nacimiento con fecha, hora y peso.",
+        "La pieza mide 25 × 25 cm y está impresa en PLA. Escribe una letra inicial y un nombre de hasta 15 caracteres; después elige el color de cada parte y de cada adorno. Las fotos muestran ejemplos de adornos."
       ]
     },
     "personalization": {
@@ -327,258 +332,104 @@
           "kind": "name"
         }
       ],
-      "design_label": {
-        "en": "Decorative accessory",
-        "es": "Adorno decorativo"
-      },
-      "design_options": [
+      "accessory_groups": [
         {
-          "id": "stars",
+          "key": "accessories",
           "label": {
-            "en": "Stars",
-            "es": "Estrellas"
+            "en": "Accessories",
+            "es": "Adornos"
           },
-          "color_fields": [
+          "max": 3,
+          "included": true,
+          "options": [
             {
-              "key": "baseColor",
+              "id": "stars",
               "label": {
-                "en": "Initial color",
-                "es": "Color de la inicial"
+                "en": "Stars",
+                "es": "Estrellas"
               }
             },
             {
-              "key": "detailColor",
+              "id": "cloud",
               "label": {
-                "en": "Name color",
-                "es": "Color del nombre"
+                "en": "Clouds",
+                "es": "Nubes"
               }
             },
             {
-              "key": "star-1",
+              "id": "balloon",
               "label": {
-                "en": "Star 1",
-                "es": "Estrella 1"
-              }
-            },
-            {
-              "key": "star-2",
-              "label": {
-                "en": "Star 2",
-                "es": "Estrella 2"
-              }
-            },
-            {
-              "key": "star-3",
-              "label": {
-                "en": "Star 3",
-                "es": "Estrella 3"
-              }
-            },
-            {
-              "key": "star-4",
-              "label": {
-                "en": "Star 4",
-                "es": "Estrella 4"
-              }
-            }
-          ]
-        },
-        {
-          "id": "none",
-          "label": {
-            "en": "No accessory",
-            "es": "Sin adorno"
-          },
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "Initial color",
-                "es": "Color de la inicial"
-              }
-            },
-            {
-              "key": "detailColor",
-              "label": {
-                "en": "Name color",
-                "es": "Color del nombre"
-              }
-            }
-          ]
-        },
-        {
-          "id": "cloud",
-          "label": {
-            "en": "Cloud",
-            "es": "Nube"
-          },
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "Initial color",
-                "es": "Color de la inicial"
-              }
-            },
-            {
-              "key": "detailColor",
-              "label": {
-                "en": "Name color",
-                "es": "Color del nombre"
-              }
-            },
-            {
-              "key": "cloud",
-              "label": {
-                "en": "Cloud",
-                "es": "Nube"
-              }
-            }
-          ]
-        },
-        {
-          "id": "balloon",
-          "label": {
-            "en": "Balloon",
-            "es": "Globo"
-          },
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "Initial color",
-                "es": "Color de la inicial"
-              }
-            },
-            {
-              "key": "detailColor",
-              "label": {
-                "en": "Name color",
-                "es": "Color del nombre"
-              }
-            },
-            {
-              "key": "balloon",
-              "label": {
-                "en": "Balloon",
+                "en": "Hot-air balloon",
                 "es": "Globo"
               }
-            }
-          ]
-        },
-        {
-          "id": "bow",
-          "label": {
-            "en": "Bow",
-            "es": "Lazo"
-          },
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "Initial color",
-                "es": "Color de la inicial"
-              }
             },
             {
-              "key": "detailColor",
-              "label": {
-                "en": "Name color",
-                "es": "Color del nombre"
-              }
-            },
-            {
-              "key": "bow",
+              "id": "bow",
               "label": {
                 "en": "Bow",
                 "es": "Lazo"
               }
-            }
-          ]
-        },
-        {
-          "id": "bear",
-          "label": {
-            "en": "Teddy bear",
-            "es": "Osito"
-          },
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "Initial color",
-                "es": "Color de la inicial"
-              }
             },
             {
-              "key": "detailColor",
-              "label": {
-                "en": "Name color",
-                "es": "Color del nombre"
-              }
-            },
-            {
-              "key": "bear",
+              "id": "bear",
               "label": {
                 "en": "Teddy bear",
                 "es": "Osito"
               }
-            }
-          ]
-        },
-        {
-          "id": "birth",
-          "label": {
-            "en": "Birth detail",
-            "es": "Detalle de nacimiento"
-          },
-          "color_fields": [
+            },
             {
-              "key": "baseColor",
+              "id": "branches",
               "label": {
-                "en": "Initial color",
-                "es": "Color de la inicial"
+                "en": "Branches",
+                "es": "Ramas"
               }
             },
             {
-              "key": "detailColor",
+              "id": "flowers",
               "label": {
-                "en": "Name color",
-                "es": "Color del nombre"
+                "en": "Flowers",
+                "es": "Flores"
               }
             },
             {
-              "key": "birth",
+              "id": "butterflies",
               "label": {
-                "en": "Birth detail",
-                "es": "Detalle de nacimiento"
+                "en": "Butterflies",
+                "es": "Mariposas"
               }
-            }
-          ],
-          "extra_text_fields": [
-            {
-              "key": "birth-date",
-              "label": {
-                "en": "Birth date",
-                "es": "Fecha de nacimiento"
-              },
-              "input_type": "date"
             },
             {
-              "key": "birth-time",
+              "id": "birth",
               "label": {
-                "en": "Birth time",
-                "es": "Hora de nacimiento"
+                "en": "Birth details (date, time and weight)",
+                "es": "Detalle de nacimiento (fecha, hora y peso)"
               },
-              "input_type": "time"
-            },
-            {
-              "key": "birth-weight",
-              "label": {
-                "en": "Birth weight (with unit)",
-                "es": "Peso al nacer (con unidad)"
-              },
-              "max_length": 25
+              "extra_text_fields": [
+                {
+                  "key": "birth-date",
+                  "label": {
+                    "en": "Birth date",
+                    "es": "Fecha de nacimiento"
+                  },
+                  "input_type": "date"
+                },
+                {
+                  "key": "birth-time",
+                  "label": {
+                    "en": "Birth time",
+                    "es": "Hora de nacimiento"
+                  },
+                  "input_type": "time"
+                },
+                {
+                  "key": "birth-weight",
+                  "label": {
+                    "en": "Birth weight (with unit)",
+                    "es": "Peso al nacer (con unidad)"
+                  },
+                  "max_length": 25
+                }
+              ]
             }
           ]
         }
@@ -945,8 +796,8 @@
     "id": "two-names-keychain",
     "category": "keychains",
     "name": {
-      "en": "Two names + accessory keychain",
-      "es": "2 nombres + accesorio"
+      "en": "Two names + accessories keychain",
+      "es": "2 nombres + accesorios"
     },
     "price_cents": 1500,
     "currency": "USD",
@@ -960,13 +811,13 @@
       "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
     },
     "description": {
-      "en": [
-        "A two-name keychain design with decorative accessories. The catalog reference uses two cord strands with individual letter pieces, together with small themed charms and a shared ring at the top.",
-        "Both names form part of the same arrangement. Use the photograph to review the style of the letters, cords and accessories, then confirm the spelling of each name and the theme for your own piece."
-      ],
       "es": [
-        "Un diseño de llavero para dos nombres con accesorios decorativos. La referencia del catálogo utiliza dos tiras de cordón con piezas de letras individuales, pequeños adornos temáticos y una argolla compartida en la parte superior.",
-        "Los dos nombres forman parte de una misma composición. La foto permite revisar el estilo de las letras, los cordones y los accesorios para después confirmar la escritura de cada nombre y la temática de tu pieza."
+        "Un llavero de dos nombres con letras tipo charm en cordón y accesorios a elegir. Agrega hasta 3 accesorios del cordón (corazón, flores, patitas de perro, estrellas o lazos) y hasta 2 accesorios externos (flor, camarita, lipgloss, corazón o mariposa).",
+        "Escribe los dos nombres y elige los colores de las letras y de cada accesorio. La foto muestra un ejemplo del estilo."
+      ],
+      "en": [
+        "A two-name keychain with charm-style letters on a cord and accessories to choose. Add up to 3 cord accessories (heart, flowers, dog paws, stars or bows) and up to 2 external accessories (flower, little camera, lip gloss, heart or butterfly).",
+        "Enter both names and choose the colors of the letters and of each accessory. The photo shows an example of the style."
       ]
     },
     "personalization": {
@@ -1015,48 +866,6 @@
             "en": "Second name lettering",
             "es": "Letras del segundo nombre"
           }
-        },
-        {
-          "key": "charm-1",
-          "label": {
-            "en": "Accessory 1",
-            "es": "Accesorio 1"
-          }
-        },
-        {
-          "key": "charm-1-detail",
-          "label": {
-            "en": "Accessory 1 details",
-            "es": "Detalles del accesorio 1"
-          }
-        },
-        {
-          "key": "charm-2",
-          "label": {
-            "en": "Accessory 2",
-            "es": "Accesorio 2"
-          }
-        },
-        {
-          "key": "charm-2-detail",
-          "label": {
-            "en": "Accessory 2 details",
-            "es": "Detalles del accesorio 2"
-          }
-        },
-        {
-          "key": "lower-1",
-          "label": {
-            "en": "Bottom detail 1",
-            "es": "Detalle inferior 1"
-          }
-        },
-        {
-          "key": "lower-2",
-          "label": {
-            "en": "Bottom detail 2",
-            "es": "Detalle inferior 2"
-          }
         }
       ],
       "component_mode": true,
@@ -1074,6 +883,98 @@
             "en": "Second name",
             "es": "Segundo nombre"
           }
+        }
+      ],
+      "accessory_groups": [
+        {
+          "key": "cord",
+          "label": {
+            "en": "Cord accessories",
+            "es": "Accesorios del cordón"
+          },
+          "max": 3,
+          "options": [
+            {
+              "id": "heart",
+              "label": {
+                "en": "Heart",
+                "es": "Corazón"
+              }
+            },
+            {
+              "id": "flowers",
+              "label": {
+                "en": "Flowers",
+                "es": "Flores"
+              }
+            },
+            {
+              "id": "paws",
+              "label": {
+                "en": "Dog paws",
+                "es": "Patitas de perro"
+              }
+            },
+            {
+              "id": "stars",
+              "label": {
+                "en": "Stars",
+                "es": "Estrellas"
+              }
+            },
+            {
+              "id": "bows",
+              "label": {
+                "en": "Bows",
+                "es": "Lazos"
+              }
+            }
+          ]
+        },
+        {
+          "key": "external",
+          "label": {
+            "en": "External accessories",
+            "es": "Accesorios externos"
+          },
+          "max": 2,
+          "options": [
+            {
+              "id": "flower",
+              "label": {
+                "en": "Flower",
+                "es": "Flor"
+              }
+            },
+            {
+              "id": "camera",
+              "label": {
+                "en": "Little camera",
+                "es": "Camarita"
+              }
+            },
+            {
+              "id": "lipgloss",
+              "label": {
+                "en": "Lip gloss",
+                "es": "Lipgloss"
+              }
+            },
+            {
+              "id": "heart",
+              "label": {
+                "en": "Heart",
+                "es": "Corazón"
+              }
+            },
+            {
+              "id": "butterfly",
+              "label": {
+                "en": "Butterfly",
+                "es": "Mariposa"
+              }
+            }
+          ]
         }
       ]
     },
@@ -1723,13 +1624,13 @@
     "id": "personalized-can-cooler",
     "category": "other",
     "name": {
-      "en": "Can cooler",
-      "es": "Enfriador de latas"
+      "en": "Personalized can cooler",
+      "es": "Termo enfriador de latas personalizado"
     },
     "price_cents": 3000,
     "currency": "USD",
     "images": [
-      "assets/cooler-plain.webp"
+      "assets/catalog/clean-v2/personalized-can-cooler-name.webp"
     ],
     "source": {
       "file": "image(20261028-124152).png",
@@ -1738,19 +1639,60 @@
       "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
     },
     "description": {
-      "en": [
-        "A simple can cooler with a black ribbed body, a cream handle and lid, and a front tap. The product photo shows the plain version without a name plaque or front logo.",
-        "This design is offered as pictured, without color or lettering variations. Capacity, measurements and exact container fit still need confirmation with Yuma before ordering."
-      ],
       "es": [
-        "Un enfriador de latas sencillo, con cuerpo negro acanalado, asa y tapa color crema, y salida frontal. La foto muestra la versión lisa, sin placa con nombre ni logo en el frente.",
-        "Este diseño se ofrece como aparece en la foto, sin variaciones de color ni letras. Antes de comprar, confirma con Yuma la capacidad, las medidas y la compatibilidad exacta con los recipientes."
+        "Un termo enfriador de latas con placa de nombre personalizada sobre la tapa. Escribe el nombre que va en la placa.",
+        "Elige el color del termo y el color de la tapa, el asa y la llave. La foto muestra un ejemplo con el nombre Jin."
+      ],
+      "en": [
+        "A can cooler with a personalized name plaque on the lid. Enter the name for the plaque.",
+        "Choose the color of the cooler body and the color of the lid, handle and tap. The photo shows an example with the name Jin."
       ]
     },
     "personalization": {
-      "type": "plain",
-      "colors": [],
-      "color_fields": []
+      "type": "colors",
+      "colors": [
+        "blue",
+        "dark-blue",
+        "pink",
+        "dark-pink",
+        "red",
+        "rainbow",
+        "yellow",
+        "green",
+        "purple",
+        "beige",
+        "brown",
+        "gold",
+        "white",
+        "black"
+      ],
+      "component_mode": true,
+      "color_fields": [
+        {
+          "key": "baseColor",
+          "label": {
+            "en": "Cooler body",
+            "es": "Termo"
+          }
+        },
+        {
+          "key": "detailColor",
+          "label": {
+            "en": "Lid, handle and tap",
+            "es": "Tapa, asa y llave"
+          }
+        }
+      ],
+      "text_fields": [
+        {
+          "key": "plaque-name",
+          "label": {
+            "en": "Name on the plaque",
+            "es": "Nombre de la placa"
+          },
+          "max_length": 12
+        }
+      ]
     },
     "production_mode": "made_to_order",
     "compare_at_cents": 3900,

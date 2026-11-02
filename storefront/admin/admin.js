@@ -189,7 +189,7 @@ $('#new-product').addEventListener('click', () => openEditor(null));
 
 /* ---------------------------------------------------------------- editor */
 
-const partsEditable = product => !product || (product.personalization?.type === 'colors' && !product.personalization.design_options?.length);
+const partsEditable = product => !product || (product.personalization?.type === 'colors' && !product.personalization.design_options?.length && !product.personalization.accessory_groups?.length);
 let dirty = false;
 const confirmLeave = () => !dirty || window.confirm('Tienes cambios sin guardar. ¿Salir igual?');
 

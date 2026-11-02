@@ -262,6 +262,8 @@ test('sale price from the panel: stored with its percentage, removable, never lo
 
 test('plain products (sold as pictured) keep no colors; new name fields get the keys that offer script fonts', () => {
   const s = state();
+  // No product is sold as pictured today; check the rule with a plain copy of the cooler.
+  s.products = s.products.map(p => (p.id === 'personalized-can-cooler' ? { ...p, personalization: { type: 'plain' } } : p));
   const cooler = s.products.find(p => p.id === 'personalized-can-cooler');
   const edited = applyChange(s, { op: 'upsert', product: { id: cooler.id, name: cooler.name, description: { es: cooler.description.es.join('\n\n'), en: '' }, price_cents: cooler.price_cents, category: cooler.category, images: cooler.images, colors: ['blue'] } }).products.find(p => p.id === cooler.id);
   assert.deepEqual(edited.personalization, cooler.personalization);

@@ -24,8 +24,6 @@ const SHIPPING_CENTS = 499;
 const FREE_SHIPPING_FROM_CENTS = 5000;
 const MAX_LINES = 30;
 const MAX_QUANTITY = 10;
-// Accessories of "Initial + name" whose price is confirmed. The rest stay by quote.
-const PURCHASABLE_INITIAL_DESIGNS = ['none', 'stars'];
 // Script fonts offered for names (storefront/app.js `nameFonts`). The initial of "Initial + name" is always Al Bayan.
 const NAME_FONTS = ['Allura', 'Lobster', 'Chevy', 'Cookie', 'Satisfy'];
 const NAME_FIELD_KEYS = ['name', 'first-name', 'second-name'];
@@ -65,6 +63,7 @@ const MESSAGES = {
   design: ['Choose the design for this product.', 'Elige el diseño de este producto.'],
   accessory: ['Please request a quote for this accessory before payment.', 'Consulta el precio de este adorno antes de pagar.'],
   colors: ['Choose a color for every part.', 'Elige un color para cada pieza.'],
+  accessories: ['Check the accessories you chose.', 'Revisa los accesorios que elegiste.'],
   twoColors: ['Choose two different colors.', 'Elige dos colores distintos.'],
   font: ['Choose a name font.', 'Elige la tipografía del nombre.'],
   photos: ['Send the photos to Yuma before ordering this design.', 'Envía las fotos a Yuma antes de pedir este diseño.'],
@@ -225,13 +224,21 @@ function cleanText(value, max = 80) {
   return text;
 }
 
-function productParts(product, designId) {
+// Accessory groups (e.g. "up to 3 accessories"): each chosen accessory adds a color part and its extra texts.
+function chosenAccessories(config, accessories) {
+  return (config.accessory_groups || []).flatMap(group => (accessories?.[group.key] || [])
+    .map(id => ({ group, option: group.options.find(option => option.id === id) })).filter(entry => entry.option));
+}
+
+function productParts(product, designId, accessories) {
   const config = product?.personalization || {};
   const design = config.design_options?.find(option => option.id === designId);
+  const chosen = chosenAccessories(config, accessories);
   return {
-    config, design,
-    colorFields: design?.color_fields || config.color_fields || [],
-    textFields: [...(config.text_fields || []), ...(design?.extra_text_fields || [])],
+    config, design, chosen,
+    colorFields: [...(design?.color_fields || config.color_fields || []),
+      ...(config.colors?.length ? chosen.map(({ group, option }) => ({ key: `acc-${group.key}-${option.id}`, label: option.label })) : [])],
+    textFields: [...(config.text_fields || []), ...(design?.extra_text_fields || []), ...chosen.flatMap(({ option }) => option.extra_text_fields || [])],
   };
 }
 
@@ -243,9 +250,18 @@ function validateItem(item, language) {
   if (product.personalization?.type === 'photos') throw fail(MESSAGES.photos);
   if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_QUANTITY) throw fail(MESSAGES.quantity);
   const draft = item.options && typeof item.options === 'object' ? item.options : {};
-  const { config, design, colorFields, textFields } = productParts(product, draft.designId);
+  let accessories;
+  if (product.personalization?.accessory_groups) {
+    accessories = {};
+    for (const group of product.personalization?.accessory_groups) {
+      const list = draft.accessories?.[group.key] ?? [];
+      if (!Array.isArray(list) || list.length > group.max || new Set(list).size !== list.length
+        || !list.every(id => typeof id === 'string' && group.options.some(option => option.id === id))) throw fail(MESSAGES.accessories);
+      accessories[group.key] = list;
+    }
+  }
+  const { config, design, colorFields, textFields } = productParts(product, draft.designId, accessories);
   if (config.design_options?.length && !design) throw fail(MESSAGES.design);
-  if (product.id === 'initial-name' && !PURCHASABLE_INITIAL_DESIGNS.includes(design.id)) throw fail(MESSAGES.accessory);
   const colors = {};
   for (const field of colorFields) {
     const value = draft.colors?.[field.key];
@@ -277,6 +293,7 @@ function validateItem(item, language) {
     colors, text, ...(design ? { designId: design.id } : {}), ...(profiles ? { profiles } : {}),
     ...(hasName ? { nameFont: draft.font, ...(product.id === 'initial-name' ? { initialFont: 'Al Bayan' } : {}) } : {}),
     ...(config.send_after_payment ? { sendAfterPayment: config.send_after_payment } : {}),
+    ...(accessories ? { accessories } : {}),
   };
 }
 
@@ -294,7 +311,7 @@ export function validateCart(input) {
 /** Human-readable personalization lines, e.g. ["Initial: E", "Name: Emma", "Initial color: Blue"]. */
 export function itemDetails(item, lang = 'en') {
   const product = PRODUCTS.get(item.productId);
-  const { config, design, colorFields, textFields } = productParts(product, item.designId);
+  const { config, design, chosen, colorFields, textFields } = productParts(product, item.designId, item.accessories);
   const label = (fields, key) => {
     const field = fields.find(f => f.key === key);
     return field?.label?.[lang] || field?.label?.en || key;
@@ -304,6 +321,10 @@ export function itemDetails(item, lang = 'en') {
   if (item.nameFont) lines.push(`${lang === 'es' ? 'Tipografía del nombre' : 'Name font'}: ${item.nameFont}`);
   if (item.initialFont) lines.push(`${lang === 'es' ? 'Tipografía de la inicial' : 'Initial font'}: ${item.initialFont}`);
   if (design) lines.push(`${config.design_label?.[lang] || (lang === 'es' ? 'Diseño' : 'Design')}: ${design.label?.[lang] || design.id}`);
+  for (const group of config.accessory_groups || []) {
+    const names = chosen.filter(entry => entry.group.key === group.key).map(({ option }) => option.label?.[lang] || option.id);
+    lines.push(`${group.label?.[lang] || group.key}: ${names.length ? names.join(', ') : (lang === 'es' ? 'ninguno' : 'none')}`);
+  }
   for (const [key, value] of Object.entries(item.colors || {})) lines.push(`${label(colorFields, key)}: ${COLOR_NAMES[value]?.[lang] || value}`);
   for (const profile of item.profiles || []) lines.push(`${profile.network}: ${profile.handle}`);
   return lines;

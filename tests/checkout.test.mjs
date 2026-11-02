@@ -37,7 +37,9 @@ test('missing data, altered colors, unknown quotes and unpriced accessories are 
     p => { p.items[0].productId = 'raised-name-keychain'; },
     p => { p.items[0].productId = 'wholesale-keychains'; },
     p => { p.items[0].productId = 'does-not-exist'; },
-    p => { p.items[0].options.designId = 'birth'; },
+    p => { p.items[0].options.accessories = { accessories: ['stars', 'cloud', 'bow', 'bear'] }; },
+    p => { p.items[0].options.accessories = { accessories: ['stars', 'stars'] }; },
+    p => { p.items[0].options.accessories = { accessories: ['unicorn'] }; },
     p => { p.items[0].options.text.initial = 'EM'; },
     p => { p.items[0].options.text.name = 'Emma<script>'; },
     p => { p.items[0].options.text.name = 'Emma\u0007'; },
@@ -171,7 +173,7 @@ test('the checkout request asks Stripe for phone, delivery estimate, clear texts
   assert.equal(params.shipping_options[0].shipping_rate_data.delivery_estimate.maximum.value, '7');
   assert.match(params.custom_text.submit.message, /made to order/);
   assert.equal(params.payment_intent_data.metadata.order_ref, created.reference);
-  assert.match(params.line_items[0].price_data.product_data.description, /Initial: E · Name: Emma · Name font: Allura · Initial font: Al Bayan · Decorative accessory: No accessory · Initial color: Sky blue · Name color: White/);
+  assert.match(params.line_items[0].price_data.product_data.description, /Initial: E · Name: Emma · Name font: Allura · Initial font: Al Bayan · Accessories: none · Initial color: Sky blue · Name color: White/);
   assert.equal(params.line_items[0].price_data.product_data.images[0], 'https://shop.example/assets/catalog/stripe/initial-name.jpg');
   assert.deepEqual(fake.contractErrors, []);
 
@@ -272,18 +274,19 @@ test('taxes or discounts added by Stripe do not block the order email; a real mi
 test('emails are readable: Spanish labels for Yuma, the buyer language for the buyer, HTML escaped', async () => {
   const fake = createFakeStripe();
   const input = sample();
-  input.items[0].options.designId = 'stars';
-  Object.assign(input.items[0].options.colors, { 'star-1': 'yellow', 'star-2': 'rainbow', 'star-3': 'purple', 'star-4': 'black' });
+  input.items[0].options.accessories = { accessories: ['stars', 'birth'] };
+  Object.assign(input.items[0].options.colors, { 'acc-accessories-stars': 'rainbow', 'acc-accessories-birth': 'gold' });
+  Object.assign(input.items[0].options.text, { 'birth-date': '2026-01-23', 'birth-time': '08:13', 'birth-weight': '9.1 lb' });
   input.items.push({ productId: 'social-nfc-keychain', quantity: 1, options: { colors: { baseColor: 'black', detailColor: 'white' }, profiles: [{ network: 'Instagram', handle: '<b>@yuma</b>' }] } });
   const { id } = await paidSession(fake, input, TEST_ENV, { email: 'ana@example.com' });
   await withFake(fake, async () => assert.equal((await handleApi(webhookRequest(fake, id), TEST_ENV)).status, 200));
   const shop = fake.emails.find(e => e.to[0] === 'yuma3dstudio@gmail.com');
   const buyer = fake.emails.find(e => e.to[0] === 'ana@example.com');
-  for (const line of ['Letra inicial: E', 'Nombre: Emma', 'Adorno decorativo: Estrellas', 'Color de la inicial: Azul', 'Estrella 2: Arcoíris', 'Envío UPS a: Ana Pérez', '123 Main St, Katy, TX, 77449, US', 'Teléfono: +18325550100', 'Instagram: <b>@yuma</b>']) assert.ok(shop.text.includes(line), line);
+  for (const line of ['Letra inicial: E', 'Nombre: Emma', 'Adornos: Estrellas, Detalle de nacimiento (fecha, hora y peso)', 'Color de la inicial: Azul cielo', 'Estrellas: Arcoíris', 'Fecha de nacimiento: 2026-01-23', 'Peso al nacer (con unidad): 9.1 lb', 'Detalle de nacimiento (fecha, hora y peso): Dorado', 'Envío UPS a: Ana Pérez', '123 Main St, Katy, TX, 77449, US', 'Teléfono: +18325550100', 'Instagram: <b>@yuma</b>']) assert.ok(shop.text.includes(line), line);
   assert.match(shop.subject, /^\[PRUEBA\] Pedido YM-[0-9A-Z]{8} · \$\d+\.\d\d · Envío UPS$/);
   assert.equal(shop.reply_to, 'ana@example.com');
   assert.ok(shop.html.includes('&lt;b&gt;@yuma&lt;/b&gt;') && !shop.html.includes('<b>@yuma</b>'), 'buyer text is escaped in HTML');
-  assert.ok(buyer.text.includes('Initial: E') && buyer.text.includes('Decorative accessory: Stars') && buyer.text.includes('Star 2: Rainbow'));
+  assert.ok(buyer.text.includes('Initial: E') && buyer.text.includes('Accessories: Stars, Birth details (date, time and weight)') && buyer.text.includes('Stars: Rainbow'));
   assert.equal(buyer.reply_to, 'yuma3dstudio@gmail.com');
   assert.match(buyer.subject, /^\[TEST\] Your Yuma 3D Studio order YM-/);
   assert.equal(shop.headers['Idempotency-Key'], 'yuma-shop-' + id);
@@ -448,7 +451,7 @@ test('palette: two blues, two pinks, beige, brown and gold are offered on every 
   }
 });
 
-test('charms: exactly two different solid colors; plain cooler needs no options; photo frame and logo are payable; removed products are not', () => {
+test('charms: exactly two different solid colors; cooler needs name and colors; photo frame and logo are payable; removed products are not', () => {
   const charms = { nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'charms-keychain', quantity: 1, options: { colors: { baseColor: 'purple', detailColor: 'white', flower: 'red' }, text: { name: 'Laura' }, font: 'Cookie' } }] };
   const order = validateCart(charms);
   assert.equal(order.total, 1500);
@@ -457,8 +460,11 @@ test('charms: exactly two different solid colors; plain cooler needs no options;
   assert.throws(() => validateCart(charms), /two different colors/);
   charms.items[0].options.colors.detailColor = 'rainbow';
   assert.throws(() => validateCart(charms));
-  const cooler = validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'personalized-can-cooler', quantity: 1, options: {} }] });
+  // Cooler: editable name on the plaque + body color + lid/handle/tap color (no BTS sign).
+  assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'personalized-can-cooler', quantity: 1, options: {} }] }));
+  const cooler = validateCart({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'personalized-can-cooler', quantity: 1, options: { colors: { baseColor: 'black', detailColor: 'beige' }, text: { 'plaque-name': 'Jin' } } }] });
   assert.equal(cooler.items[0].unitAmount, CATALOG.find(p => p.id === 'personalized-can-cooler').price_cents);
+  assert.deepEqual(itemDetails(cooler.items[0], 'es'), ['Nombre de la placa: Jin', 'Termo: Negro', 'Tapa, asa y llave: Beige']);
   // Photo frame and business logo are payable; the buyer sends the photos / logo on WhatsApp after paying.
   const frame = validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'photo-frame', quantity: 1, options: { colors: { baseColor: 'white', detailColor: 'gold' } } }] });
   assert.equal(frame.total, 3500);
@@ -467,4 +473,20 @@ test('charms: exactly two different solid colors; plain cooler needs no options;
   assert.equal(logo.items[0].sendAfterPayment, 'logo');
   assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'name-accessory-keychain', quantity: 1, options: {} }] }), /no longer available/);
   assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'raised-name-keychain', quantity: 1, options: {} }] }), /no longer available/);
+});
+
+test('2 names + accessories: up to 3 cord accessories and up to 2 external ones, each with its own color', () => {
+  const base = { colors: { baseColor: 'white', detailColor: 'dark-pink', 'second-base': 'white', 'second-name': 'dark-pink' }, text: { 'first-name': 'Ana', 'second-name': 'Luz' }, font: 'Allura' };
+  const order = validateCart({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options: {
+    ...base, accessories: { cord: ['heart', 'paws', 'stars'], external: ['camera', 'heart'] },
+    colors: { ...base.colors, 'acc-cord-heart': 'red', 'acc-cord-paws': 'brown', 'acc-cord-stars': 'gold', 'acc-external-camera': 'white', 'acc-external-heart': 'pink' } } }] });
+  const lines = itemDetails(order.items[0], 'es');
+  assert.ok(lines.includes('Accesorios del cordón: Corazón, Patitas de perro, Estrellas'));
+  assert.ok(lines.includes('Accesorios externos: Camarita, Corazón'));
+  assert.ok(lines.includes('Patitas de perro: Marrón'));
+  const tooMany = { nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options: { ...base, accessories: { cord: [], external: ['flower', 'camera', 'lipgloss'] } } }] };
+  assert.throws(() => validateCart(tooMany), /accessories/);
+  const noColor = { nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options: { ...base, accessories: { cord: ['bows'] } } }] };
+  assert.throws(() => validateCart(noColor), /color/);
+  assert.equal(validateCart({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options: base }] }).total, 1500, 'accessories are optional');
 });

@@ -92,11 +92,12 @@ async function newContext(browser, options = {}) {
   return { context, page };
 }
 
-async function addInitialName(page, { initial, name, design, colors }) {
+async function addInitialName(page, { initial, name, accessories = [], texts = {}, colors }) {
   await page.goto(`${BASE}/products/initial-name/`);
-  await page.waitForSelector('#product-design');
-  await page.selectOption('#product-design', design);
+  await page.waitForSelector('[data-accessory-group="accessories"]');
+  for (const id of accessories) await page.click(`[data-accessory-group="accessories"] label:has(input[value="${id}"])`);
   await page.fill('#product-text-initial', initial);
+  for (const [key, value] of Object.entries(texts)) await page.fill(`#product-text-${key}`, value);
   await page.fill('#product-text-name', name);
   for (const [key, value] of Object.entries(colors)) await page.selectOption(`#piece-colors select[data-component="${key}"]`, value);
   await page.click('#product-action');
@@ -135,7 +136,7 @@ try {
   let sessionA;
   await step('EN · initial + name and a keychain · UPS shipping $4.99 · one Stripe checkout · paid', async () => {
     const { context, page } = await newContext(browser);
-    await addInitialName(page, { initial: 'e', name: 'Emma', design: 'none', colors: { baseColor: 'blue', detailColor: 'white' } });
+    await addInitialName(page, { initial: 'e', name: 'Emma', colors: { baseColor: 'blue', detailColor: 'white' } });
     await addKeychain(page, { name: 'Rose' });
     assert.equal(await page.textContent('#bag-count'), '2');
     sessionA = await goToStripe(page, 'ship');
@@ -175,24 +176,24 @@ try {
     assert.equal(fake.emails.length, before);
   });
 
-  await step('ES · stars accessory + 2 keychains = $51.00 · free shipping · Stripe in Spanish', async () => {
+  await step('ES · 3 accessories incl. birth details + 2 keychains = $51.00 · free shipping · Stripe in Spanish', async () => {
     buyers.current = { email: 'luis@example.com', name: 'Luis Gómez' };
     const { context, page } = await newContext(browser);
     await page.goto(`${BASE}/`);
     await page.click('[data-language="es"]');
-    await addInitialName(page, { initial: 'l', name: 'Lucía', design: 'stars', colors: { baseColor: 'pink', detailColor: 'white', 'star-1': 'yellow', 'star-2': 'yellow', 'star-3': 'rainbow', 'star-4': 'purple' } });
+    await addInitialName(page, { initial: 'l', name: 'Lucía', accessories: ['stars', 'branches', 'birth'], texts: { 'birth-date': '2026-07-28', 'birth-time': '22:40', 'birth-weight': '3 lb 3 oz' }, colors: { baseColor: 'dark-blue', detailColor: 'white', 'acc-accessories-stars': 'rainbow', 'acc-accessories-branches': 'white', 'acc-accessories-birth': 'beige' } });
     await addKeychain(page, { name: 'Sofía', quantity: 2 });
     const id = await goToStripe(page, 'ship');
     const s = fake.sessions.get(id);
     assert.equal(s.amount_subtotal, 5100); assert.equal(s.total_details.amount_shipping, 0); assert.equal(s.locale, 'es');
     assert.equal(s._params.shipping_options[0].shipping_rate_data.display_name, 'Envío UPS gratis');
-    assert.match(s._params.line_items[0].price_data.product_data.description, /Letra inicial: L · Nombre: Lucía · Tipografía del nombre: Allura · Tipografía de la inicial: Al Bayan · Adorno decorativo: Estrellas/);
+    assert.match(s._params.line_items[0].price_data.product_data.description, /Letra inicial: L · Nombre: Lucía · Fecha de nacimiento: 2026-07-28 · Hora de nacimiento: 22:40 · Peso al nacer \(con unidad\): 3 lb 3 oz · Tipografía del nombre: Allura · Tipografía de la inicial: Al Bayan · Adornos: Estrellas, Ramas, Detalle de nacimiento \(fecha, hora y peso\)/);
     await page.click('#pay');
     await page.waitForFunction(() => /confirmado/i.test(document.querySelector('#result-title')?.textContent || ''));
     assert.ok((await page.textContent('main')).includes('Envío UPS'));
     const buyer = fake.emails.find(e => e.to[0] === 'luis@example.com');
     assert.match(buyer.subject, /^\[PRUEBA\] Tu pedido de Yuma 3D Studio YM-/);
-    assert.ok(buyer.text.includes('Estrella 3: Arcoíris'));
+    assert.ok(buyer.text.includes('Estrellas: Arcoíris') && buyer.text.includes('Ramas: Blanco'));
     assert.deepEqual(page.errors, []);
     await context.close();
   });
