@@ -34,13 +34,13 @@ test('missing data, altered colors, unknown quotes and unpriced accessories are 
     p => { p.items[0].options.colors.baseColor = 'not-offered'; },
     p => { p.items[0].quantity = 0; },
     p => { p.items[0].quantity = 11; },
-    p => { p.items[0].productId = 'photo-frame'; },
+    p => { p.items[0].productId = 'raised-name-keychain'; },
     p => { p.items[0].productId = 'wholesale-keychains'; },
     p => { p.items[0].productId = 'does-not-exist'; },
     p => { p.items[0].options.designId = 'birth'; },
     p => { p.items[0].options.text.initial = 'EM'; },
     p => { p.items[0].options.text.name = 'Emma<script>'; },
-    p => { p.items[1].options.text.name = 'Rose\u0007'; },
+    p => { p.items[0].options.text.name = 'Emma\u0007'; },
     p => { p.delivery = 'drone'; },
     p => { p.nonce = 'x'; },
     p => { p.items = []; },
@@ -171,7 +171,7 @@ test('the checkout request asks Stripe for phone, delivery estimate, clear texts
   assert.equal(params.shipping_options[0].shipping_rate_data.delivery_estimate.maximum.value, '7');
   assert.match(params.custom_text.submit.message, /made to order/);
   assert.equal(params.payment_intent_data.metadata.order_ref, created.reference);
-  assert.match(params.line_items[0].price_data.product_data.description, /Initial: E · Name: Emma · Name font: Allura · Initial font: Al Bayan · Decorative accessory: No accessory · Initial color: Blue · Name color: White/);
+  assert.match(params.line_items[0].price_data.product_data.description, /Initial: E · Name: Emma · Name font: Allura · Initial font: Al Bayan · Decorative accessory: No accessory · Initial color: Sky blue · Name color: White/);
   assert.equal(params.line_items[0].price_data.product_data.images[0], 'https://shop.example/assets/catalog/stripe/initial-name.jpg');
   assert.deepEqual(fake.contractErrors, []);
 
@@ -363,7 +363,7 @@ test('the wrong Stripe account is refused before any checkout is created', async
 
 test('itemDetails falls back gracefully and labels every part', () => {
   const lines = itemDetails({ productId: 'lipgloss-keychain', designId: 'cup', colors: { baseColor: 'pink', lid: 'white', handle: 'black' }, text: {} }, 'es');
-  assert.deepEqual(lines, ['Diseño: Vaso con asa', 'Cuerpo del vaso: Rosado', 'Tapa: Blanco', 'Asa: Negro']);
+  assert.deepEqual(lines, ['Diseño: Vaso con asa', 'Cuerpo del vaso: Rosa pastel', 'Tapa: Blanco', 'Asa: Negro']);
 });
 
 test('if Stripe objects to a product photo, the checkout is created without photos instead of failing', async () => {
@@ -395,7 +395,7 @@ test('name fonts: required for products with a name, kept in the order; the init
   const order = validateCart(sample());
   assert.equal(order.items[0].nameFont, 'Allura');
   assert.equal(order.items[0].initialFont, 'Al Bayan');
-  assert.equal(order.items[1].nameFont, 'Cookie');
+  assert.equal(order.items[1].nameFont, undefined, 'no name, no font');
   assert.ok(itemDetails(order.items[0], 'es').includes('Tipografía del nombre: Allura'));
   const p = sample(); p.items[0].options.font = 'Comic Sans';
   assert.throws(() => validateCart(p), /name font/);
@@ -413,20 +413,42 @@ test('sale prices are display only: Stripe charges the catalog selling price; pe
   assert.equal(validateCart(sample()).items[0].unitAmount, 3500);
 });
 
-test('Christmas: each of the three sets costs $10 and needs its own piece colors', () => {
+test('Christmas: each of the three sets costs $10; the buyer only chooses the set (no colors, as the shop asked)', () => {
   const product = CATALOG.find(p => p.id === 'christmas-sets');
   assert.equal(product.personalization.design_options.length, 3);
   for (const design of product.personalization.design_options) {
-    const input = { nonce, language: 'en', delivery: 'pickup', items: [{ productId: product.id, quantity: 1, options: { designId: design.id, colors: Object.fromEntries(design.color_fields.map(p => [p.key, 'green'])) } }] };
-    const order = validateCart(input);
+    assert.deepEqual(design.color_fields, []);
+    const order = validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: product.id, quantity: 1, options: { designId: design.id } }] });
     assert.equal(order.total, 1000);
     assert.equal(order.items[0].designId, design.id);
-    delete input.items[0].options.colors[design.color_fields.at(-1).key];
-    assert.throws(() => validateCart(input));
+    assert.deepEqual(order.items[0].colors, {});
+  }
+  assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: product.id, quantity: 1, options: {} }] }), /design/);
+});
+
+test('design choices the shop asked for (2 Nov): can opener, lip gloss textures, wholesale; fitness opener; star on the moon', () => {
+  const opener = validateCart({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'can-opener-keychain', quantity: 1, options: { designId: 'kiss', colors: { 'design-color': 'dark-pink', detailColor: 'gold' } } }] });
+  assert.deepEqual(itemDetails(opener.items[0], 'es'), ['Diseño del abridor: Forma de beso', 'Color del diseño: Rosa oscuro', 'Contorno: Dorado']);
+  const gloss = validateCart({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'lipgloss-keychain', quantity: 1, options: { designId: 'texture-butterflies', colors: { baseColor: 'beige' } } }] });
+  assert.deepEqual(itemDetails(gloss.items[0], 'es'), ['Diseño: Textura de mariposas', 'Cuerpo del porta lipgloss: Beige']);
+  const fitness = validateCart({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'fitness-keychain', quantity: 1, options: { colors: { baseColor: 'brown', detailColor: 'dark-blue', opener: 'pink' } } }] });
+  assert.ok(itemDetails(fitness.items[0], 'es').includes('Abridor de latas en forma de paleta: Rosa pastel'));
+  const wholesale = CATALOG.find(p => p.id === 'wholesale-keychains').personalization;
+  assert.deepEqual(wholesale.design_options.map(o => o.id), ['bows', 'hearts', 'flowers', 'butterflies']);
+  assert.deepEqual(wholesale.color_fields.map(f => f.label.es), ['Color del diseño']);
+  for (const id of ['wall-name-seven', 'wall-name-four']) {
+    const labels = CATALOG.find(p => p.id === id).personalization.color_fields.map(f => f.label.es);
+    assert.ok(labels.includes('Estrella de la luna') && !labels.some(l => /Mariposa/.test(l)), id);
   }
 });
 
-test('charms: exactly two different solid colors; plain cooler needs no options; photo frame and removed products cannot be paid', () => {
+test('palette: two blues, two pinks, beige, brown and gold are offered on every full-palette product', () => {
+  for (const product of CATALOG.filter(p => p.personalization.colors?.length)) {
+    for (const color of ['blue', 'dark-blue', 'pink', 'dark-pink', 'beige', 'brown', 'gold']) assert.ok(product.personalization.colors.includes(color), `${product.id} ${color}`);
+  }
+});
+
+test('charms: exactly two different solid colors; plain cooler needs no options; photo frame and logo are payable; removed products are not', () => {
   const charms = { nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'charms-keychain', quantity: 1, options: { colors: { baseColor: 'purple', detailColor: 'white', flower: 'red' }, text: { name: 'Laura' }, font: 'Cookie' } }] };
   const order = validateCart(charms);
   assert.equal(order.total, 1500);
@@ -437,6 +459,12 @@ test('charms: exactly two different solid colors; plain cooler needs no options;
   assert.throws(() => validateCart(charms));
   const cooler = validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'personalized-can-cooler', quantity: 1, options: {} }] });
   assert.equal(cooler.items[0].unitAmount, CATALOG.find(p => p.id === 'personalized-can-cooler').price_cents);
-  assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'photo-frame', quantity: 1, options: {} }] }), /photos/);
+  // Photo frame and business logo are payable; the buyer sends the photos / logo on WhatsApp after paying.
+  const frame = validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'photo-frame', quantity: 1, options: { colors: { baseColor: 'white', detailColor: 'gold' } } }] });
+  assert.equal(frame.total, 3500);
+  assert.equal(frame.items[0].sendAfterPayment, 'photos');
+  const logo = validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'business-logo', quantity: 1, options: { colors: { baseColor: 'white', detailColor: 'gold', rim: 'gold', 'logo-detail': 'black' } } }] });
+  assert.equal(logo.items[0].sendAfterPayment, 'logo');
+  assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'name-accessory-keychain', quantity: 1, options: {} }] }), /no longer available/);
   assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'raised-name-keychain', quantity: 1, options: {} }] }), /no longer available/);
 });

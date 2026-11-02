@@ -19,7 +19,7 @@ test('build: hidden products get no page, card, sitemap entry or catalog data; t
   edit(dir, products => products.map(p => (p.id === 'fitness-keychain' ? { ...p, hidden: true } : p.id === 'charms-keychain' ? { ...p, name: { ...p.name, en: 'Charms <script>alert(1)</script> & "co"' } } : p)));
   fs.mkdirSync(path.join(dir, 'storefront/products/old-product'), { recursive: true });
   const result = buildSite({ dir, origin: 'https://shop.example', log: () => {} });
-  assert.deepEqual(result, { products: 16, hidden: 1, origin: 'https://shop.example' });
+  assert.deepEqual(result, { products: 15, hidden: 1, origin: 'https://shop.example' });
   assert.ok(!fs.existsSync(path.join(dir, 'storefront/products/fitness-keychain')));
   assert.ok(!fs.existsSync(path.join(dir, 'storefront/products/old-product')), 'stale pages removed');
   const index = fs.readFileSync(path.join(dir, 'storefront/index.html'), 'utf8');
@@ -28,7 +28,7 @@ test('build: hidden products get no page, card, sitemap entry or catalog data; t
   assert.ok(!index.includes('<script>alert(1)'), 'name escaped in HTML');
   assert.ok(index.includes('Charms &lt;script&gt;alert(1)&lt;/script&gt; &amp; &quot;co&quot;'));
   const data = JSON.parse(index.match(/<script id="catalog-data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
-  assert.equal(data.length, 16);
+  assert.equal(data.length, 15);
   assert.ok(index.includes('<script id="category-data" type="application/json">'));
   assert.match(fs.readFileSync(path.join(dir, 'storefront/robots.txt'), 'utf8'), /Disallow: \/admin\//);
   // Building twice gives the same files (no growing blank lines).

@@ -102,12 +102,11 @@ async function addInitialName(page, { initial, name, design, colors }) {
   await page.click('#product-action');
   await page.waitForSelector('#bag-dialog[open]');
 }
-async function addKeychain(page, { name, quantity = 1 }) {
-  await page.goto(`${BASE}/products/name-accessory-keychain/`);
-  await page.waitForSelector('#product-text-name');
-  await page.fill('#product-text-name', name);
+async function addKeychain(page, { quantity = 1 } = {}) {
+  await page.goto(`${BASE}/products/fitness-keychain/`);
+  await page.waitForSelector('[data-all-colors]');
   await page.selectOption('[data-all-colors]', 'pink');
-  await page.selectOption('#piece-colors select[data-component="charm"]', 'blue');
+  await page.selectOption('#piece-colors select[data-component="opener"]', 'blue');
   if (quantity !== 1) {
     const tag = await page.$eval('#product-quantity', el => el.tagName);
     if (tag === 'SELECT') await page.selectOption('#product-quantity', String(quantity)); else await page.fill('#product-quantity', String(quantity));
@@ -151,7 +150,7 @@ try {
     await page.waitForURL(/\/checkout-result\/\?session_id=cs_test_/);
     await page.waitForFunction(() => /confirmed/i.test(document.querySelector('#result-title').textContent));
     const body = await page.textContent('main');
-    for (const text of ['Test payment confirmed.', 'Reference: YM-', 'Initial: E', 'Name: Emma', 'Initial color: Blue', 'Name: Rose', '$47.99 USD', 'ana@example.com']) assert.ok(body.includes(text), text);
+    for (const text of ['Test payment confirmed.', 'Reference: YM-', 'Initial: E', 'Name: Emma', 'Initial color: Sky blue', 'Paddle-shaped can opener: Sky blue', '$47.99 USD', 'ana@example.com']) assert.ok(body.includes(text), text);
     assert.equal(await page.evaluate(() => sessionStorage.getItem('yuma-demo-bag')), null, 'bag cleared after payment');
     await page.screenshot({ path: SHOTS + 'e2e-result-desktop.png', fullPage: true });
     assert.deepEqual(page.errors, []);
@@ -163,7 +162,7 @@ try {
     const shop = fake.emails.filter(e => e.to[0] === 'yuma3dstudio@gmail.com');
     const buyer = fake.emails.filter(e => e.to[0] === 'ana@example.com');
     assert.equal(shop.length, 1); assert.equal(buyer.length, 1);
-    for (const line of ['Letra inicial: E', 'Nombre: Emma', 'Color de la inicial: Azul', 'Color del nombre: Blanco', 'Nombre: Rose', 'Base del nombre: Rosado', 'Cuerpo del accesorio: Azul', 'Envío UPS a: Ana Pérez', 'Total cobrado: $47.99 USD']) {
+    for (const line of ['Letra inicial: E', 'Nombre: Emma', 'Color de la inicial: Azul cielo', 'Color del nombre: Blanco', 'Mancuerna: Rosa pastel', 'Abridor de latas en forma de paleta: Azul cielo', 'Envío UPS a: Ana Pérez', 'Total cobrado: $47.99 USD']) {
       assert.ok(shop[0].text.includes(line), `shop email: ${line}`);
     }
     assert.match(buyer[0].subject, /^\[TEST\] Your Yuma 3D Studio order YM-/);
@@ -241,12 +240,36 @@ try {
     await context.close();
   });
 
+  await step('photo frame: payable now, then the buyer is asked to send the photos on WhatsApp (page and both emails)', async () => {
+    buyers.current = { email: 'zoe@example.com', name: 'Zoe Diaz' };
+    const { context, page } = await newContext(browser);
+    await page.goto(`${BASE}/products/photo-frame/`);
+    await page.waitForSelector('[data-all-colors]');
+    assert.match(await page.textContent('#product-options'), /send 1 to 4 photos \(size 2 × 3\) on WhatsApp/);
+    await page.selectOption('[data-all-colors]', 'white');
+    await page.click('#product-action');
+    await page.waitForSelector('#bag-dialog[open]');
+    const id = await goToStripe(page, 'pickup');
+    assert.equal(fake.sessions.get(id).amount_total, 3500);
+    await page.click('#pay');
+    await page.waitForFunction(() => /One more step/.test(document.querySelector('main')?.textContent || ''));
+    const link = await page.getAttribute('main a[href^="https://wa.me/"]', 'href');
+    assert.match(link, /^https:\/\/wa\.me\/18325072768\?text=.*YM-/);
+    await page.screenshot({ path: SHOTS + 'e2e-result-photos.png', fullPage: true });
+    const shop = fake.emails.filter(e => e.to[0] === 'yuma3dstudio@gmail.com').at(-1);
+    const buyer = fake.emails.find(e => e.to[0] === 'zoe@example.com');
+    assert.match(shop.text, /PENDIENTE DEL CLIENTE[\s\S]*tus fotos \(de 1 a 4, tamaño 2 × 3\)[\s\S]*No fabricar hasta recibirlos/);
+    assert.match(buyer.text, /ONE MORE STEP[\s\S]*Send your photos \(1 to 4, size 2 × 3\) on WhatsApp to \+1 832 507 2768/);
+    assert.deepEqual(page.errors, []);
+    await context.close();
+  });
+
   await step('the browser cannot change prices: a tampered request is recomputed by the server', async () => {
     const { context, page } = await newContext(browser);
     await page.goto(`${BASE}/`);
     const response = await page.evaluate(async () => {
       await fetch('/api/checkout/status'); // the visitor cookie comes with this response
-      const r = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nonce: crypto.randomUUID(), language: 'en', delivery: 'ship', items: [{ productId: 'can-opener-keychain', quantity: 1, price: 1, unitAmount: 1, options: { colors: { baseColor: 'red', detailColor: 'white', heart: 'pink' }, text: {} } }] }) });
+      const r = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nonce: crypto.randomUUID(), language: 'en', delivery: 'ship', items: [{ productId: 'can-opener-keychain', quantity: 1, price: 1, unitAmount: 1, options: { designId: 'heart', colors: { 'design-color': 'red', detailColor: 'white' }, text: {} } }] }) });
       return { status: r.status, body: await r.json() };
     });
     assert.equal(response.status, 200);

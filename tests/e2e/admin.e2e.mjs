@@ -191,7 +191,7 @@ try {
     const line = session._params.line_items[0].price_data;
     assert.equal(Number(line.unit_amount), 1250);
     assert.equal(line.product_data.name, 'Heart name keychain');
-    assert.match(line.product_data.description, /Name: Valentina · Name font: Lobster · Heart: Pink · Letras: White/);
+    assert.match(line.product_data.description, /Name: Valentina · Name font: Lobster · Heart: Pastel pink · Letras: White/);
     assert.deepEqual(page.errors, []);
     await context.close();
   });

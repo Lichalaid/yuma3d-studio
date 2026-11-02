@@ -35,9 +35,20 @@ const METADATA_CHUNK = 450;
 const MAX_METADATA_CHUNKS = 40; // 40 chunks + 4 order keys + 3 status flags stays under Stripe's 50 keys.
 const ACCOUNT_CHECK_TTL_MS = 10 * 60 * 1000;
 const COLOR_NAMES = {
-  blue: { en: 'Blue', es: 'Azul' }, pink: { en: 'Pink', es: 'Rosado' }, red: { en: 'Red', es: 'Rojo' },
-  rainbow: { en: 'Rainbow', es: 'Arcoíris' }, yellow: { en: 'Yellow', es: 'Amarillo' }, green: { en: 'Green', es: 'Verde' },
-  purple: { en: 'Purple', es: 'Morado' }, white: { en: 'White', es: 'Blanco' }, black: { en: 'Black', es: 'Negro' },
+  blue: { en: 'Sky blue', es: 'Azul cielo' },
+  'dark-blue': { en: 'Dark blue', es: 'Azul oscuro' },
+  pink: { en: 'Pastel pink', es: 'Rosa pastel' },
+  'dark-pink': { en: 'Dark pink', es: 'Rosa oscuro' },
+  red: { en: 'Red', es: 'Rojo' },
+  rainbow: { en: 'Rainbow', es: 'Arcoíris' },
+  yellow: { en: 'Yellow', es: 'Amarillo' },
+  green: { en: 'Green', es: 'Verde' },
+  purple: { en: 'Purple', es: 'Morado' },
+  beige: { en: 'Beige', es: 'Beige' },
+  brown: { en: 'Brown', es: 'Marrón' },
+  gold: { en: 'Gold', es: 'Dorado' },
+  white: { en: 'White', es: 'Blanco' },
+  black: { en: 'Black', es: 'Negro' },
 };
 // Hidden products (admin panel) stay in the file but cannot be bought.
 const PRODUCTS = new Map(CATALOG.filter(product => !product.hidden).map(product => [product.id, product]));
@@ -265,6 +276,7 @@ function validateItem(item, language) {
     productId: product.id, name: product.name[language] || product.name.en, unitAmount: product.price_cents, quantity: item.quantity,
     colors, text, ...(design ? { designId: design.id } : {}), ...(profiles ? { profiles } : {}),
     ...(hasName ? { nameFont: draft.font, ...(product.id === 'initial-name' ? { initialFont: 'Al Bayan' } : {}) } : {}),
+    ...(config.send_after_payment ? { sendAfterPayment: config.send_after_payment } : {}),
   };
 }
 
@@ -605,6 +617,8 @@ function shopEmail(session, order, config, issues) {
     ? { heading: 'Entrega', paragraphs: ['Retiro en Katy, TX 77449. Coordinar día y horario con el cliente.'] }
     : { heading: 'Entrega', rows: [['Envío UPS a', shipping?.name || customer.name || '—'], ['Dirección', formatAddress(shipping?.address) || '—']] });
   sections.push(...itemSections(order, 'es'));
+  const pending = filesToSend(order, 'es');
+  if (pending) sections.push({ heading: 'PENDIENTE DEL CLIENTE', paragraphs: [`El cliente tiene que enviar ${pending} por WhatsApp con la referencia ${reference}. No fabricar hasta recibirlos.`] });
   sections.push({ heading: 'Totales', rows: totalsLines(session, order, 'es') });
   sections.push({
     heading: 'Stripe',
@@ -620,6 +634,16 @@ function shopEmail(session, order, config, issues) {
   };
 }
 
+/** "your photos (1 to 4, 2 × 3) and your logo" — what the buyer still has to send, or '' if nothing. */
+function filesToSend(order, lang) {
+  const kinds = new Set(order.items.map(item => item.sendAfterPayment).filter(Boolean));
+  const words = {
+    photos: lang === 'es' ? 'tus fotos (de 1 a 4, tamaño 2 × 3)' : 'your photos (1 to 4, size 2 × 3)',
+    logo: lang === 'es' ? 'tu logo' : 'your logo',
+  };
+  return [...kinds].map(kind => words[kind]).join(lang === 'es' ? ' y ' : ' and ');
+}
+
 function buyerEmail(session, order, config) {
   const lang = order.language === 'es' ? 'es' : 'en';
   const es = lang === 'es';
@@ -629,8 +653,12 @@ function buyerEmail(session, order, config) {
   const title = es ? `¡Gracias por tu pedido! ${reference}` : `Thank you for your order! ${reference}`;
   const intro = (test ? (es ? '[PRUEBA] Pago de prueba de Stripe, sin cobro real. ' : '[TEST] Stripe test payment, no real charge. ') : '')
     + (es ? 'Recibimos tu pago y Yuma ya tiene todos los detalles de tu diseño.' : 'We received your payment and Yuma has every detail of your design.');
+  const pending = filesToSend(order, lang);
   const sections = [
     ...itemSections(order, lang),
+    ...(pending ? [{ heading: es ? 'Falta un paso' : 'One more step', paragraphs: [es
+      ? `Envía ${pending} por WhatsApp al ${SHOP_WHATSAPP} con tu número de pedido ${reference}. Empezamos a fabricar cuando los recibimos.`
+      : `Send ${pending} on WhatsApp to ${SHOP_WHATSAPP} with your order number ${reference}. We start making your piece once we receive them.`] }] : []),
     { heading: es ? 'Totales' : 'Totals', rows: totalsLines(session, order, lang) },
     order.delivery === 'pickup'
       ? { heading: es ? 'Retiro' : 'Pickup', paragraphs: [es ? 'Yuma te escribirá para coordinar el retiro sin cargo en Katy, TX.' : 'Yuma will contact you to arrange your free pickup in Katy, TX.'] }
@@ -704,6 +732,7 @@ async function resultRequest(env, url, visitor) {
     delivery: order.delivery,
     language: order.language,
     email: session.customer_details?.email || null,
+    whatsapp: SHOP_WHATSAPP,
     subtotal: session.amount_subtotal,
     shipping: session.total_details?.amount_shipping ?? order.shipping,
     tax: session.total_details?.amount_tax || 0,
@@ -711,6 +740,7 @@ async function resultRequest(env, url, visitor) {
     items: order.items.map(item => ({
       productId: item.productId,
       quantity: item.quantity,
+      ...(item.sendAfterPayment ? { sendAfterPayment: item.sendAfterPayment } : {}),
       lineTotal: item.unitAmount * item.quantity,
       name: { en: productNameIn(item, 'en'), es: productNameIn(item, 'es') },
       details: { en: itemDetails(item, 'en'), es: itemDetails(item, 'es') },

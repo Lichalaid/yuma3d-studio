@@ -31,12 +31,17 @@
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -65,8 +70,8 @@
         {
           "key": "moon-detail",
           "label": {
-            "en": "Moon butterfly",
-            "es": "Mariposa de la luna"
+            "en": "Star on the moon",
+            "es": "Estrella de la luna"
           }
         },
         {
@@ -159,12 +164,17 @@
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -193,8 +203,8 @@
         {
           "key": "moon-detail",
           "label": {
-            "en": "Moon butterfly",
-            "es": "Mariposa de la luna"
+            "en": "Star on the moon",
+            "es": "Estrella de la luna"
           }
         },
         {
@@ -266,12 +276,17 @@
       "type": "initial-name",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -605,12 +620,17 @@
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -702,92 +722,6 @@
     "discount_percent": 17
   },
   {
-    "id": "name-accessory-keychain",
-    "category": "keychains",
-    "name": {
-      "en": "Name + accessory keychain",
-      "es": "Nombre + accesorio"
-    },
-    "price_cents": 800,
-    "currency": "USD",
-    "images": [
-      "assets/catalog/clean-v2/name-accessory-keychain.webp"
-    ],
-    "source": {
-      "file": "image(20261028-124138).png",
-      "price_text": "$8",
-      "note": "",
-      "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
-    },
-    "description": {
-      "en": [
-        "A personalized name keychain paired with a decorative accessory. The catalog photograph presents several examples, combining raised names with a dinosaur, a strawberry or a character-shaped charm, plus a clasp for attaching the piece to keys or a bag.",
-        "Each photographed example shows a different name and theme. Use these references when asking for your own combination, and confirm the accessory you want with Yuma before placing the order."
-      ],
-      "es": [
-        "Un llavero con nombre personalizado y un accesorio decorativo. La foto del catálogo reúne varios ejemplos que combinan nombres en relieve con un dinosaurio, una fresa o un personaje, además de un broche para sujetar la pieza a las llaves o a un bolso.",
-        "Cada ejemplo de la foto muestra un nombre y una temática diferentes. Puedes usarlos como referencia al pedir tu combinación y confirmar con Yuma el accesorio que quieres antes de realizar el pedido."
-      ]
-    },
-    "personalization": {
-      "type": "colors",
-      "colors": [
-        "blue",
-        "pink",
-        "red",
-        "rainbow",
-        "yellow",
-        "green",
-        "purple",
-        "white",
-        "black"
-      ],
-      "color_fields": [
-        {
-          "key": "baseColor",
-          "label": {
-            "en": "Name backing",
-            "es": "Base del nombre"
-          }
-        },
-        {
-          "key": "detailColor",
-          "label": {
-            "en": "Name lettering",
-            "es": "Letras del nombre"
-          }
-        },
-        {
-          "key": "charm",
-          "label": {
-            "en": "Accessory body",
-            "es": "Cuerpo del accesorio"
-          }
-        },
-        {
-          "key": "charm-details",
-          "label": {
-            "en": "Accessory details",
-            "es": "Detalles del accesorio"
-          }
-        }
-      ],
-      "component_mode": true,
-      "text_fields": [
-        {
-          "key": "name",
-          "label": {
-            "en": "Name",
-            "es": "Nombre"
-          }
-        }
-      ]
-    },
-    "production_mode": "made_to_order",
-    "compare_at_cents": 900,
-    "discount_percent": 11
-  },
-  {
     "id": "fitness-keychain",
     "category": "keychains",
     "name": {
@@ -807,24 +741,29 @@
     },
     "description": {
       "en": [
-        "A fitness-themed keychain featuring two miniature weights: a pink dumbbell and a lilac kettlebell, joined by gold-tone hardware. The kettlebell carries the small raised number shown in the product photograph.",
-        "Clip it to your keys or a gym bag as a decorative accessory. The photograph shows the complete design, including both miniature weights and the clasp; the colors and shapes are presented together as one catalog reference."
+        "A fitness-themed keychain with three miniature pieces: a dumbbell, a kettlebell and, in the middle, a paddle-shaped can opener, joined by gold-tone hardware.",
+        "Choose a color for each piece. Clip it to your keys or a gym bag; the photograph shows the complete design as a catalog reference."
       ],
       "es": [
-        "Un llavero de temática fitness con dos pesas en miniatura: una mancuerna rosa y una pesa rusa lila, unidas por herrajes de tono dorado. La pesa rusa lleva el pequeño número en relieve que se ve en la foto.",
-        "Puedes sujetarlo a tus llaves o a un bolso de gimnasio como accesorio decorativo. La imagen muestra el diseño completo, con ambas pesas y el broche; sus colores y formas se presentan juntos como una misma referencia del catálogo."
+        "Un llavero de temática fitness con tres piezas en miniatura: una mancuerna, una pesa rusa y, en el medio, un abridor de latas en forma de paleta, unidos por herrajes de tono dorado.",
+        "Elige el color de cada pieza. Puedes llevarlo en tus llaves o en el bolso del gimnasio; la foto muestra el diseño completo como referencia del catálogo."
       ]
     },
     "personalization": {
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -844,10 +783,10 @@
           }
         },
         {
-          "key": "number",
+          "key": "opener",
           "label": {
-            "en": "Kettlebell number",
-            "es": "Número de la pesa"
+            "en": "Paddle-shaped can opener",
+            "es": "Abridor de latas en forma de paleta"
           }
         }
       ],
@@ -877,11 +816,11 @@
     },
     "description": {
       "en": [
-        "A lip gloss holder keychain, shown in textured cylindrical and handled-cup designs. The catalog photograph groups lavender and pink examples, with their individual clasps and raised surface details visible.",
+        "A lip gloss holder keychain. Choose a textured holder with hearts, butterflies or bows, or the handled-cup design.",
         "The holder turns a small everyday item into an accessory you can carry with your keys or bag. Compare the shapes in the photograph and confirm the holder design and fit you need with Yuma before ordering."
       ],
       "es": [
-        "Un llavero porta lipgloss, presentado en diseños cilíndricos con textura y en una versión con forma de vaso con asa. La foto del catálogo reúne ejemplos lilas y rosas, donde se ven los broches y los detalles en relieve de cada modelo.",
+        "Un llavero porta lipgloss. Elige el porta lipgloss con textura de corazones, mariposas o lazos, o el diseño de vaso con asa.",
         "El soporte permite llevar un pequeño artículo de uso diario junto a las llaves o al bolso. Compara las formas de la foto y confirma con Yuma el diseño y las medidas que necesitas antes de comprar."
       ]
     },
@@ -889,12 +828,17 @@
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -910,10 +854,42 @@
       "component_mode": true,
       "design_options": [
         {
-          "id": "textured",
+          "id": "texture-hearts",
           "label": {
-            "en": "Textured holder",
-            "es": "Porta lipgloss con textura"
+            "en": "Heart texture",
+            "es": "Textura de corazones"
+          },
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Holder body",
+                "es": "Cuerpo del porta lipgloss"
+              }
+            }
+          ]
+        },
+        {
+          "id": "texture-butterflies",
+          "label": {
+            "en": "Butterfly texture",
+            "es": "Textura de mariposas"
+          },
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Holder body",
+                "es": "Cuerpo del porta lipgloss"
+              }
+            }
+          ]
+        },
+        {
+          "id": "texture-bows",
+          "label": {
+            "en": "Bow texture",
+            "es": "Textura de lazos"
           },
           "color_fields": [
             {
@@ -955,7 +931,11 @@
             }
           ]
         }
-      ]
+      ],
+      "design_label": {
+        "en": "Design",
+        "es": "Diseño"
+      }
     },
     "production_mode": "made_to_order",
     "compare_at_cents": 1100,
@@ -993,12 +973,17 @@
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -1116,33 +1101,38 @@
     },
     "description": {
       "en": [
-        "A can-opener keychain with a narrow upper tab and a wider lower body. The catalog reference combines a cream-colored center, a red outline and a red heart, attached to a gold-tone ring and clasp.",
-        "The opener is designed to stay with your keys, with the heart detail forming part of the piece itself. The product photograph shows its complete shape and hardware so you can review the design before ordering."
+        "A can-opener keychain attached to a gold-tone ring and clasp. Choose its design: flower, heart, bow, kiss or butterfly.",
+        "Choose the color of the design and the outline. The opener is made to carry with your keys; the photo shows its shape and hardware as a reference."
       ],
       "es": [
-        "Un llavero abridor de latas con una pestaña superior estrecha y un cuerpo más ancho en la parte inferior. La referencia combina un centro color crema, contorno rojo y un corazón rojo, unidos a una argolla y un broche de tono dorado.",
-        "El abridor está pensado para llevar junto a las llaves, con el corazón integrado en la propia pieza. La foto muestra su forma completa y sus herrajes para que puedas revisar el diseño antes de comprar."
+        "Un llavero abridor de latas con argolla y broche de tono dorado. Elige su diseño: flor, corazón, lazo, beso o mariposa.",
+        "Elige también el color del diseño y del contorno. El abridor está pensado para llevar junto a las llaves; la foto muestra la forma y los herrajes como referencia."
       ]
     },
     "personalization": {
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
       "color_fields": [
         {
-          "key": "baseColor",
+          "key": "design-color",
           "label": {
-            "en": "Opener body",
-            "es": "Cuerpo del abridor"
+            "en": "Design color",
+            "es": "Color del diseño"
           }
         },
         {
@@ -1151,16 +1141,130 @@
             "en": "Outline",
             "es": "Contorno"
           }
-        },
-        {
-          "key": "heart",
-          "label": {
-            "en": "Heart",
-            "es": "Corazón"
-          }
         }
       ],
-      "component_mode": true
+      "component_mode": true,
+      "design_label": {
+        "en": "Opener design",
+        "es": "Diseño del abridor"
+      },
+      "design_options": [
+        {
+          "id": "flower",
+          "label": {
+            "en": "Flower",
+            "es": "Forma de flor"
+          },
+          "color_fields": [
+            {
+              "key": "design-color",
+              "label": {
+                "en": "Design color",
+                "es": "Color del diseño"
+              }
+            },
+            {
+              "key": "detailColor",
+              "label": {
+                "en": "Outline",
+                "es": "Contorno"
+              }
+            }
+          ]
+        },
+        {
+          "id": "heart",
+          "label": {
+            "en": "Heart",
+            "es": "Forma de corazón"
+          },
+          "color_fields": [
+            {
+              "key": "design-color",
+              "label": {
+                "en": "Design color",
+                "es": "Color del diseño"
+              }
+            },
+            {
+              "key": "detailColor",
+              "label": {
+                "en": "Outline",
+                "es": "Contorno"
+              }
+            }
+          ]
+        },
+        {
+          "id": "bow",
+          "label": {
+            "en": "Bow",
+            "es": "Forma de lazo"
+          },
+          "color_fields": [
+            {
+              "key": "design-color",
+              "label": {
+                "en": "Design color",
+                "es": "Color del diseño"
+              }
+            },
+            {
+              "key": "detailColor",
+              "label": {
+                "en": "Outline",
+                "es": "Contorno"
+              }
+            }
+          ]
+        },
+        {
+          "id": "kiss",
+          "label": {
+            "en": "Kiss",
+            "es": "Forma de beso"
+          },
+          "color_fields": [
+            {
+              "key": "design-color",
+              "label": {
+                "en": "Design color",
+                "es": "Color del diseño"
+              }
+            },
+            {
+              "key": "detailColor",
+              "label": {
+                "en": "Outline",
+                "es": "Contorno"
+              }
+            }
+          ]
+        },
+        {
+          "id": "butterfly",
+          "label": {
+            "en": "Butterfly",
+            "es": "Forma de mariposa"
+          },
+          "color_fields": [
+            {
+              "key": "design-color",
+              "label": {
+                "en": "Design color",
+                "es": "Color del diseño"
+              }
+            },
+            {
+              "key": "detailColor",
+              "label": {
+                "en": "Outline",
+                "es": "Contorno"
+              }
+            }
+          ]
+        }
+      ]
     },
     "production_mode": "made_to_order",
     "compare_at_cents": 600,
@@ -1198,11 +1302,16 @@
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -1272,12 +1381,17 @@
       "multiple_profiles": true,
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -1344,24 +1458,29 @@
     },
     "description": {
       "en": [
-        "A decorative business logo sign for a counter, reception area or product display. The catalog reference is a circular freestanding piece with a gold-tone rim, raised pink lettering and small details associated with the business shown.",
-        "The photographed logo is an example of the format. Share your own business name and logo when requesting the piece, and use this reference to discuss the layout and colors with Yuma."
+        "A decorative business logo sign for a counter, reception area or product display. The catalog reference is a circular freestanding piece with a gold-tone rim, raised pink lettering and small details associated with the business shown. Maximum size: 25 × 25 cm (about 10 × 10 in).",
+        "After paying, send a photo or file of your logo on WhatsApp to +1 832 507 2768 with your order number. Yuma converts it and prints it exactly as you send it."
       ],
       "es": [
-        "Un logo decorativo para colocar en un mostrador, una recepción o una exhibición de productos. La referencia del catálogo es una pieza circular con apoyo, borde de tono dorado, letras rosas en relieve y pequeños detalles relacionados con el negocio que aparece en la foto.",
-        "El logo fotografiado es un ejemplo del formato. Al solicitar la pieza, comparte el nombre y el logo de tu propio negocio y utiliza esta referencia para conversar con Yuma sobre la distribución y los colores."
+        "Un logo decorativo para colocar en un mostrador, una recepción o una exhibición de productos. La referencia del catálogo es una pieza circular con apoyo, borde de tono dorado, letras rosas en relieve y pequeños detalles relacionados con el negocio que aparece en la foto. Tamaño máximo: 25 × 25 cm.",
+        "Después de pagar, envía una foto o archivo de tu logo por WhatsApp al +1 832 507 2768 con tu número de pedido. Yuma lo convierte y lo imprime tal como lo envíes."
       ]
     },
     "personalization": {
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -1396,15 +1515,7 @@
         }
       ],
       "component_mode": true,
-      "text_fields": [
-        {
-          "key": "business-name",
-          "label": {
-            "en": "Business name",
-            "es": "Nombre del negocio"
-          }
-        }
-      ]
+      "send_after_payment": "logo"
     },
     "production_mode": "made_to_order",
     "compare_at_cents": 8500,
@@ -1443,12 +1554,17 @@
       "multiple_profiles": false,
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -1506,12 +1622,17 @@
       "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -1519,26 +1640,82 @@
         {
           "key": "baseColor",
           "label": {
-            "en": "Keychain body",
-            "es": "Cuerpo del llavero"
-          }
-        },
-        {
-          "key": "detailColor",
-          "label": {
-            "en": "Outline",
-            "es": "Contorno"
-          }
-        },
-        {
-          "key": "heart",
-          "label": {
-            "en": "Heart",
-            "es": "Corazón"
+            "en": "Design color",
+            "es": "Color del diseño"
           }
         }
       ],
-      "component_mode": true
+      "component_mode": true,
+      "design_label": {
+        "en": "Keychain design",
+        "es": "Diseño del llavero"
+      },
+      "design_options": [
+        {
+          "id": "bows",
+          "label": {
+            "en": "Bows",
+            "es": "Lazos"
+          },
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Design color",
+                "es": "Color del diseño"
+              }
+            }
+          ]
+        },
+        {
+          "id": "hearts",
+          "label": {
+            "en": "Hearts",
+            "es": "Corazones"
+          },
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Design color",
+                "es": "Color del diseño"
+              }
+            }
+          ]
+        },
+        {
+          "id": "flowers",
+          "label": {
+            "en": "Flowers",
+            "es": "Flores"
+          },
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Design color",
+                "es": "Color del diseño"
+              }
+            }
+          ]
+        },
+        {
+          "id": "butterflies",
+          "label": {
+            "en": "Butterflies",
+            "es": "Mariposas"
+          },
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Design color",
+                "es": "Color del diseño"
+              }
+            }
+          ]
+        }
+      ]
     },
     "production_mode": "made_to_order"
   },
@@ -1599,24 +1776,29 @@
     "description": {
       "en": [
         "A 3D-printed photo frame for your favorite memories. The reference shows a white frame with photos on its different sides. Choose the colors of your frame and add up to four photos for your personalized piece.",
-        "Photo size: 2 × 3. Personalize your frame with 1–4 JPG, PNG or WebP photos and your preferred colors for $35 USD. Add your images below and include any details you would like Yuma to know. Each frame is made to order."
+        "Photo size: 2 × 3. After paying, send 1 to 4 photos on WhatsApp to +1 832 507 2768 with your order number."
       ],
       "es": [
         "Un portafotos impreso en 3D para guardar tus recuerdos. La referencia muestra un marco blanco con fotos en sus distintas caras. Elige los colores del portafotos y añade hasta cuatro fotos para personalizar tu pieza.",
-        "Tamaño de las fotos: 2 × 3. Personaliza tu portafotos con 1–4 fotos JPG, PNG o WebP y los colores que elijas por $35 USD. Añade tus imágenes debajo e incluye los detalles que quieras compartir con Yuma. Cada portafotos se fabrica a pedido."
+        "Tamaño de las fotos: 2 × 3. Después de pagar, envía de 1 a 4 fotos por WhatsApp al +1 832 507 2768 con tu número de pedido."
       ]
     },
     "production_mode": "made_to_order",
     "personalization": {
-      "type": "photos",
+      "type": "colors",
       "colors": [
         "blue",
+        "dark-blue",
         "pink",
+        "dark-pink",
         "red",
         "rainbow",
         "yellow",
         "green",
         "purple",
+        "beige",
+        "brown",
+        "gold",
         "white",
         "black"
       ],
@@ -1637,7 +1819,7 @@
         }
       ],
       "component_mode": true,
-      "max_photos": 4
+      "send_after_payment": "photos"
     }
   },
   {
@@ -1662,58 +1844,18 @@
     "description": {
       "en": [
         "Choose one of these three complete Christmas sets for $10 USD: three reindeer with a tray; two trees and Santa with a tray; or a tree, Santa and a nativity scene with a tray. The price includes all pieces shown in the photo of your selected set.",
-        "Select the set you want, then choose the colors for its pieces. The photo changes to show your selected design. Each set is made to order; the $10 price is for one complete selected set."
+        "Select the set you want; the photo changes to show it. Each set is made to order, and the $10 price is for one complete set as pictured."
       ],
       "es": [
         "Elige uno de estos tres sets completos de Navidad por $10 USD: tres renos con bandeja; dos árboles y Santa con bandeja; o un árbol, Santa y un nacimiento con bandeja. El precio incluye todas las piezas que aparecen en la foto del set elegido.",
-        "Elige el set y luego los colores de sus piezas. La foto cambia para mostrar el diseño seleccionado. Cada conjunto se fabrica a pedido; el precio de $10 corresponde a un set completo de la opción elegida."
+        "Elige el set que quieres; la foto cambia para mostrarlo. Cada set se fabrica a pedido y el precio de $10 corresponde a un set completo como en la foto."
       ]
     },
     "production_mode": "made_to_order",
     "personalization": {
       "type": "colors",
-      "colors": [
-        "blue",
-        "pink",
-        "red",
-        "rainbow",
-        "yellow",
-        "green",
-        "purple",
-        "white",
-        "black"
-      ],
-      "component_mode": true,
-      "color_fields": [
-        {
-          "key": "baseColor",
-          "label": {
-            "en": "Tray",
-            "es": "Bandeja"
-          }
-        },
-        {
-          "key": "deer-1",
-          "label": {
-            "en": "Reindeer 1",
-            "es": "Reno 1"
-          }
-        },
-        {
-          "key": "deer-2",
-          "label": {
-            "en": "Reindeer 2",
-            "es": "Reno 2"
-          }
-        },
-        {
-          "key": "deer-3",
-          "label": {
-            "en": "Reindeer 3",
-            "es": "Reno 3"
-          }
-        }
-      ],
+      "colors": [],
+      "color_fields": [],
       "design_label": {
         "en": "Choose your Christmas set",
         "es": "Elige tu set de Navidad"
@@ -1726,36 +1868,7 @@
             "es": "Tres renos + bandeja"
           },
           "image_index": 0,
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "Tray",
-                "es": "Bandeja"
-              }
-            },
-            {
-              "key": "deer-1",
-              "label": {
-                "en": "Reindeer 1",
-                "es": "Reno 1"
-              }
-            },
-            {
-              "key": "deer-2",
-              "label": {
-                "en": "Reindeer 2",
-                "es": "Reno 2"
-              }
-            },
-            {
-              "key": "deer-3",
-              "label": {
-                "en": "Reindeer 3",
-                "es": "Reno 3"
-              }
-            }
-          ]
+          "color_fields": []
         },
         {
           "id": "trees-santa",
@@ -1764,57 +1877,7 @@
             "es": "Dos árboles + Santa + bandeja"
           },
           "image_index": 1,
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "Tray",
-                "es": "Bandeja"
-              }
-            },
-            {
-              "key": "tree-1",
-              "label": {
-                "en": "Large tree",
-                "es": "Árbol grande"
-              }
-            },
-            {
-              "key": "tree-2",
-              "label": {
-                "en": "Small tree",
-                "es": "Árbol pequeño"
-              }
-            },
-            {
-              "key": "stars",
-              "label": {
-                "en": "Tree stars",
-                "es": "Estrellas de los árboles"
-              }
-            },
-            {
-              "key": "santa",
-              "label": {
-                "en": "Santa suit",
-                "es": "Traje de Santa"
-              }
-            },
-            {
-              "key": "hat",
-              "label": {
-                "en": "Santa hat",
-                "es": "Gorro de Santa"
-              }
-            },
-            {
-              "key": "beard",
-              "label": {
-                "en": "Santa beard",
-                "es": "Barba de Santa"
-              }
-            }
-          ]
+          "color_fields": []
         },
         {
           "id": "nativity",
@@ -1823,57 +1886,7 @@
             "es": "Árbol + Santa + nacimiento + bandeja"
           },
           "image_index": 2,
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "Tray",
-                "es": "Bandeja"
-              }
-            },
-            {
-              "key": "tree",
-              "label": {
-                "en": "Tree",
-                "es": "Árbol"
-              }
-            },
-            {
-              "key": "star",
-              "label": {
-                "en": "Tree star",
-                "es": "Estrella del árbol"
-              }
-            },
-            {
-              "key": "santa",
-              "label": {
-                "en": "Santa suit",
-                "es": "Traje de Santa"
-              }
-            },
-            {
-              "key": "hat",
-              "label": {
-                "en": "Santa hat",
-                "es": "Gorro de Santa"
-              }
-            },
-            {
-              "key": "beard",
-              "label": {
-                "en": "Santa beard",
-                "es": "Barba de Santa"
-              }
-            },
-            {
-              "key": "nativity",
-              "label": {
-                "en": "Nativity scene",
-                "es": "Nacimiento"
-              }
-            }
-          ]
+          "color_fields": []
         }
       ]
     }

@@ -15,7 +15,7 @@ export const sample = () => ({
   nonce, language: 'en', delivery: 'ship',
   items: [
     { productId: 'initial-name', quantity: 1, price: 1, options: { designId: 'none', colors: { baseColor: 'blue', detailColor: 'white' }, text: { initial: 'e', name: 'Emma' }, font: 'Allura' } },
-    { productId: 'name-accessory-keychain', quantity: 2, options: { colors: { baseColor: 'pink', detailColor: 'white', charm: 'blue', 'charm-details': 'white' }, text: { name: 'Rose' }, font: 'Cookie' } },
+    { productId: 'fitness-keychain', quantity: 2, options: { colors: { baseColor: 'pink', detailColor: 'white', opener: 'blue' } } },
   ],
 });
 

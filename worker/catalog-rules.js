@@ -7,13 +7,18 @@
 // Filament colors offered by the store. Keep in sync with `colors` in storefront/app.js and
 // COLOR_NAMES in worker/checkout.js (tests/catalog.test.mjs checks it).
 export const PALETTE = Object.freeze([
-  { id: 'blue', en: 'Blue', es: 'Azul', hex: '#83b8c9' },
-  { id: 'pink', en: 'Pink', es: 'Rosado', hex: '#d99bab' },
+  { id: 'blue', en: 'Sky blue', es: 'Azul cielo', hex: '#83b8c9' },
+  { id: 'dark-blue', en: 'Dark blue', es: 'Azul oscuro', hex: '#2f4f7f' },
+  { id: 'pink', en: 'Pastel pink', es: 'Rosa pastel', hex: '#e7b3c1' },
+  { id: 'dark-pink', en: 'Dark pink', es: 'Rosa oscuro', hex: '#b5527a' },
   { id: 'red', en: 'Red', es: 'Rojo', hex: '#bd4d49' },
   { id: 'rainbow', en: 'Rainbow', es: 'Arcoíris', hex: '#b39bc7', background: 'linear-gradient(135deg,#da807d,#e5ca79,#98b594,#8eb2d0,#b39bc7)' },
   { id: 'yellow', en: 'Yellow', es: 'Amarillo', hex: '#ebcf7c' },
   { id: 'green', en: 'Green', es: 'Verde', hex: '#94b28b' },
   { id: 'purple', en: 'Purple', es: 'Morado', hex: '#b39bc7' },
+  { id: 'beige', en: 'Beige', es: 'Beige', hex: '#e3d2b4' },
+  { id: 'brown', en: 'Brown', es: 'Marrón', hex: '#7b5137' },
+  { id: 'gold', en: 'Gold', es: 'Dorado', hex: '#c8a24a', background: 'linear-gradient(135deg,#f3dc8c,#c8a24a 55%,#9c7a2c)' },
   { id: 'white', en: 'White', es: 'Blanco', hex: '#fffdf8' },
   { id: 'black', en: 'Black', es: 'Negro', hex: '#30332f' },
 ]);
@@ -23,6 +28,8 @@ export const LIMITS = Object.freeze({
   products: 200, categories: 30, images: 8, paragraphs: 6, paragraph: 1500, name: 80, categoryName: 40,
   colorFields: 12, textFields: 4, textMax: 40, minPrice: 50, maxPrice: 500000,
 });
+// Files the buyer sends on WhatsApp after paying (the store does not receive uploads).
+export const SEND_AFTER_PAYMENT = ['photos', 'logo'];
 export const PERSONALIZATION_TYPES = ['colors', 'initial-name', 'social', 'photos', 'plain'];
 export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FIELD_KEY = /^[a-zA-Z][a-zA-Z0-9-]{0,39}$/;
@@ -111,6 +118,7 @@ export function catalogErrors(products, categories, { imageExists } = {}) {
       continue;
     }
     if ('color_mode' in config && config.color_mode !== 'bicolor') problem('modo de color inválido.');
+    if ('send_after_payment' in config && !SEND_AFTER_PAYMENT.includes(config.send_after_payment)) problem('archivo a enviar después del pago inválido.');
     if (config.color_mode === 'bicolor' && config.colors?.includes('rainbow')) problem('el modo de dos colores no admite arcoíris.');
     if (!Array.isArray(config.colors) || !config.colors.every(c => PALETTE_IDS.includes(c)) || new Set(config.colors).size !== config.colors.length) {
       problem('hay un color que no está en la paleta.');

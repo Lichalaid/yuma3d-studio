@@ -56,6 +56,18 @@
         ? say('Yuma will contact you to arrange your pickup in Katy, TX.', 'Yuma te escribirá para coordinar el retiro en Katy, TX.')
         : say('Each piece is made to order in up to 2 business days. UPS delivers in 3–5 business days and you will receive the tracking number.', 'Cada pieza se fabrica a pedido en hasta 2 días hábiles. UPS entrega en 3 a 5 días hábiles y recibirás el número de seguimiento.'), 'margin-top:18px;font-size:13px'));
     }
+    const kinds = [...new Set((data.items || []).map(item => item.sendAfterPayment).filter(Boolean))];
+    if (data.paid && kinds.length && data.whatsapp) {
+      const what = kinds.map(kind => kind === 'photos' ? say('your photos (1 to 4, size 2 × 3)', 'tus fotos (de 1 a 4, tamaño 2 × 3)') : say('your logo', 'tu logo')).join(say(' and ', ' y '));
+      const step = element('div', undefined, 'margin-top:20px;padding:16px;border:1px solid #c9b6d8;border-radius:12px;background:#f4eef8');
+      step.append(element('p', say('One more step', 'Falta un paso'), 'font-weight:600'));
+      step.append(element('p', say(`Send ${what} on WhatsApp to ${data.whatsapp} with your order number ${data.reference}. We start making your piece once we receive them.`, `Envía ${what} por WhatsApp al ${data.whatsapp} con tu número de pedido ${data.reference}. Empezamos a fabricar cuando los recibimos.`), 'margin-top:6px'));
+      const link = element('a', say('Open WhatsApp ↗', 'Abrir WhatsApp ↗'), 'display:inline-block;margin-top:12px;padding:10px 16px;border-radius:999px;background:#343b31;color:#fff;text-decoration:none;font-weight:600');
+      link.href = 'https://wa.me/' + data.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent(say(`Hi! Here are the files for my order ${data.reference}.`, `¡Hola! Te envío los archivos de mi pedido ${data.reference}.`));
+      link.target = '_blank'; link.rel = 'noopener';
+      step.append(link);
+      list.append(step);
+    }
     if (data.paid) {
       try { sessionStorage.removeItem('yuma-demo-bag'); sessionStorage.removeItem('yuma-checkout-attempt'); } catch {}
     }

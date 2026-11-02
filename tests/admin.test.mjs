@@ -179,7 +179,7 @@ test('rejects bad prices, empty names, missing photos, fake images and foreign p
   assert.match(err({ op: 'upsert', product: newProduct(), uploads: [{ data: WEBP }], stripe_thumbnail: { data: WEBP } }), /JPG/);
   assert.match(err({ op: 'nuke' }), /desconocido/);
   // Unknown colors are dropped, not stored.
-  assert.deepEqual(applyChange(s, { op: 'upsert', product: newProduct({ colors: ['blue', 'gold', '<b>'] }), uploads: [{ data: WEBP }] }).products.at(-1).personalization.colors, ['blue']);
+  assert.deepEqual(applyChange(s, { op: 'upsert', product: newProduct({ colors: ['blue', 'silver', '<b>'] }), uploads: [{ data: WEBP }] }).products.at(-1).personalization.colors, ['blue']);
 });
 
 test('editing a special product only changes its basic data; its options stay as coded', () => {
@@ -237,7 +237,8 @@ test('the palette matches the storefront and the checkout', () => {
   const checkout = fs.readFileSync(ROOT + 'worker/checkout.js', 'utf8');
   for (const color of PALETTE) {
     assert.ok(app.includes(`{id:'${color.id}',en:'${color.en}',es:'${color.es}',hex:'${color.hex}'`), `app.js ${color.id}`);
-    assert.ok(checkout.includes(`${color.id}: { en: '${color.en}', es: '${color.es}' }`), `checkout.js ${color.id}`);
+    const key = color.id.includes('-') ? `'${color.id}'` : color.id;
+    assert.ok(checkout.includes(`${key}: { en: '${color.en}', es: '${color.es}' }`), `checkout.js ${color.id}`);
   }
 });
 
