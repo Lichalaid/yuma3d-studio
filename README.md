@@ -8,7 +8,7 @@ Boceto estático bilingüe (inglés por defecto y español), basado en el cuesti
 - `catalog-products.json` conserva nombres ES/EN, precios en centavos, fotos y trazabilidad de cada captura. No se inventaron tamaños, materiales ni variantes para los nuevos productos.
 - Llaveros a mayoreo: precio por consulta, sin agregar un importe ficticio ni permitir sumarlos a la bolsa con precio cero.
 - Las fichas publicadas usan `/products/<id>/`. El HTML único descargable usa `#product/<id>` para navegación sin servidor.
-- Inicial + nombre: USD 35; 25 × 25 cm; PLA; máximo 15 caracteres.
+- Inicial + nombre: precio del catálogo USD 35; 25 × 25 cm; PLA; máximo 15 caracteres.
 - El dato del cuestionario sobre juguetes sensoriales (USD 9,99) se conserva como referencia; no se inventó una foto ni se mezcló con los 16 productos de las capturas.
 - Letra inicial, nombre, adorno, colores y cantidad en la ficha de inicial + nombre, sin un personalizador adicional debajo. Nacimiento agrega fecha, hora y peso.
 - Fabricación hasta 2 días, envío UPS USD 4,99, gratuito desde USD 50, entrega 3–5 días luego de producción. Retiro en Katy, TX 77449.
@@ -61,7 +61,7 @@ Los dos productos con chip ahora piden red social y nombre/usuario exacto, sin U
 
 El acceso «Personaliza con fotos» al final del catálogo abre un formulario local de 1–4 JPG/PNG/WebP de hasta 10 MiB, con vistas previas, eliminación, colores y notas. Se revisa la configuración antes de abrir WhatsApp. Las fotos no se envían: el visitante debe adjuntarlas en el chat. No se guardan en sessionStorage ni hay almacenamiento de archivos en servidor.
 
-La medida solicitada es 2 × 3, sin unidad confirmada. La referencia del diseño no vino adjunta; por eso el formulario es independiente y por consulta, sin atribuirle una foto o precio de otro producto. Confirmar referencia, unidad y precio; para comercio real implementar recepción privada de imágenes asociada al pedido.
+La medida solicitada es 2 × 3, sin unidad confirmada. La referencia del diseño no vino adjunta; por eso el formulario es independiente y por consulta, sin atribuirle una foto o precio de otro producto. Actualización: referencia recibida y precio confirmado en USD 35. La ficha indica fotos de 2 × 3 sin inventar unidad. Para comercio real implementar recepción privada de imágenes asociada al pedido.
 
 Chips y fotos reutilizan azul, rosado, rojo, arcoíris, amarillo, verde y morado del cuestionario, cuya lista original era de juguetes sensoriales. Confirmar disponibilidad para estos modelos. La bio de Yumarys se muestra en About / Quiénes somos, después de productos y personalizador, en inglés y español. La foto vigente de Yumarys es `WhatsApp Image 2026-10-28 at 5.50.37 PM.jpeg`, donde aparece junto a la impresora y sus piezas. Se conserva completa, sin retoques, en `dist/assets/yumarys-3d-studio.jpeg`, a 940 × 1267 px, con marco vertical adaptable y máximo de 480 px de ancho. Reemplaza el retrato cuadrado anterior.
 
@@ -98,7 +98,7 @@ La revisión prepara un mailto a yuma3dstudio@gmail.com con todos los datos del 
 Los siete colores del cuestionario estaban confirmados para juguetes sensoriales. La disponibilidad por modelo sigue sin confirmar. Blanco y negro fueron una propuesta de interfaz. `color_availability: unconfirmed_per_model` se refleja en la UI y en el texto del correo como preferencias, no como inventario garantizado.
 # Revisión del video — 28 de octubre de 2026
 
-17 productos y 18 fotos: el portafotos tiene una URL propia, colores y hasta cuatro imágenes locales. Precio a consultar hasta recibirlo. Animaciones suaves de estrella, nube y luna con soporte de movimiento reducido. Navegación móvil y ajustes para iPhone/iPad. Autor del sitio: Lisandro Zampella / Grind Leads LLC.
+16 productos: el portafotos tiene una URL propia, colores y hasta cuatro imágenes locales. Precio del portafotos confirmado: USD 35; fotos tamaño 2 × 3. Animaciones suaves de estrella, nube y luna con soporte de movimiento reducido. Navegación móvil y ajustes para iPhone/iPad. Autor del sitio: Lisandro Zampella / Grind Leads LLC.
 
 `python3 tools/build-product-pages.py` también prepara catálogo en HTML, metadata, JSON-LD, sitemap y robots.txt. Para una publicación en otro dominio, ejecutar `SITE_ORIGIN=https://dominio-confirmado.com python3 tools/build-product-pages.py`; usar únicamente el dominio real conectado. El acceso del boceto alojado sigue privado: el SEO preparado no implica que Google pueda indexarlo todavía. El español se cambia en la misma URL; no se declaran versiones hreflang ficticias.
 
@@ -109,3 +109,29 @@ La bolsa se resolverá con un solo pago por Checkout Session. Ver [CHECKOUT-STRI
 El frontend fuente está en `storefront/`; `dist/` contiene el Worker generado. Ejecutar `python3 tools/build-checkout-worker.py`, `node --test tests/checkout.test.mjs` y `node scripts/validate-artifact.mjs`. No necesita dependencias.
 
 Servidor preparado para test/live con separación estricta de cuentas Yuma y modos. El botón queda oculto hasta configurar clave restringida, webhook accesible, correo transaccional y activación explícita. Se verificó que la cuenta real de Yuma puede cobrar. No se creó ninguna clave ni se realizaron cobros. El sitio sigue privado. Ver `CHECKOUT-STRIPE.md` para estado y requisitos.
+
+## Boceto de descuento y fuentes (30/10/2026)
+
+Los precios originales del catálogo figuran como precio regular; los precios del catálogo se conservan como precio de venta. El boceto muestra distintos precios de referencia superiores y un porcentaje de ahorro calculado para cada producto. Estos importes de referencia deben ser confirmados por Yumarys antes de activar ventas. El servidor calcula el precio rebajado, el umbral de envío gratis y el total del carrito. Confirmar la promoción y su vigencia con Yumarys antes de habilitar pagos.
+
+La vista de nombres incluye Allura, Lobster, Cookie y Satisfy mediante Google Fonts; Chevy se muestra de modo aproximado con Chewy hasta recibir el archivo web y su licencia. La inicial usa Al Bayan donde está instalado (macOS/iOS) y una alternativa en otros equipos; esta fuente está orientada al árabe y la letra latina requiere confirmación visual de Yumarys. La vista previa muestra letras y colores, no simula la geometría exacta de la impresión.
+
+El portafotos permite seleccionar y previsualizar hasta cuatro imágenes en el navegador. Todavía no se transmiten automáticamente a Yuma: el cliente debe adjuntarlas en WhatsApp o correo.
+
+## Foto original del llavero de charms
+
+La ficha `/products/charms-keychain/` mantiene la foto original de muestra con “Laura”, sin modificarla al seleccionar fuentes. El selector y la vista previa de letras muestran la tipografía elegida; el nombre escrito para el pedido se conserva por separado y aparece en el resumen del carrito. Los archivos de Allura, Lobster, Cookie, Satisfy y Chewy se sirven desde `storefront/assets/fonts/` junto con sus licencias. “Chevy” sigue siendo una aproximación visual con Chewy hasta recibir una fuente web licenciada.
+
+## Portada con fotografías del catálogo
+
+La composición única anterior se reemplazó por tres tarjetas de producto sobre fondo rosa: nombre de pared, llavero Laura y exhibidor NFC. Las tarjetas enlazan a sus fichas; se conservan las fotos y el selector EN/ES. La portada ya no atribuye el precio de una sola pieza al conjunto.
+
+## Navidad
+
+Se añadió `/products/christmas-sets/` a USD 10 por set, con tres variantes: renos, árboles con Santa y árbol con Santa y nacimiento. Fotos originales extraídas de la captura recibida; colores por pieza según el set seleccionado. Total: 17 productos.
+
+## Charms bicolor
+
+El llavero de charms admite exactamente dos colores sólidos distintos, con dos selectores. Se retiran las opciones individuales por adorno y la opción arcoíris para este producto. Se conserva la foto original de Laura y el precio de USD 15.
+
+Las fotos navideñas se reemplazaron por los tres originales completos recibidos el 1 de noviembre. El catálogo aclara que se elige un set completo por USD 10.

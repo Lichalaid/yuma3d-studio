@@ -27,6 +27,7 @@ export class StripeClient {
   }
 }
 const YUMA_ACCOUNTS={test:'acct_1UVZa22S141stGeG',live:'acct_1UVgaICbK0UdCU0G'};
+const NAME_FONTS=new Set(['Allura','Lobster','Chevy','Cookie','Satisfy']);
 function checkoutConfig(env) {
   const mode=env.STRIPE_MODE==='live'?'live':'test';
   const keyConfigured=new RegExp('^(?:sk|rk)_'+mode+'_[A-Za-z0-9]+$').test(env.STRIPE_SECRET_KEY||'');
@@ -61,6 +62,7 @@ export function validateCart(input) {
   const items=input.items.map(item=>{
     const product=PRODUCTS.find(p=>p.id===item.productId);
     if(!product||product.price_cents===null)throw fail('This product needs a quote before payment.');
+    if(product.personalization.type==='photos')throw fail('Send the photos to Yuma before ordering this design.');
     if(!Number.isInteger(item.quantity)||item.quantity<1||item.quantity>10)throw fail('Choose a quantity from 1 to 10.');
     const config=product.personalization, draft=item.options||{};
     const design=config.design_options?.find(d=>d.id===draft.designId);
@@ -68,14 +70,17 @@ export function validateCart(input) {
     if(product.id==='initial-name'&&!['none','stars'].includes(design.id))throw fail('Please request a quote for this accessory before payment.');
     const parts=design?.color_fields||config.color_fields;
     const values={};for(const part of parts){if(!config.colors.includes(draft.colors?.[part.key]))throw fail('Choose a color for every part.');values[part.key]=draft.colors[part.key];}
+    if(config.color_mode==='bicolor'&&values.baseColor===values.detailColor)throw fail('Choose two different colors.');
     const fields=[...(config.text_fields||[]),...(design?.extra_text_fields||[])];
     const text={};for(const field of fields){const value=cleanText(draft.text?.[field.key],field.max_length||80);if(field.kind==='initial'&&!/^\p{L}$/u.test(value))throw fail('Enter one initial.');if(field.kind==='name'&&!/^\p{L}[\p{L}\p{M}\s’'\-]*$/u.test(value))throw fail('Check the name.');text[field.key]=field.kind==='initial'?value.toLocaleUpperCase():value;}
+    const hasName=fields.some(field=>['name','first-name','second-name'].includes(field.key));
+    if(hasName&&!NAME_FONTS.has(draft.font))throw fail('Choose a name font.');
     let profiles;
     if(config.type==='social'){
       if(!Array.isArray(draft.profiles)||!draft.profiles.length||draft.profiles.length>10)throw fail('Check the social profiles.');
       profiles=draft.profiles.map(p=>({network:cleanText(p.network,80),handle:cleanText(p.handle,120)}));
     }
-    return {productId:product.id,name:product.name[language],unitAmount:product.price_cents,quantity:item.quantity,colors:values,text,...(design?{designId:design.id,design:design.label[language]}:{}),...(profiles?{profiles}:{} )};
+    return {productId:product.id,name:product.name[language],unitAmount:product.price_cents,quantity:item.quantity,colors:values,text,...(hasName?{nameFont:draft.font,...(product.id==='initial-name'?{initialFont:'Al Bayan'}:{})}:{}),...(design?{designId:design.id,design:design.label[language]}:{}),...(profiles?{profiles}:{} )};
   });
   const subtotal=items.reduce((sum,item)=>sum+item.unitAmount*item.quantity,0);
   const shipping=input.delivery==='pickup'||subtotal>=5000?0:499;
@@ -102,7 +107,7 @@ async function decodeOrder(metadata) {
   return JSON.parse(text);
 }
 function itemDescription(item) {
-  return [Object.entries(item.text).map(([k,v])=>`${k}: ${v}`).join(' · '),item.design,Object.entries(item.colors).map(([k,v])=>`${k}: ${v}`).join(' · '),item.profiles?.map(p=>`${p.network}: ${p.handle}`).join(' · ')].filter(Boolean).join(' · ').slice(0,500);
+  return [Object.entries(item.text).map(([k,v])=>`${k}: ${v}`).join(' · '),item.nameFont&&`name font: ${item.nameFont}`,item.initialFont&&`initial font: ${item.initialFont}`,item.design,Object.entries(item.colors).map(([k,v])=>`${k}: ${v}`).join(' · '),item.profiles?.map(p=>`${p.network}: ${p.handle}`).join(' · ')].filter(Boolean).join(' · ').slice(0,500);
 }
 export async function createSession(input, origin, visitor, stripe, mode='test') {
   const order=validateCart(input);
@@ -187,7 +192,8 @@ function assetResponse(path,request) {
   const file=FILES[path];if(!file)return null;
   const headers={'Content-Type':file.type,'Cache-Control':path.startsWith('/assets/')?'public, max-age=86400':'no-cache','X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin'};
   if(request.method==='HEAD')return new Response(null,{headers});
-  const bytes=Uint8Array.from(atob(file.data),c=>c.charCodeAt(0));
+  const binary=atob(file.data),bytes=new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
   return new Response(bytes,{headers});
 }
 export default {async fetch(request,env){

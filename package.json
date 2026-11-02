@@ -4,6 +4,6 @@
   "type": "module",
   "scripts": {
     "build": "python3 tools/build-product-pages.py && python3 tools/build-checkout-worker.py",
-    "test": "node --test tests/checkout.test.mjs"
+    "test": "node --test tests/*.test.mjs"
   }
 }

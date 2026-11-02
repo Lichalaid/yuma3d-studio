@@ -12,7 +12,7 @@ origin = os.environ.get('SITE_ORIGIN', settings['origin']).rstrip('/')
 if not origin.startswith('https://') or any(c in origin for c in ['"', '<', '>', ' ']):
     raise ValueError('SITE_ORIGIN must be an HTTPS origin')
 products = json.loads((root / 'catalog-products.json').read_text())
-categories = {'names': 'Names', 'keychains': 'Keychains', 'business': 'For businesses', 'other': 'Other designs'}
+categories = {'names': 'Names', 'keychains': 'Keychains', 'business': 'For businesses', 'other': 'Other designs', 'christmas': 'Christmas'}
 def metadata(page, title, description, url, image, extra):
     page = re.sub(r'<title>.*?</title>', '', page, count=1)
     page = re.sub(r'<meta (?:name="(?:description|author|robots|theme-color|twitter:[^"]*)"|property="og:[^"]*")[^>]*>', '', page)
@@ -32,8 +32,12 @@ def metadata(page, title, description, url, image, extra):
 cards = []
 for product in products:
     name = html.escape(product['name']['en']); url = '/products/' + product['id'] + '/'
-    price = 'Request a quote' if product['price_cents'] is None else f"${product['price_cents'] / 100:.2f}"
-    cards.append(f'<article class="catalog-card"><a class="catalog-photo" href="{url}" aria-label="View {name}"><img src="{product["images"][0]}" alt="{name}" loading="lazy" width="1024" height="1024"><span class="round-arrow" aria-hidden="true">↗</span></a><p class="catalog-category">{categories[product["category"]]}</p><div class="catalog-product-line"><h3><a href="{url}">{name}</a></h3><p>{price}</p></div><a class="text-link" href="{url}">View piece ↗</a></article>')
+    price = 'Request a quote' if product['price_cents'] is None else f'<span class="price-pair"><del>${product.get("compare_at_cents", product["price_cents"]) / 100:.2f}</del><strong>${product["price_cents"] / 100:.2f}</strong></span>'
+    if product['price_cents'] is not None and not product.get('discount_percent'):
+        price = f'<span class="price-pair"><strong>${product["price_cents"] / 100:.2f}</strong></span>'
+    badge = '' if not product.get('discount_percent') else f'<span class="sale-badge">{product["discount_percent"]}% off</span>'
+    set_note = '<p class="catalog-set-note">Choose 1 complete set · $10 each</p>' if product['id'] == 'christmas-sets' else ''
+    cards.append(f'<article class="catalog-card"><a class="catalog-photo" href="{url}" aria-label="View {name}"><img src="{product["images"][0]}" alt="{name}" loading="lazy" width="1024" height="1024"><span class="round-arrow" aria-hidden="true">↗</span>{badge}</a><p class="catalog-category">{categories[product["category"]]}</p><div class="catalog-product-line"><h3><a href="{url}">{name}</a></h3>{set_note}<p>{price}</p></div><a class="text-link" href="{url}">View piece ↗</a></article>')
 catalog = '<!--CATALOG:START-->' + ''.join(cards) + '<!--CATALOG:END-->'
 for path in [root / 'storefront/index.html', *[root / 'storefront/products' / p['id'] / 'index.html' for p in products]]:
     page = path.read_text()
@@ -51,7 +55,7 @@ for path in [root / 'storefront/index.html', *[root / 'storefront/products' / p[
         page = metadata(page, product['name']['en'] + ' | Yuma 3D Studio', product['description']['en'][0], url, product['images'][0], [schema, breadcrumb])
     else:
         items = {'@type': 'ItemList', 'itemListElement': [{'@type': 'ListItem', 'position': i + 1, 'url': origin + '/products/' + p['id'] + '/', 'name': p['name']['en']} for i, p in enumerate(products)]}
-        page = metadata(page, 'Yuma 3D Studio | Personalized 3D Gifts in Houston', 'Personalized 3D-printed name signs, keychains, photo frames and business displays. Made to order in Houston, Texas. Shipping across the US and Puerto Rico.', origin + '/', 'assets/catalog/clean-v2/initial-name.webp', [items])
+        page = metadata(page, 'Yuma 3D Studio | Personalized 3D Gifts in Houston', 'Personalized 3D-printed name signs, keychains, photo frames and business displays. Made to order in Houston, Texas. Shipping across the US and Puerto Rico.', origin + '/', 'assets/catalog/clean-v2/charms-keychain.webp', [items])
     path.write_text(page)
 urls = [origin + '/', *[origin + '/products/' + p['id'] + '/' for p in products]]
 (root / 'storefront/sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join('<url><loc>' + xml_escape(url) + '</loc></url>' for url in urls) + '</urlset>\n')

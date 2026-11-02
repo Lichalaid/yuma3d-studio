@@ -123,7 +123,9 @@
         }
       ]
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 4200,
+    "discount_percent": 17
   },
   {
     "id": "wall-name-four",
@@ -228,7 +230,9 @@
         }
       ]
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 3800,
+    "discount_percent": 21
   },
   {
     "id": "initial-name",
@@ -251,11 +255,11 @@
     "description": {
       "en": [
         "A freestanding decorative initial with a personalized name across the front. The catalog example pairs a blue capital E with white script lettering and small stars. Choose the initial and name you want, then select the accessory and preferred colors for your piece.",
-        "The initial-and-name piece measures 25 × 25 cm and is printed in PLA. Personalization is included in the $35 price. Enter one initial and a name of up to 15 characters here, then choose the preferred color for each part of your design."
+        "The initial-and-name piece measures 25 × 25 cm and is printed in PLA. Personalization is included in the listed price. Enter one initial and a name of up to 15 characters here, then choose the preferred color for each part of your design."
       ],
       "es": [
         "Una inicial decorativa con base y un nombre personalizado en el frente. La referencia del catálogo combina una E celeste con letras blancas y pequeñas estrellas. Elige la letra y el nombre que quieres, y después selecciona el adorno y los colores deseados para tu pieza.",
-        "La pieza de inicial y nombre mide 25 × 25 cm y está impresa en PLA. La personalización está incluida en el precio de USD 35. Escribe aquí una letra inicial y un nombre de hasta 15 caracteres; después elige el color deseado para cada parte de tu diseño."
+        "La pieza de inicial y nombre mide 25 × 25 cm y está impresa en PLA. La personalización está incluida en el precio indicado. Escribe aquí una letra inicial y un nombre de hasta 15 caracteres; después elige el color deseado para cada parte de tu diseño."
       ]
     },
     "personalization": {
@@ -565,7 +569,9 @@
         }
       ]
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 4500,
+    "discount_percent": 22
   },
   {
     "id": "double-name",
@@ -691,7 +697,9 @@
         }
       ]
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 6000,
+    "discount_percent": 17
   },
   {
     "id": "name-accessory-keychain",
@@ -775,7 +783,9 @@
         }
       ]
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 900,
+    "discount_percent": 11
   },
   {
     "id": "fitness-keychain",
@@ -843,7 +853,9 @@
       ],
       "component_mode": true
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 1000,
+    "discount_percent": 20
   },
   {
     "id": "lipgloss-keychain",
@@ -945,77 +957,9 @@
         }
       ]
     },
-    "production_mode": "made_to_order"
-  },
-  {
-    "id": "raised-name-keychain",
-    "category": "keychains",
-    "name": {
-      "en": "Raised name keychain",
-      "es": "Nombre en relieve"
-    },
-    "price_cents": 800,
-    "currency": "USD",
-    "images": [
-      "assets/catalog/clean-v2/raised-name-keychain.webp"
-    ],
-    "source": {
-      "file": "image(20261028-124138).png",
-      "price_text": "$8",
-      "note": "",
-      "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
-    },
-    "description": {
-      "en": [
-        "A personalized name keychain with raised lettering on a cloud-shaped base. The catalog example uses the name Ethan in blue over a white background, finished with a gold-tone ring and clasp.",
-        "The contrast between the lettering and the base keeps the name easy to distinguish. It can be used as a name tag for keys or a bag; the photographed name is an example of the finished design."
-      ],
-      "es": [
-        "Un llavero con nombre personalizado en relieve sobre una base con forma de nube. La referencia del catálogo muestra Ethan en azul sobre fondo blanco, con una argolla y un broche de tono dorado.",
-        "El contraste entre las letras y la base permite distinguir bien el nombre. Puede utilizarse como identificador para las llaves o un bolso; el nombre de la foto es un ejemplo del diseño terminado."
-      ]
-    },
-    "personalization": {
-      "type": "colors",
-      "colors": [
-        "blue",
-        "pink",
-        "red",
-        "rainbow",
-        "yellow",
-        "green",
-        "purple",
-        "white",
-        "black"
-      ],
-      "color_fields": [
-        {
-          "key": "baseColor",
-          "label": {
-            "en": "Cloud backing",
-            "es": "Base de nube"
-          }
-        },
-        {
-          "key": "detailColor",
-          "label": {
-            "en": "Name lettering",
-            "es": "Letras del nombre"
-          }
-        }
-      ],
-      "component_mode": true,
-      "text_fields": [
-        {
-          "key": "name",
-          "label": {
-            "en": "Name",
-            "es": "Nombre"
-          }
-        }
-      ]
-    },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 1100,
+    "discount_percent": 27
   },
   {
     "id": "two-names-keychain",
@@ -1148,7 +1092,9 @@
         }
       ]
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 1800,
+    "discount_percent": 17
   },
   {
     "id": "can-opener-keychain",
@@ -1216,7 +1162,9 @@
       ],
       "component_mode": true
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 600,
+    "discount_percent": 17
   },
   {
     "id": "charms-keychain",
@@ -1239,11 +1187,11 @@
     "description": {
       "en": [
         "A personalized charm keychain that combines a name with a coordinated cord and small decorative pieces. The catalog example spells Laura in raised letters and uses a purple palette with star and flower details and a textured cylindrical accessory.",
-        "The name and accessories are arranged as one matching set. Use the photograph as a reference when discussing your preferred name and theme with Yuma, rather than treating the example name as the name for your order."
+        "This charm keychain is available in two colors only. Choose two different colors for the coordinated name and charms, then enter the name for your order. The original Laura photo is a reference; the keychain is made to order in your selected combination."
       ],
       "es": [
         "Un llavero de charms que combina un nombre con un cordón y pequeñas piezas decorativas a juego. El ejemplo del catálogo lleva Laura en letras en relieve y utiliza una paleta violeta, con detalles de estrellas, flores y un accesorio cilíndrico con textura.",
-        "El nombre y los accesorios forman un conjunto coordinado. Puedes usar la foto como referencia para conversar con Yuma sobre el nombre y la temática que prefieres; el nombre del ejemplo no representa el de tu pedido."
+        "Este llavero de charms se ofrece únicamente en dos colores. Elige dos colores diferentes para el nombre y sus adornos, y escribe el nombre de tu pedido. La foto original de Laura es una referencia; el llavero se fabrica a pedido con la combinación elegida."
       ]
     },
     "personalization": {
@@ -1252,7 +1200,6 @@
         "blue",
         "pink",
         "red",
-        "rainbow",
         "yellow",
         "green",
         "purple",
@@ -1263,50 +1210,15 @@
         {
           "key": "baseColor",
           "label": {
-            "en": "Name backing",
-            "es": "Base del nombre"
+            "en": "First color",
+            "es": "Primer color"
           }
         },
         {
           "key": "detailColor",
           "label": {
-            "en": "Name lettering",
-            "es": "Letras del nombre"
-          }
-        },
-        {
-          "key": "cylinder",
-          "label": {
-            "en": "Cylindrical accessory",
-            "es": "Accesorio cilíndrico"
-          }
-        },
-        {
-          "key": "flower",
-          "label": {
-            "en": "Flower",
-            "es": "Flor"
-          }
-        },
-        {
-          "key": "star-1",
-          "label": {
-            "en": "Star 1",
-            "es": "Estrella 1"
-          }
-        },
-        {
-          "key": "star-2",
-          "label": {
-            "en": "Star 2",
-            "es": "Estrella 2"
-          }
-        },
-        {
-          "key": "lower-detail",
-          "label": {
-            "en": "Bottom charm",
-            "es": "Adorno inferior"
+            "en": "Second color",
+            "es": "Segundo color"
           }
         }
       ],
@@ -1319,9 +1231,12 @@
             "es": "Nombre"
           }
         }
-      ]
+      ],
+      "color_mode": "bicolor"
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 1900,
+    "discount_percent": 21
   },
   {
     "id": "social-display",
@@ -1344,12 +1259,12 @@
     },
     "description": {
       "en": [
-        "A countertop social media display with NFC chips, designed to bring your business identity and social profiles together in one place. The catalog includes a white-and-gold reference and a pink-and-gold reference, each with a logo panel, social media symbols and a freestanding base.",
-        "The two photos are examples of the same $60 product. Choose your colors, then enter each social network and your profile name or username exactly as it appears on that network. A profile link is not required."
+        "A countertop NFC social media display with a freestanding base and spaces for your social profiles. The two catalog photos show the same design in different colors. The featured brand is only a visual example.",
+        "Choose a color for each part and type the name of each social network plus your profile name exactly as it appears, including periods, hyphens, underscores and numbers. You do not need to provide a link or upload a logo."
       ],
       "es": [
-        "Un exhibidor de mostrador con chips NFC para reunir la identidad de tu negocio y sus perfiles de redes sociales en una misma pieza. El catálogo incluye una referencia blanca y dorada y otra rosa y dorada, ambas con un panel para el logo, símbolos de redes y una base de apoyo.",
-        "Las dos fotos son ejemplos del mismo producto de USD 60. Elige tus colores e indica cada red social y el nombre de tu perfil o usuario exactamente como aparece en esa red. No es necesario proporcionar un enlace."
+        "Un exhibidor de mostrador con NFC, base independiente y espacios para tus redes sociales. Las dos fotos del catálogo muestran el mismo diseño en distintos colores. La marca de la foto es solo un ejemplo.",
+        "Elige un color para cada pieza y escribe cada red social y el nombre del perfil exactamente como aparece, incluidos puntos, guiones, guiones bajos y números. No hace falta un enlace ni subir un logo."
       ]
     },
     "personalization": {
@@ -1382,27 +1297,6 @@
           }
         },
         {
-          "key": "business-name",
-          "label": {
-            "en": "Business lettering",
-            "es": "Letras del negocio"
-          }
-        },
-        {
-          "key": "logo",
-          "label": {
-            "en": "Logo details",
-            "es": "Detalles del logo"
-          }
-        },
-        {
-          "key": "front-text",
-          "label": {
-            "en": "Front lettering",
-            "es": "Letras del frente"
-          }
-        },
-        {
           "key": "social-1",
           "label": {
             "en": "Social symbol 1",
@@ -1426,7 +1320,9 @@
       ],
       "component_mode": true
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 7200,
+    "discount_percent": 17
   },
   {
     "id": "business-logo",
@@ -1510,7 +1406,9 @@
         }
       ]
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 8500,
+    "discount_percent": 18
   },
   {
     "id": "social-nfc-keychain",
@@ -1572,7 +1470,9 @@
       ],
       "component_mode": true
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 2000,
+    "discount_percent": 25
   },
   {
     "id": "wholesale-keychains",
@@ -1646,13 +1546,13 @@
     "id": "personalized-can-cooler",
     "category": "other",
     "name": {
-      "en": "Personalized can cooler",
-      "es": "Termo enfriador de latas personalizado"
+      "en": "Can cooler",
+      "es": "Enfriador de latas"
     },
     "price_cents": 3000,
     "currency": "USD",
     "images": [
-      "assets/catalog/clean-v2/personalized-can-cooler.webp"
+      "assets/cooler-plain.webp"
     ],
     "source": {
       "file": "image(20261028-124152).png",
@@ -1662,90 +1562,22 @@
     },
     "description": {
       "en": [
-        "A personalized can-cooler thermos, shown with a black ribbed body, a light-colored handle, a name plaque and a small front spout. The catalog example includes a name and a decorative theme on the front.",
-        "Use this model as a reference when discussing your own name or theme with Yuma. Capacity, measurements and the exact container fit are not specified in the supplied catalog and should be confirmed before ordering."
+        "A simple can cooler with a black ribbed body, a cream handle and lid, and a front tap. The product photo shows the plain version without a name plaque or front logo.",
+        "This design is offered as pictured, without color or lettering variations. Capacity, measurements and exact container fit still need confirmation with Yuma before ordering."
       ],
       "es": [
-        "Un termo enfriador de latas personalizado, presentado con cuerpo negro acanalado, asa clara, una placa con nombre y una pequeña salida en el frente. El ejemplo del catálogo incluye un nombre y una temática decorativa en la parte frontal.",
-        "Puedes usar este modelo como referencia para conversar con Yuma sobre tu nombre o temática. La capacidad, las medidas y la compatibilidad exacta con los recipientes no figuran en el catálogo recibido y deben confirmarse antes de comprar."
+        "Un enfriador de latas sencillo, con cuerpo negro acanalado, asa y tapa color crema, y salida frontal. La foto muestra la versión lisa, sin placa con nombre ni logo en el frente.",
+        "Este diseño se ofrece como aparece en la foto, sin variaciones de color ni letras. Antes de comprar, confirma con Yuma la capacidad, las medidas y la compatibilidad exacta con los recipientes."
       ]
     },
     "personalization": {
-      "type": "colors",
-      "colors": [
-        "blue",
-        "pink",
-        "red",
-        "rainbow",
-        "yellow",
-        "green",
-        "purple",
-        "white",
-        "black"
-      ],
-      "color_fields": [
-        {
-          "key": "baseColor",
-          "label": {
-            "en": "Cooler body",
-            "es": "Cuerpo del enfriador"
-          }
-        },
-        {
-          "key": "detailColor",
-          "label": {
-            "en": "Handle",
-            "es": "Asa"
-          }
-        },
-        {
-          "key": "top-rim",
-          "label": {
-            "en": "Top rim",
-            "es": "Aro superior"
-          }
-        },
-        {
-          "key": "name-base",
-          "label": {
-            "en": "Name plaque",
-            "es": "Placa del nombre"
-          }
-        },
-        {
-          "key": "name",
-          "label": {
-            "en": "Name lettering",
-            "es": "Letras del nombre"
-          }
-        },
-        {
-          "key": "front-design",
-          "label": {
-            "en": "Front design",
-            "es": "Diseño frontal"
-          }
-        },
-        {
-          "key": "spout",
-          "label": {
-            "en": "Front spout",
-            "es": "Salida del frente"
-          }
-        }
-      ],
-      "component_mode": true,
-      "text_fields": [
-        {
-          "key": "name",
-          "label": {
-            "en": "Name",
-            "es": "Nombre"
-          }
-        }
-      ]
+      "type": "plain",
+      "colors": [],
+      "color_fields": []
     },
-    "production_mode": "made_to_order"
+    "production_mode": "made_to_order",
+    "compare_at_cents": 3900,
+    "discount_percent": 23
   },
   {
     "id": "photo-frame",
@@ -1754,24 +1586,24 @@
       "en": "Personalized photo frame",
       "es": "Portafotos personalizado"
     },
-    "price_cents": null,
+    "price_cents": 3500,
     "currency": "USD",
     "images": [
       "assets/photo-frame-original.jpeg"
     ],
     "source": {
       "file": "WhatsApp Image 2026-10-28 at 1.04.52 PM.jpeg",
-      "price_text": "",
-      "note": "Referencia recibida junto al video. Precio y unidad de 2 × 3 pendientes."
+      "price_text": "$35.00",
+      "note": "Precio confirmado por la clienta: USD 35. Fotos tamaño 2 × 3, sin unidad especificada."
     },
     "description": {
       "en": [
         "A 3D-printed photo frame for your favorite memories. The reference shows a white frame with photos on its different sides. Choose the colors of your frame and add up to four photos for your personalized piece.",
-        "Designed for 2 × 3 photos. Add 1–4 JPG, PNG or WebP images below and include any details you would like Yuma to know. This piece is made to order; ask Yuma for the price and to confirm the photo-size unit before production."
+        "Photo size: 2 × 3. Personalize your frame with 1–4 JPG, PNG or WebP photos and your preferred colors for $35 USD. Add your images below and include any details you would like Yuma to know. Each frame is made to order."
       ],
       "es": [
         "Un portafotos impreso en 3D para guardar tus recuerdos. La referencia muestra un marco blanco con fotos en sus distintas caras. Elige los colores del portafotos y añade hasta cuatro fotos para personalizar tu pieza.",
-        "Para fotos tamaño 2 × 3. Añade de 1 a 4 imágenes JPG, PNG o WebP aquí debajo y escribe los detalles que quieras compartir con Yuma. Se fabrica a pedido; consulta el precio y confirma la unidad de medida de las fotos antes de producir."
+        "Tamaño de las fotos: 2 × 3. Personaliza tu portafotos con 1–4 fotos JPG, PNG o WebP y los colores que elijas por $35 USD. Añade tus imágenes debajo e incluye los detalles que quieras compartir con Yuma. Cada portafotos se fabrica a pedido."
       ]
     },
     "production_mode": "made_to_order",
@@ -1806,6 +1638,244 @@
       ],
       "component_mode": true,
       "max_photos": 4
+    }
+  },
+  {
+    "id": "christmas-sets",
+    "category": "christmas",
+    "name": {
+      "en": "Christmas decoration sets",
+      "es": "Sets decorativos de Navidad"
+    },
+    "price_cents": 1000,
+    "currency": "USD",
+    "images": [
+      "assets/christmas/reindeer-original.jpg",
+      "assets/christmas/trees-santa-original.jpg",
+      "assets/christmas/nativity-original.jpg"
+    ],
+    "source": {
+      "file": "Original photographs supplied 2026-11-01",
+      "price_text": "$10 per complete selected set",
+      "note": "Fotos originales completas, sin reconstrucción ni recortes de WhatsApp."
+    },
+    "description": {
+      "en": [
+        "Choose one of these three complete Christmas sets for $10 USD: three reindeer with a tray; two trees and Santa with a tray; or a tree, Santa and a nativity scene with a tray. The price includes all pieces shown in the photo of your selected set.",
+        "Select the set you want, then choose the colors for its pieces. The photo changes to show your selected design. Each set is made to order; the $10 price is for one complete selected set."
+      ],
+      "es": [
+        "Elige uno de estos tres sets completos de Navidad por $10 USD: tres renos con bandeja; dos árboles y Santa con bandeja; o un árbol, Santa y un nacimiento con bandeja. El precio incluye todas las piezas que aparecen en la foto del set elegido.",
+        "Elige el set y luego los colores de sus piezas. La foto cambia para mostrar el diseño seleccionado. Cada conjunto se fabrica a pedido; el precio de $10 corresponde a un set completo de la opción elegida."
+      ]
+    },
+    "production_mode": "made_to_order",
+    "personalization": {
+      "type": "colors",
+      "colors": [
+        "blue",
+        "pink",
+        "red",
+        "rainbow",
+        "yellow",
+        "green",
+        "purple",
+        "white",
+        "black"
+      ],
+      "component_mode": true,
+      "color_fields": [
+        {
+          "key": "baseColor",
+          "label": {
+            "en": "Tray",
+            "es": "Bandeja"
+          }
+        },
+        {
+          "key": "deer-1",
+          "label": {
+            "en": "Reindeer 1",
+            "es": "Reno 1"
+          }
+        },
+        {
+          "key": "deer-2",
+          "label": {
+            "en": "Reindeer 2",
+            "es": "Reno 2"
+          }
+        },
+        {
+          "key": "deer-3",
+          "label": {
+            "en": "Reindeer 3",
+            "es": "Reno 3"
+          }
+        }
+      ],
+      "design_label": {
+        "en": "Choose your Christmas set",
+        "es": "Elige tu set de Navidad"
+      },
+      "design_options": [
+        {
+          "id": "reindeer",
+          "label": {
+            "en": "Three reindeer + tray",
+            "es": "Tres renos + bandeja"
+          },
+          "image_index": 0,
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Tray",
+                "es": "Bandeja"
+              }
+            },
+            {
+              "key": "deer-1",
+              "label": {
+                "en": "Reindeer 1",
+                "es": "Reno 1"
+              }
+            },
+            {
+              "key": "deer-2",
+              "label": {
+                "en": "Reindeer 2",
+                "es": "Reno 2"
+              }
+            },
+            {
+              "key": "deer-3",
+              "label": {
+                "en": "Reindeer 3",
+                "es": "Reno 3"
+              }
+            }
+          ]
+        },
+        {
+          "id": "trees-santa",
+          "label": {
+            "en": "Two trees + Santa + tray",
+            "es": "Dos árboles + Santa + bandeja"
+          },
+          "image_index": 1,
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Tray",
+                "es": "Bandeja"
+              }
+            },
+            {
+              "key": "tree-1",
+              "label": {
+                "en": "Large tree",
+                "es": "Árbol grande"
+              }
+            },
+            {
+              "key": "tree-2",
+              "label": {
+                "en": "Small tree",
+                "es": "Árbol pequeño"
+              }
+            },
+            {
+              "key": "stars",
+              "label": {
+                "en": "Tree stars",
+                "es": "Estrellas de los árboles"
+              }
+            },
+            {
+              "key": "santa",
+              "label": {
+                "en": "Santa suit",
+                "es": "Traje de Santa"
+              }
+            },
+            {
+              "key": "hat",
+              "label": {
+                "en": "Santa hat",
+                "es": "Gorro de Santa"
+              }
+            },
+            {
+              "key": "beard",
+              "label": {
+                "en": "Santa beard",
+                "es": "Barba de Santa"
+              }
+            }
+          ]
+        },
+        {
+          "id": "nativity",
+          "label": {
+            "en": "Tree + Santa + nativity + tray",
+            "es": "Árbol + Santa + nacimiento + bandeja"
+          },
+          "image_index": 2,
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Tray",
+                "es": "Bandeja"
+              }
+            },
+            {
+              "key": "tree",
+              "label": {
+                "en": "Tree",
+                "es": "Árbol"
+              }
+            },
+            {
+              "key": "star",
+              "label": {
+                "en": "Tree star",
+                "es": "Estrella del árbol"
+              }
+            },
+            {
+              "key": "santa",
+              "label": {
+                "en": "Santa suit",
+                "es": "Traje de Santa"
+              }
+            },
+            {
+              "key": "hat",
+              "label": {
+                "en": "Santa hat",
+                "es": "Gorro de Santa"
+              }
+            },
+            {
+              "key": "beard",
+              "label": {
+                "en": "Santa beard",
+                "es": "Barba de Santa"
+              }
+            },
+            {
+              "key": "nativity",
+              "label": {
+                "en": "Nativity scene",
+                "es": "Nacimiento"
+              }
+            }
+          ]
+        }
+      ]
     }
   }
 ]
