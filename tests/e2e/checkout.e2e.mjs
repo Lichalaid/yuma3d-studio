@@ -187,7 +187,7 @@ try {
     const s = fake.sessions.get(id);
     assert.equal(s.amount_subtotal, 5100); assert.equal(s.total_details.amount_shipping, 0); assert.equal(s.locale, 'es');
     assert.equal(s._params.shipping_options[0].shipping_rate_data.display_name, 'Envío UPS gratis');
-    assert.match(s._params.line_items[0].price_data.product_data.description, /Letra inicial: L · Nombre: Lucía · Adorno decorativo: Estrellas/);
+    assert.match(s._params.line_items[0].price_data.product_data.description, /Letra inicial: L · Nombre: Lucía · Tipografía del nombre: Allura · Tipografía de la inicial: Al Bayan · Adorno decorativo: Estrellas/);
     await page.click('#pay');
     await page.waitForFunction(() => /confirmado/i.test(document.querySelector('#result-title')?.textContent || ''));
     assert.ok((await page.textContent('main')).includes('Envío UPS'));

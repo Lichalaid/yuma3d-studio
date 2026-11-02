@@ -52,6 +52,8 @@ function check(schema, value, path, errors) {
     case 'string':
       if (typeof value !== 'string') { errors.push(`${path}: expected string`); return; }
       if (schema.maxLength && Array.from(value).length > schema.maxLength) errors.push(`${path}: longer than ${schema.maxLength}`);
+      // Stripe treats an empty string as an attempt to unset the value, which a create call rejects.
+      if (value === '' && !path.endsWith('[]')) errors.push(`${path}: empty string`);
       return;
     case 'integer':
       if (!/^-?\d+$/.test(String(value))) errors.push(`${path}: expected integer, got "${value}"`);

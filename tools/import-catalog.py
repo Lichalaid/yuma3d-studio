@@ -12,7 +12,7 @@ slots={'tl':(760,234,932,466),'tr':(1038,234,1209,466),'bl':(740,565,921,794),'b
 rows=[
 ('social-display-white','124111','tl'),('social-display-pink','124111','tr'),('business-logo','124111','bl'),('social-nfc-keychain','124111','br'),
 ('wall-name-seven','124119','tl'),('wall-name-four','124119','tr'),('initial-name','124119','bl'),('double-name','124119','br'),
-('name-accessory-keychain','124138','tl'),('fitness-keychain','124138','tr'),('lipgloss-keychain','124138','bl'),('raised-name-keychain','124138','br'),
+('name-accessory-keychain','124138','tl'),('fitness-keychain','124138','tr'),('lipgloss-keychain','124138','bl'),
 ('two-names-keychain','124144','tl'),('can-opener-keychain','124144','tr'),('wholesale-keychains','124144','bl'),('charms-keychain','124144','br'),
 ('personalized-can-cooler','124152','tl')]
 for name,stamp,slot in rows:
@@ -27,7 +27,6 @@ products=[
 ('name-accessory-keychain','keychains','Nombre + accesorio','Name + accessory keychain',800,['name-accessory-keychain'],'124138'),
 ('fitness-keychain','keychains','Llavero fitness','Fitness keychain',800,['fitness-keychain'],'124138'),
 ('lipgloss-keychain','keychains','Llavero porta lipgloss','Lip gloss holder keychain',800,['lipgloss-keychain'],'124138'),
-('raised-name-keychain','keychains','Nombre en relieve','Raised name keychain',800,['raised-name-keychain'],'124138'),
 ('two-names-keychain','keychains','2 nombres + accesorio','Two names + accessory keychain',1500,['two-names-keychain'],'124144'),
 ('can-opener-keychain','keychains','Llavero abridor de latas','Can opener keychain',500,['can-opener-keychain'],'124144'),
 ('charms-keychain','keychains','Llavero de charms','Charm keychain',1500,['charms-keychain'],'124144'),

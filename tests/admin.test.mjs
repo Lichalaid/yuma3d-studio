@@ -240,3 +240,30 @@ test('the palette matches the storefront and the checkout', () => {
     assert.ok(checkout.includes(`${color.id}: { en: '${color.en}', es: '${color.es}' }`), `checkout.js ${color.id}`);
   }
 });
+
+test('sale price from the panel: stored with its percentage, removable, never lower than the selling price', () => {
+  const s = state();
+  const sale = applyChange(s, { op: 'upsert', product: newProduct({ price_cents: 1500, compare_at_cents: 1900 }), uploads: [{ data: WEBP }] }).products.at(-1);
+  assert.equal(sale.compare_at_cents, 1900);
+  assert.equal(sale.discount_percent, 21);
+  assert.throws(() => applyChange(s, { op: 'upsert', product: newProduct({ price_cents: 1500, compare_at_cents: 1500 }), uploads: [{ data: WEBP }] }), /mayor que el precio de venta/);
+  const quote = applyChange(s, { op: 'upsert', product: newProduct({ price_cents: null, compare_at_cents: 1900 }), uploads: [{ data: WEBP }] }).products.at(-1);
+  assert.ok(!('compare_at_cents' in quote) && !('discount_percent' in quote), 'no sale on quote-only products');
+  // Editing the price of a product already on sale recomputes the badge; clearing the field removes the sale.
+  const charms = s.products.find(p => p.id === 'charms-keychain');
+  const base = { id: charms.id, name: charms.name, description: { es: charms.description.es.join('\n\n'), en: charms.description.en.join('\n\n') }, category: charms.category, images: charms.images, colors: charms.personalization.colors };
+  const cheaper = applyChange(s, { op: 'upsert', product: { ...base, price_cents: 1200 } }).products.find(p => p.id === 'charms-keychain');
+  assert.deepEqual([cheaper.compare_at_cents, cheaper.discount_percent], [1900, 37]);
+  const noSale = applyChange(s, { op: 'upsert', product: { ...base, price_cents: 1500, compare_at_cents: null } }).products.find(p => p.id === 'charms-keychain');
+  assert.ok(!('discount_percent' in noSale));
+  assert.equal(cheaper.personalization.color_mode, 'bicolor', 'two-color rule kept');
+});
+
+test('plain products (sold as pictured) keep no colors; new name fields get the keys that offer script fonts', () => {
+  const s = state();
+  const cooler = s.products.find(p => p.id === 'personalized-can-cooler');
+  const edited = applyChange(s, { op: 'upsert', product: { id: cooler.id, name: cooler.name, description: { es: cooler.description.es.join('\n\n'), en: '' }, price_cents: cooler.price_cents, category: cooler.category, images: cooler.images, colors: ['blue'] } }).products.find(p => p.id === cooler.id);
+  assert.deepEqual(edited.personalization, cooler.personalization);
+  const named = applyChange(s, { op: 'upsert', product: newProduct({ text_fields: [{ label: { es: 'Nombre' }, kind: 'name' }, { label: { es: 'Segundo nombre' }, kind: 'name' }, { label: { es: 'Frase' }, kind: 'text' }] }), uploads: [{ data: WEBP }] }).products.at(-1);
+  assert.deepEqual(named.personalization.text_fields.map(f => f.key), ['name', 'second-name', 'text-1']);
+});

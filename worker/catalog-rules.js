@@ -23,7 +23,7 @@ export const LIMITS = Object.freeze({
   products: 200, categories: 30, images: 8, paragraphs: 6, paragraph: 1500, name: 80, categoryName: 40,
   colorFields: 12, textFields: 4, textMax: 40, minPrice: 50, maxPrice: 500000,
 });
-export const PERSONALIZATION_TYPES = ['colors', 'initial-name', 'social', 'photos'];
+export const PERSONALIZATION_TYPES = ['colors', 'initial-name', 'social', 'photos', 'plain'];
 export const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FIELD_KEY = /^[a-zA-Z][a-zA-Z0-9-]{0,39}$/;
 export const IMAGE_PATH = /^assets\/(?:[a-z0-9_-]+\/)*[a-zA-Z0-9_.-]+\.(?:webp|jpe?g|png)$/;
@@ -87,6 +87,13 @@ export function catalogErrors(products, categories, { imageExists } = {}) {
       problem('el precio tiene que estar entre USD 0,50 y USD 5000, o marcarse «a consultar».');
     }
     if (product.currency !== 'USD') problem('la moneda tiene que ser USD.');
+    // Sale price: compare_at_cents is the crossed-out price; discount_percent is derived from it.
+    const compare = product.compare_at_cents ?? null, discount = product.discount_percent ?? null;
+    if (compare !== null || discount !== null) {
+      if (product.price_cents === null || !Number.isInteger(compare) || compare <= product.price_cents || compare > LIMITS.maxPrice) {
+        problem('el precio anterior (tachado) tiene que ser mayor que el precio de venta.');
+      } else if (discount !== discountPercent(compare, product.price_cents)) problem('el porcentaje de descuento no coincide con los precios.');
+    }
     if ('hidden' in product && typeof product.hidden !== 'boolean') problem('valor de «oculto» inválido.');
     if (!Array.isArray(product.images) || !product.images.length || product.images.length > LIMITS.images) {
       problem(`necesita entre 1 y ${LIMITS.images} fotos.`);
@@ -99,6 +106,12 @@ export function catalogErrors(products, categories, { imageExists } = {}) {
     }
     const config = product.personalization;
     if (!config || typeof config !== 'object' || !PERSONALIZATION_TYPES.includes(config.type)) { problem('personalización inválida.'); continue; }
+    if (config.type === 'plain') {
+      if ((config.color_fields || []).length || (config.text_fields || []).length) problem('un producto sin personalización no lleva partes ni textos.');
+      continue;
+    }
+    if ('color_mode' in config && config.color_mode !== 'bicolor') problem('modo de color inválido.');
+    if (config.color_mode === 'bicolor' && config.colors?.includes('rainbow')) problem('el modo de dos colores no admite arcoíris.');
     if (!Array.isArray(config.colors) || !config.colors.every(c => PALETTE_IDS.includes(c)) || new Set(config.colors).size !== config.colors.length) {
       problem('hay un color que no está en la paleta.');
     }
@@ -127,6 +140,11 @@ export function catalogErrors(products, categories, { imageExists } = {}) {
     }
   }
   return errors;
+}
+
+/** Percentage shown on sale badges, e.g. 4200 → 3500 = 17. */
+export function discountPercent(compareAtCents, priceCents) {
+  return Math.round((100 * (compareAtCents - priceCents)) / compareAtCents);
 }
 
 /** Products shown in the store (hidden ones stay in the file but are not built or sold). */

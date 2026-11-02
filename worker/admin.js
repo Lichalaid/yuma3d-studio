@@ -18,7 +18,7 @@
  *   GITHUB_REPO           owner/name      GITHUB_BRANCH  optional, default "main"
  * Web-standard APIs only: runs on Vercel Functions (Node) and Cloudflare Workers.
  */
-import { PALETTE, LIMITS, IMAGE_PATH, catalogErrors, slugify } from './catalog-rules.js';
+import { PALETTE, LIMITS, IMAGE_PATH, catalogErrors, slugify, discountPercent } from './catalog-rules.js';
 
 const PRODUCTS_FILE = 'catalog-products.json';
 const CATEGORIES_FILE = 'catalog-categories.json';
@@ -247,7 +247,9 @@ function fieldsInput(list, previous = [], prefix, { text = false } = {}) {
   const taken = new Set([...kept, ...previous.map(f => f.key)]);
   let n = 1;
   return rows.map(({ raw, label, key }) => {
-    if (!key) { do key = `${prefix}-${n++}`; while (taken.has(key)); taken.add(key); }
+    if (!key && text && raw?.kind === 'name') key = ['name', 'second-name'].find(k => !taken.has(k)); // the store offers name fonts for these keys
+    if (!key) { do key = `${prefix}-${n++}`; while (taken.has(key)); }
+    taken.add(key);
     const field = { key, label };
     if (text) {
       const old = previous.find(f => f.key === key);
@@ -297,6 +299,10 @@ export function applyChange(state, change) {
       if (!Number.isInteger(input.price_cents)) throw new AdminError('Escribe el precio o marca «Precio a consultar».');
       price = input.price_cents;
     }
+    // Optional crossed-out price ("antes"); the sale badge percentage is computed from it.
+    let compareAt = input.compare_at_cents === undefined ? existing?.compare_at_cents ?? null : input.compare_at_cents;
+    if (price === null) compareAt = null;
+    if (compareAt !== null && (!Number.isInteger(compareAt) || compareAt <= price)) throw new AdminError('El precio anterior (tachado) tiene que ser mayor que el precio de venta, o déjalo vacío.');
     const uploads = Array.isArray(change.uploads) ? change.uploads : [];
     if (uploads.length > LIMITS.images) throw new AdminError(`Puedes subir hasta ${LIMITS.images} fotos por producto.`);
     const decoded = uploads.map(decodeUpload);
@@ -318,10 +324,11 @@ export function applyChange(state, change) {
 
     const previous = existing?.personalization;
     const editable = partsEditable(existing);
+    const plain = previous?.type === 'plain'; // sold as pictured: no colors or texts to choose
     const colors = Array.isArray(input.colors) ? PALETTE.map(c => c.id).filter(id => input.colors.includes(id)) : previous?.colors || [];
     const personalization = editable
       ? { ...(previous || {}), type: 'colors', colors, color_fields: fieldsInput(input.color_fields, previous?.color_fields || [], 'part'), component_mode: true }
-      : { ...previous, colors };
+      : plain ? previous : { ...previous, colors };
     if (editable) {
       const textFields = fieldsInput(input.text_fields, previous?.text_fields || [], 'text', { text: true });
       if (textFields.length) personalization.text_fields = textFields; else delete personalization.text_fields;
@@ -331,6 +338,8 @@ export function applyChange(state, change) {
       id, category: typeof input.category === 'string' ? input.category : '', name, price_cents: price, currency: 'USD', images, description, personalization,
       production_mode: existing?.production_mode || 'made_to_order',
     };
+    if (compareAt !== null) Object.assign(product, { compare_at_cents: compareAt, discount_percent: discountPercent(compareAt, price) });
+    else { delete product.compare_at_cents; delete product.discount_percent; }
     if (input.hidden === true) product.hidden = true; else delete product.hidden;
     if (existing) products = products.map(p => (p.id === id ? product : p));
     else products = change.position === 'start' ? [product, ...products] : [...products, product];

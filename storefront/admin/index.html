@@ -93,12 +93,13 @@
         <legend>Precio y categoría</legend>
         <div class="row">
           <div><label for="price">Precio (USD)</label><input id="price" inputmode="decimal" placeholder="Ej.: 15"></div>
-          <div><label for="category">Categoría</label><select id="category"></select></div>
+          <div><label for="compare-price">Precio antes, tachado (opcional)</label><input id="compare-price" inputmode="decimal" placeholder="Ej.: 19"><p class="hint" id="discount-preview" aria-live="polite"></p></div>
         </div>
+        <label for="category">Categoría</label><select id="category"></select>
         <label class="check"><input type="checkbox" id="quote"> Precio a consultar (no se puede pagar online; el cliente consulta por WhatsApp)</label>
       </fieldset>
 
-      <fieldset>
+      <fieldset id="colors-fieldset">
         <legend>Colores</legend>
         <p class="hint">Marca los colores que ofreces para este producto.</p>
         <div class="swatches" id="swatches"></div>
@@ -115,6 +116,7 @@
         </div>
         <p class="note" id="special-note" hidden>Este producto tiene opciones especiales (diseños, adornos, redes o fotos) que se mantienen como están. Aquí puedes cambiar los colores disponibles.</p>
       </fieldset>
+      <p class="note" id="plain-note" hidden>Este producto se vende tal como se ve en la foto, sin elegir colores ni textos.</p>
 
       <fieldset>
         <legend>Publicación</legend>

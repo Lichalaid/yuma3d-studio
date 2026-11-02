@@ -138,7 +138,7 @@ function renderProducts() {
     return `<li class="product-row ${p.hidden ? 'is-hidden' : ''}" data-id="${esc(p.id)}">
       <img src="/${esc(p.images[0])}" alt="" loading="lazy" width="64" height="64">
       <div><div class="name">${esc(p.name.es)}${p.hidden ? '<span class="badge hidden-badge">Oculto</span>' : ''}</div>
-        <div class="meta">${esc(categoryName(p.category))} · ${money(p.price_cents)}</div></div>
+        <div class="meta">${esc(categoryName(p.category))} · ${money(p.price_cents)}${p.discount_percent ? ` <span class="was">(antes ${money(p.compare_at_cents)} · ${p.discount_percent}% off)</span>` : ''}</div></div>
       <div class="row-actions">
         ${query ? '' : `<button type="button" class="move" data-move="-1" aria-label="Subir" ${index === 0 ? 'disabled' : ''}>↑</button><button type="button" class="move" data-move="1" aria-label="Bajar" ${index === state.products.length - 1 ? 'disabled' : ''}>↓</button>`}
         <button type="button" data-toggle>${p.hidden ? 'Mostrar' : 'Ocultar'}</button>
@@ -212,11 +212,16 @@ function openEditor(product) {
   $('#english').open = Boolean($('#name-en').value || $('#desc-en').value);
   $('#price').value = product && product.price_cents !== null ? (product.price_cents / 100).toFixed(2).replace(/\.00$/, '') : '';
   $('#quote').checked = product ? product.price_cents === null : false;
-  $('#price').disabled = $('#quote').checked;
+  $('#compare-price').value = product?.compare_at_cents ? (product.compare_at_cents / 100).toFixed(2).replace(/\.00$/, '') : '';
+  $('#price').disabled = $('#compare-price').disabled = $('#quote').checked;
+  showDiscount();
   $('#category').innerHTML = state.categories.map(c => `<option value="${esc(c.id)}">${esc(c.name.es)}</option>`).join('');
   $('#category').value = product?.category || state.categories[0]?.id || '';
   const colors = product ? product.personalization.colors : state.palette.map(c => c.id);
   $('#swatches').innerHTML = state.palette.map(c => `<label class="swatch"><input type="checkbox" value="${esc(c.id)}" ${colors.includes(c.id) ? 'checked' : ''}><i style="background:${esc(c.background || c.hex)}"></i>${esc(c.es)}</label>`).join('');
+  const plain = product?.personalization?.type === 'plain';
+  $('#colors-fieldset').hidden = plain;
+  $('#plain-note').hidden = !plain;
   $('#parts-block').hidden = !partsEditable(product);
   $('#special-note').hidden = partsEditable(product);
   $('#visible').checked = !product?.hidden;
@@ -237,7 +242,16 @@ function closeEditor() {
 $('#product-form').addEventListener('input', () => { dirty = true; });
 $('#editor-back').addEventListener('click', () => { if (confirmLeave()) closeEditor(); });
 $('#cancel').addEventListener('click', () => { if (confirmLeave()) closeEditor(); });
-$('#quote').addEventListener('change', () => { $('#price').disabled = $('#quote').checked; });
+$('#quote').addEventListener('change', () => { $('#price').disabled = $('#compare-price').disabled = $('#quote').checked; showDiscount(); });
+function showDiscount() {
+  const price = parsePrice($('#price').value), before = parsePrice($('#compare-price').value);
+  const text = $('#compare-price').value.trim();
+  $('#discount-preview').textContent = $('#quote').checked || !text ? ''
+    : Number.isFinite(price) && Number.isFinite(before) && before > price ? `La tienda muestra «${Math.round((100 * (before - price)) / before)}% off» y el precio anterior tachado.`
+    : 'Tiene que ser mayor que el precio de venta.';
+}
+$('#price').addEventListener('input', showDiscount);
+$('#compare-price').addEventListener('input', showDiscount);
 $('#all-colors').addEventListener('click', () => { $$('#swatches input').forEach(i => { i.checked = true; }); dirty = true; });
 $('#no-colors').addEventListener('click', () => { $$('#swatches input').forEach(i => { i.checked = false; }); dirty = true; });
 
@@ -377,6 +391,8 @@ function formProblems() {
   if (!$('#quote').checked) {
     const cents = parsePrice($('#price').value);
     if (!Number.isFinite(cents) || cents < 50) problems.push('Escribe un precio válido (por ejemplo 15 o 12.50), o marca «Precio a consultar».');
+    const before = $('#compare-price').value.trim() ? parsePrice($('#compare-price').value) : null;
+    if (before !== null && !(before > cents)) problems.push('El precio anterior (tachado) tiene que ser mayor que el precio de venta, o déjalo vacío.');
   }
   const colors = $$('#swatches input:checked');
   if (partsEditable(editing.original) && editing.parts.some(p => p.es.trim()) && !colors.length) problems.push('Marca al menos un color o quita las partes a colorear.');
@@ -402,6 +418,7 @@ $('#product-form').addEventListener('submit', async event => {
         name: { es: $('#name-es').value, en: $('#name-en').value },
         description: { es: $('#desc-es').value, en: $('#desc-en').value },
         price_cents: $('#quote').checked ? null : parsePrice($('#price').value),
+        compare_at_cents: $('#quote').checked || !$('#compare-price').value.trim() ? null : parsePrice($('#compare-price').value),
         category: $('#category').value,
         hidden: !$('#visible').checked,
         images,

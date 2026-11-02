@@ -26,6 +26,9 @@ const MAX_LINES = 30;
 const MAX_QUANTITY = 10;
 // Accessories of "Initial + name" whose price is confirmed. The rest stay by quote.
 const PURCHASABLE_INITIAL_DESIGNS = ['none', 'stars'];
+// Script fonts offered for names (storefront/app.js `nameFonts`). The initial of "Initial + name" is always Al Bayan.
+const NAME_FONTS = ['Allura', 'Lobster', 'Chevy', 'Cookie', 'Satisfy'];
+const NAME_FIELD_KEYS = ['name', 'first-name', 'second-name'];
 const HANDLED_EVENTS = ['checkout.session.completed', 'checkout.session.async_payment_succeeded', 'checkout.session.async_payment_failed'];
 const ORDER_FORMAT = 'yuma-gzip-v1';
 const METADATA_CHUNK = 450;
@@ -51,6 +54,9 @@ const MESSAGES = {
   design: ['Choose the design for this product.', 'Elige el diseño de este producto.'],
   accessory: ['Please request a quote for this accessory before payment.', 'Consulta el precio de este adorno antes de pagar.'],
   colors: ['Choose a color for every part.', 'Elige un color para cada pieza.'],
+  twoColors: ['Choose two different colors.', 'Elige dos colores distintos.'],
+  font: ['Choose a name font.', 'Elige la tipografía del nombre.'],
+  photos: ['Send the photos to Yuma before ordering this design.', 'Envía las fotos a Yuma antes de pedir este diseño.'],
   required: ['Complete the required personalization fields.', 'Completa los datos de personalización obligatorios.'],
   text: ['Check the personalization text.', 'Revisa el texto de la personalización.'],
   initial: ['Enter one initial.', 'Escribe una sola letra inicial.'],
@@ -222,6 +228,8 @@ function validateItem(item, language) {
   const product = typeof item?.productId === 'string' ? PRODUCTS.get(item.productId) : undefined;
   if (!product) throw fail(MESSAGES.unavailable);
   if (!Number.isInteger(product.price_cents) || product.price_cents <= 0) throw fail(MESSAGES.quote);
+  // Photo designs need the buyer's photos, which the store cannot receive yet: ordered through WhatsApp.
+  if (product.personalization?.type === 'photos') throw fail(MESSAGES.photos);
   if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_QUANTITY) throw fail(MESSAGES.quantity);
   const draft = item.options && typeof item.options === 'object' ? item.options : {};
   const { config, design, colorFields, textFields } = productParts(product, draft.designId);
@@ -233,6 +241,7 @@ function validateItem(item, language) {
     if (!config.colors?.includes(value)) throw fail(MESSAGES.colors);
     colors[field.key] = value;
   }
+  if (config.color_mode === 'bicolor' && colors.baseColor === colors.detailColor) throw fail(MESSAGES.twoColors);
   const text = {};
   for (const field of textFields) {
     let value = cleanText(draft.text?.[field.key], field.max_length || 80);
@@ -243,6 +252,9 @@ function validateItem(item, language) {
     if (field.kind === 'name' && !/^\p{L}[\p{L}\p{M}\s’'\-]*$/u.test(value)) throw fail(MESSAGES.name);
     text[field.key] = value;
   }
+  // Same rule as the storefront (hasNameFields): products with a name field take one of the name fonts.
+  const hasName = (config.text_fields || []).some(field => NAME_FIELD_KEYS.includes(field.key));
+  if (hasName && !NAME_FONTS.includes(draft.font)) throw fail(MESSAGES.font);
   let profiles;
   if (config.type === 'social') {
     const max = config.multiple_profiles ? 10 : 1;
@@ -252,6 +264,7 @@ function validateItem(item, language) {
   return {
     productId: product.id, name: product.name[language] || product.name.en, unitAmount: product.price_cents, quantity: item.quantity,
     colors, text, ...(design ? { designId: design.id } : {}), ...(profiles ? { profiles } : {}),
+    ...(hasName ? { nameFont: draft.font, ...(product.id === 'initial-name' ? { initialFont: 'Al Bayan' } : {}) } : {}),
   };
 }
 
@@ -276,6 +289,8 @@ export function itemDetails(item, lang = 'en') {
   };
   const lines = [];
   for (const [key, value] of Object.entries(item.text || {})) lines.push(`${label(textFields, key)}: ${value}`);
+  if (item.nameFont) lines.push(`${lang === 'es' ? 'Tipografía del nombre' : 'Name font'}: ${item.nameFont}`);
+  if (item.initialFont) lines.push(`${lang === 'es' ? 'Tipografía de la inicial' : 'Initial font'}: ${item.initialFont}`);
   if (design) lines.push(`${config.design_label?.[lang] || (lang === 'es' ? 'Diseño' : 'Design')}: ${design.label?.[lang] || design.id}`);
   for (const [key, value] of Object.entries(item.colors || {})) lines.push(`${label(colorFields, key)}: ${COLOR_NAMES[value]?.[lang] || value}`);
   for (const profile of item.profiles || []) lines.push(`${profile.network}: ${profile.handle}`);
@@ -365,7 +380,8 @@ export async function createSession(input, origin, visitor, stripe, mode = 'test
         ...taxBehavior,
         product_data: {
           name: item.name,
-          description: truncate(itemDetails(item, order.language).join(' · '), 500),
+          // Stripe rejects empty strings: products sold as pictured (no personalization) send no description.
+          ...(itemDetails(item, order.language).length ? { description: truncate(itemDetails(item, order.language).join(' · '), 500) } : {}),
           images: productImage(origin, item),
           metadata: { product_id: item.productId },
         },

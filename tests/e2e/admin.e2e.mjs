@@ -94,7 +94,7 @@ try {
     await page.fill('#password', PASSWORD);
     await page.click('#login-form button[type=submit]');
     await page.waitForSelector('#product-list .product-row');
-    assert.equal(await page.locator('#product-list .product-row').count(), 17);
+    assert.equal(await page.locator('#product-list .product-row').count(), JSON.parse(fs.readFileSync(path.join(ROOT, 'catalog-products.json'), 'utf8')).length);
     await page.screenshot({ path: SHOTS + 'admin-1-lista.png', fullPage: true });
     assert.deepEqual(page.errors, []);
     await context.close();
@@ -111,6 +111,8 @@ try {
     await page.click('#english summary');
     await page.fill('#name-en', 'Heart name keychain');
     await page.fill('#price', '12,50');
+    await page.fill('#compare-price', '15');
+    await page.waitForFunction(() => /17% off/.test(document.querySelector('#discount-preview').textContent));
     await page.selectOption('#category', 'keychains');
     await page.click('#no-colors');
     for (const color of ["pink", "purple", "white"]) await page.click(`#swatches label:has(input[value="${color}"])`);
@@ -132,10 +134,11 @@ try {
     assert.deepEqual(product.description.es, ['Llavero en forma de corazón con el nombre en relieve.', 'Se fabrica a pedido en Houston.']);
     assert.deepEqual(product.description.en, product.description.es, 'English description falls back to Spanish');
     assert.equal(product.price_cents, 1250);
+    assert.deepEqual([product.compare_at_cents, product.discount_percent], [1500, 17]);
     assert.equal(product.category, 'keychains');
     assert.deepEqual(product.personalization.colors, ['pink', 'purple', 'white']);
     assert.deepEqual(product.personalization.color_fields, [{ key: 'part-1', label: { en: 'Heart', es: 'Corazón' } }, { key: 'part-2', label: { en: 'Letras', es: 'Letras' } }]);
-    assert.deepEqual(product.personalization.text_fields, [{ key: 'text-1', label: { en: 'Name', es: 'Nombre' }, max_length: 10, kind: 'name' }]);
+    assert.deepEqual(product.personalization.text_fields, [{ key: 'name', label: { en: 'Name', es: 'Nombre' }, max_length: 10, kind: 'name' }]);
     assert.equal(product.images.length, 2);
     for (const image of product.images) {
       assert.match(image, /^assets\/catalog\/uploads\/heart-name-keychain-[a-z0-9]+\.webp$/);
@@ -152,7 +155,8 @@ try {
     await page.goto(`${BASE}/#shop`);
     const first = page.locator('#catalog-grid .catalog-card').first();
     assert.match(await first.textContent(), /Heart name keychain/);
-    assert.match(await first.textContent(), /\$12\.50/);
+    assert.match(await first.textContent(), /\$15\.00\s*\$12\.50/, 'crossed-out price and selling price');
+    assert.match(await first.textContent(), /17% off/);
     const html = await (await fetch(`${BASE}/products/${productId}/`)).text();
     assert.match(html, /<title>Heart name keychain \| Yuma 3D Studio<\/title>/);
     assert.match(html, /"price": "12\.50"/);
@@ -168,8 +172,9 @@ try {
   await step('a buyer personalizes it and Stripe gets the panel price (USD 12.50)', async () => {
     const { context, page } = await newPage(browser);
     await page.goto(`${BASE}/products/${productId}/`);
-    await page.waitForSelector('#product-text-text-1');
-    await page.fill('#product-text-text-1', 'Valentina');
+    await page.waitForSelector('#product-text-name');
+    await page.fill('#product-text-name', 'Valentina');
+    await page.check('input[name="product-font"][value="Lobster"]', { force: true });
     await page.selectOption('#piece-colors select[data-component="part-1"]', 'pink');
     await page.selectOption('#piece-colors select[data-component="part-2"]', 'white');
     const offered = await page.$$eval('#piece-colors select[data-component="part-1"] option[value]:not([value=""])', o => o.map(x => x.value));
@@ -186,7 +191,7 @@ try {
     const line = session._params.line_items[0].price_data;
     assert.equal(Number(line.unit_amount), 1250);
     assert.equal(line.product_data.name, 'Heart name keychain');
-    assert.match(line.product_data.description, /Name: Valentina · Heart: Pink · Letras: White/);
+    assert.match(line.product_data.description, /Name: Valentina · Name font: Lobster · Heart: Pink · Letras: White/);
     assert.deepEqual(page.errors, []);
     await context.close();
   });
@@ -206,7 +211,7 @@ try {
     assert.ok(!(await (await fetch(`${BASE}/`)).text()).includes('Heart name keychain'), 'hidden product not in the catalog');
     const status = await fetch(`${BASE}/api/checkout/status`);
     const cookie = status.headers.get('set-cookie').split(';')[0];
-    const buy = await fetch(`${BASE}/api/checkout`, { method: 'POST', headers: { Origin: BASE, Cookie: cookie, 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ productId, quantity: 1, options: { colors: { 'part-1': 'pink', 'part-2': 'white' }, text: { 'text-1': 'Ana' } } }], delivery: 'pickup', language: 'en', nonce: crypto.randomUUID() }) });
+    const buy = await fetch(`${BASE}/api/checkout`, { method: 'POST', headers: { Origin: BASE, Cookie: cookie, 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ productId, quantity: 1, options: { colors: { 'part-1': 'pink', 'part-2': 'white' }, text: { name: 'Ana' }, font: 'Allura' } }], delivery: 'pickup', language: 'en', nonce: crypto.randomUUID() }) });
     assert.equal(buy.status, 400, 'hidden product cannot be bought');
     assert.match((await buy.json()).error, /no longer available/);
     assert.match(await page.textContent(`[data-id="${productId}"]`), /Oculto/);
@@ -243,8 +248,9 @@ try {
     await page.click('[data-tab="categories"]');
     assert.equal(await page.isDisabled('[data-remove-cat="1"]'), true, 'Llaveros has products');
     await page.click('#add-category');
-    await page.fill('#cat-es-4', 'Decoración');
-    await page.fill('#cat-en-4', 'Home decor');
+    const last = (await page.locator('#category-rows .cat-row').count()) - 1;
+    await page.fill(`#cat-es-${last}`, 'Decoración');
+    await page.fill(`#cat-en-${last}`, 'Home decor');
     await saveAndPublish(page, '#categories-form button[type=submit]');
     const categories = JSON.parse(fs.readFileSync(path.join(work, 'catalog-categories.json'), 'utf8'));
     assert.deepEqual(categories.at(-1), { id: 'home-decor', name: { en: 'Home decor', es: 'Decoración' } });

@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateCart, createSession, verifySignature, handleApi, StripeClient, checkoutConfig, decodeOrder, itemDetails } from '../worker/checkout.js';
 import { createFakeStripe } from './helpers/fake-services.mjs';
-import { nonce, visitor, sample, TEST_ENV, WEBHOOK_SECRET, signedWebhook, checkoutRequest, useFakeFetch, captureLogs } from './helpers/fixtures.mjs';
+import { CATALOG, nonce, visitor, sample, TEST_ENV, WEBHOOK_SECRET, signedWebhook, checkoutRequest, useFakeFetch, captureLogs } from './helpers/fixtures.mjs';
 
 const webhookRequest = (fake, id, type) => signedWebhook(fake.event(id, type));
 async function paidSession(fake, input = sample(), env = TEST_ENV, completeWith = {}) {
@@ -171,7 +171,7 @@ test('the checkout request asks Stripe for phone, delivery estimate, clear texts
   assert.equal(params.shipping_options[0].shipping_rate_data.delivery_estimate.maximum.value, '7');
   assert.match(params.custom_text.submit.message, /made to order/);
   assert.equal(params.payment_intent_data.metadata.order_ref, created.reference);
-  assert.match(params.line_items[0].price_data.product_data.description, /Initial: E · Name: Emma · Decorative accessory: No accessory · Initial color: Blue · Name color: White/);
+  assert.match(params.line_items[0].price_data.product_data.description, /Initial: E · Name: Emma · Name font: Allura · Initial font: Al Bayan · Decorative accessory: No accessory · Initial color: Blue · Name color: White/);
   assert.equal(params.line_items[0].price_data.product_data.images[0], 'https://shop.example/assets/catalog/stripe/initial-name.jpg');
   assert.deepEqual(fake.contractErrors, []);
 
@@ -387,4 +387,56 @@ test('if Stripe objects to a product photo, the checkout is created without phot
   // Any other Stripe error is not retried.
   const other = { request: async () => { throw Object.assign(new Error('x'), { status: 502, stripe: { status: 400, param: 'locale' } }); } };
   await assert.rejects(() => createSession(sample(), 'https://shop.example', visitor, other), e => e.stripe.param === 'locale');
+});
+
+/* ---- Rules added by Codex on 2 Nov 2026 (name fonts, sale prices, Christmas sets, charms, photo frame) ---- */
+
+test('name fonts: required for products with a name, kept in the order; the initial is always Al Bayan', () => {
+  const order = validateCart(sample());
+  assert.equal(order.items[0].nameFont, 'Allura');
+  assert.equal(order.items[0].initialFont, 'Al Bayan');
+  assert.equal(order.items[1].nameFont, 'Cookie');
+  assert.ok(itemDetails(order.items[0], 'es').includes('Tipografía del nombre: Allura'));
+  const p = sample(); p.items[0].options.font = 'Comic Sans';
+  assert.throws(() => validateCart(p), /name font/);
+  delete p.items[0].options.font;
+  assert.throws(() => validateCart(p), /name font/);
+});
+
+test('sale prices are display only: Stripe charges the catalog selling price; percentages match', () => {
+  const priced = CATALOG.filter(product => product.discount_percent > 0);
+  assert.ok(new Set(priced.map(product => product.discount_percent)).size > 1);
+  for (const product of priced) {
+    assert.ok(product.compare_at_cents > product.price_cents);
+    assert.equal(product.discount_percent, Math.round((100 * (product.compare_at_cents - product.price_cents)) / product.compare_at_cents));
+  }
+  assert.equal(validateCart(sample()).items[0].unitAmount, 3500);
+});
+
+test('Christmas: each of the three sets costs $10 and needs its own piece colors', () => {
+  const product = CATALOG.find(p => p.id === 'christmas-sets');
+  assert.equal(product.personalization.design_options.length, 3);
+  for (const design of product.personalization.design_options) {
+    const input = { nonce, language: 'en', delivery: 'pickup', items: [{ productId: product.id, quantity: 1, options: { designId: design.id, colors: Object.fromEntries(design.color_fields.map(p => [p.key, 'green'])) } }] };
+    const order = validateCart(input);
+    assert.equal(order.total, 1000);
+    assert.equal(order.items[0].designId, design.id);
+    delete input.items[0].options.colors[design.color_fields.at(-1).key];
+    assert.throws(() => validateCart(input));
+  }
+});
+
+test('charms: exactly two different solid colors; plain cooler needs no options; photo frame and removed products cannot be paid', () => {
+  const charms = { nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'charms-keychain', quantity: 1, options: { colors: { baseColor: 'purple', detailColor: 'white', flower: 'red' }, text: { name: 'Laura' }, font: 'Cookie' } }] };
+  const order = validateCart(charms);
+  assert.equal(order.total, 1500);
+  assert.deepEqual(order.items[0].colors, { baseColor: 'purple', detailColor: 'white' });
+  charms.items[0].options.colors.detailColor = 'purple';
+  assert.throws(() => validateCart(charms), /two different colors/);
+  charms.items[0].options.colors.detailColor = 'rainbow';
+  assert.throws(() => validateCart(charms));
+  const cooler = validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'personalized-can-cooler', quantity: 1, options: {} }] });
+  assert.equal(cooler.items[0].unitAmount, CATALOG.find(p => p.id === 'personalized-can-cooler').price_cents);
+  assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'photo-frame', quantity: 1, options: {} }] }), /photos/);
+  assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'raised-name-keychain', quantity: 1, options: {} }] }), /no longer available/);
 });

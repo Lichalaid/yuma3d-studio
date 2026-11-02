@@ -14,8 +14,8 @@ export const TEST_ENV = {
 export const sample = () => ({
   nonce, language: 'en', delivery: 'ship',
   items: [
-    { productId: 'initial-name', quantity: 1, price: 1, options: { designId: 'none', colors: { baseColor: 'blue', detailColor: 'white' }, text: { initial: 'e', name: 'Emma' } } },
-    { productId: 'name-accessory-keychain', quantity: 2, options: { colors: { baseColor: 'pink', detailColor: 'white', charm: 'blue', 'charm-details': 'white' }, text: { name: 'Rose' } } },
+    { productId: 'initial-name', quantity: 1, price: 1, options: { designId: 'none', colors: { baseColor: 'blue', detailColor: 'white' }, text: { initial: 'e', name: 'Emma' }, font: 'Allura' } },
+    { productId: 'name-accessory-keychain', quantity: 2, options: { colors: { baseColor: 'pink', detailColor: 'white', charm: 'blue', 'charm-details': 'white' }, text: { name: 'Rose' }, font: 'Cookie' } },
   ],
 });
 
@@ -24,15 +24,17 @@ export function validOptions(product) {
   const config = product.personalization;
   const design = config.design_options?.find(d => product.id !== 'initial-name' || ['none', 'stars'].includes(d.id));
   const colorFields = design?.color_fields || config.color_fields;
-  const colors = Object.fromEntries(colorFields.map((field, i) => [field.key, config.colors[i % config.colors.length]]));
+  const colors = Object.fromEntries((colorFields || []).map((field, i) => [field.key, config.colors[i % config.colors.length]]));
   const textFields = [...(config.text_fields || []), ...(design?.extra_text_fields || [])];
   const text = Object.fromEntries(textFields.map(field => [field.key, field.kind === 'initial' ? 'e' : field.kind === 'name' ? 'Emma' : 'Yuma Studio']));
   const profiles = config.type === 'social'
     ? (config.multiple_profiles ? [{ network: 'Instagram', handle: '@yuma3dstudio' }, { network: 'TikTok', handle: '@yuma3d' }] : [{ network: 'Instagram', handle: '@yuma3dstudio' }])
     : undefined;
-  return { ...(design ? { designId: design.id } : {}), colors, text, ...(profiles ? { profiles } : {}) };
+  const font = (config.text_fields || []).some(field => ['name', 'first-name', 'second-name'].includes(field.key)) ? 'Satisfy' : undefined;
+  return { ...(design ? { designId: design.id } : {}), colors, text, ...(profiles ? { profiles } : {}), ...(font ? { font } : {}) };
 }
-export const purchasable = () => CATALOG.filter(p => Number.isInteger(p.price_cents));
+// Photo designs are priced but ordered through WhatsApp until the store can receive the photos.
+export const purchasable = () => CATALOG.filter(p => Number.isInteger(p.price_cents) && p.personalization.type !== 'photos');
 
 /** Signs a webhook payload exactly like Stripe, using Stripe's official SDK. */
 export function signedWebhook(payload, secret = WEBHOOK_SECRET, url = 'https://shop.example/api/stripe/webhook') {

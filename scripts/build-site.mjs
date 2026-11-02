@@ -62,7 +62,7 @@ export function buildSite({ dir = root, origin: originOverride, log = console.lo
     const name = esc(product.name.en);
     page = page.replace('<h1 id="product-title"></h1>', () => '<h1 id="product-title">' + name + '</h1>');
     page = page.replace('<span id="product-crumb-name"></span>', () => '<span id="product-crumb-name">' + name + '</span>');
-    page = page.replace('<p class="product-detail-price" id="product-price"></p>', () => '<p class="product-detail-price" id="product-price">' + priceLabel(product, ' USD') + '</p>');
+    page = page.replace('<p class="product-detail-price" id="product-price"></p>', () => '<p class="product-detail-price" id="product-price">' + pagePrice(product) + '</p>');
     page = page.replace('<div class="product-description" id="product-description"></div>',
       () => '<div class="product-description" id="product-description">' + product.description.en.map(p => '<p>' + esc(p) + '</p>').join('') + '</div>');
     page = page.replace('<img id="product-main-image" alt="">', () => '<img id="product-main-image" src="' + esc(product.images[0]) + '" alt="' + name + '" width="1024" height="1024">');
@@ -73,7 +73,9 @@ export function buildSite({ dir = root, origin: originOverride, log = console.lo
   /* 3. Crawlable catalog grid and metadata (index + every product page) */
   const cards = products.map(product => {
     const name = esc(product.name.en); const url = '/products/' + product.id + '/';
-    return `<article class="catalog-card"><a class="catalog-photo" href="${url}" aria-label="View ${name}"><img src="${esc(product.images[0])}" alt="${name}" loading="lazy" width="1024" height="1024"><span class="round-arrow" aria-hidden="true">↗</span></a><p class="catalog-category">${esc(categoryName[product.category].en)}</p><div class="catalog-product-line"><h3><a href="${url}">${name}</a></h3><p>${priceLabel(product)}</p></div><a class="text-link" href="${url}">View piece ↗</a></article>`;
+    const badge = product.discount_percent ? `<span class="sale-badge">${product.discount_percent}% off</span>` : '';
+    const setNote = product.id === 'christmas-sets' ? '<p class="catalog-set-note">Choose 1 complete set · $10 each</p>' : '';
+    return `<article class="catalog-card"><a class="catalog-photo" href="${url}" aria-label="View ${name}"><img src="${esc(product.images[0])}" alt="${name}" loading="lazy" width="1024" height="1024"><span class="round-arrow" aria-hidden="true">↗</span>${badge}</a><p class="catalog-category">${esc(categoryName[product.category].en)}</p><div class="catalog-product-line"><h3><a href="${url}">${name}</a></h3>${setNote}<p>${cardPrice(product)}</p></div><a class="text-link" href="${url}">View piece ↗</a></article>`;
   });
   const catalog = '<!--CATALOG:START-->' + cards.join('') + '<!--CATALOG:END-->';
   const files = [indexPath, ...products.map(p => path.join(productsDir, p.id, 'index.html'))];
@@ -91,7 +93,7 @@ export function buildSite({ dir = root, origin: originOverride, log = console.lo
       page = metadata(page, { settings, origin, title: product.name.en + ' | Yuma 3D Studio', description: product.description.en[0], url, image: product.images[0], extra: [schema, breadcrumb] });
     } else {
       const items = { '@type': 'ItemList', itemListElement: products.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: origin + '/products/' + p.id + '/', name: p.name.en })) };
-      page = metadata(page, { settings, origin, title: 'Yuma 3D Studio | Personalized 3D Gifts in Houston', description: 'Personalized 3D-printed name signs, keychains, photo frames and business displays. Made to order in Houston, Texas. Shipping across the US and Puerto Rico.', url: origin + '/', image: 'assets/catalog/clean-v2/initial-name.webp', extra: [items] });
+      page = metadata(page, { settings, origin, title: 'Yuma 3D Studio | Personalized 3D Gifts in Houston', description: 'Personalized 3D-printed name signs, keychains, photo frames and business displays. Made to order in Houston, Texas. Shipping across the US and Puerto Rico.', url: origin + '/', image: 'assets/catalog/clean-v2/charms-keychain.webp', extra: [items] });
     }
     fs.writeFileSync(file, page);
   }
@@ -128,8 +130,18 @@ function metadata(page, { settings, origin, title, description, url, image, extr
   return page.replace('</head>', () => tags.join('\n') + '\n</head>');
 }
 
-function priceLabel(product, suffix = '') {
-  return product.price_cents === null ? 'Request a quote' : '$' + (product.price_cents / 100).toFixed(2) + suffix;
+const dollars = cents => '$' + (cents / 100).toFixed(2);
+// Same markup as the storefront renders (sale label + crossed-out catalog price when there is a discount).
+function pagePrice(product) {
+  if (product.price_cents === null) return 'Request a quote';
+  const sale = product.discount_percent ? `<span class="sale-label">${product.discount_percent}% off catalog price</span>` : '';
+  const before = product.discount_percent ? `<del>${dollars(product.compare_at_cents)}</del>` : '';
+  return `${sale}<span class="price-pair">${before}<strong>${dollars(product.price_cents)} <small>USD</small></strong></span>`;
+}
+function cardPrice(product) {
+  if (product.price_cents === null) return 'Request a quote';
+  const before = product.discount_percent ? `<del>${dollars(product.compare_at_cents)}</del>` : '';
+  return `<span class="price-pair">${before}<strong>${dollars(product.price_cents)}</strong></span>`;
 }
 
 function replaceOnce(text, pattern, replacement, label) {

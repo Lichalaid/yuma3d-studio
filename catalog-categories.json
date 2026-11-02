@@ -21,6 +21,13 @@
     }
   },
   {
+    "id": "christmas",
+    "name": {
+      "en": "Christmas",
+      "es": "Navidad"
+    }
+  },
+  {
     "id": "other",
     "name": {
       "en": "Other designs",

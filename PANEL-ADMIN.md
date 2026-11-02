@@ -3,7 +3,7 @@
 La dueña entra a **`https://SU-DOMINIO/admin/`** con una contraseña. Desde ahí puede:
 
 - Crear, editar, ocultar y borrar productos.
-- Cargar por producto: fotos (hasta 8, desde la compu o el celular), nombre, descripción, precio en USD o "a consultar", categoría y colores disponibles.
+- Cargar por producto: fotos (hasta 8, desde la compu o el celular), nombre, descripción, precio en USD o "a consultar", precio anterior tachado (opcional, calcula el "% off"), categoría y colores disponibles.
 - Definir las partes que el comprador colorea (por ejemplo "Base" y "Letras") y los textos que escribe (por ejemplo "Nombre", con máximo de letras).
 - Crear, renombrar y quitar categorías.
 - Ordenar el catálogo.
@@ -29,7 +29,9 @@ Por qué así:
 - El servidor valida todo antes de guardar: precios, fotos (solo JPG, PNG o WebP reales), categorías y colores de la paleta.
 - El build vuelve a validar el catálogo. Si algo estuviera mal, Vercel no publica y la tienda sigue con la versión anterior.
 - Los productos **ocultos** quedan en el archivo, pero no tienen página ni se pueden pagar.
-- Los productos con opciones especiales (inicial + nombre con adornos, exhibidor y llavero NFC, portafotos) se editan desde el panel en nombre, descripción, fotos, precio, categoría y colores. Sus opciones especiales siguen definidas en código.
+- Los productos con opciones especiales (inicial + nombre con adornos, sets de Navidad, charms de dos colores, exhibidor y llavero NFC, portafotos) se editan desde el panel en nombre, descripción, fotos, precio, categoría y colores. Sus opciones especiales siguen definidas en el catálogo. El enfriador se vende tal cual: el panel no le muestra colores.
+- Los textos marcados como nombre ofrecen al comprador las tipografías de nombre de la tienda, y el servidor exige una de ellas.
+- El portafotos tiene precio pero no se puede pagar online hasta que la tienda pueda recibir las fotos del comprador: se pide por WhatsApp.
 
 ## Activación (una vez, la hace Grind)
 
