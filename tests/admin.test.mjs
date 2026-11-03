@@ -270,3 +270,11 @@ test('plain products (sold as pictured) keep no colors; new name fields get the 
   const named = applyChange(s, { op: 'upsert', product: newProduct({ text_fields: [{ label: { es: 'Nombre' }, kind: 'name' }, { label: { es: 'Segundo nombre' }, kind: 'name' }, { label: { es: 'Frase' }, kind: 'text' }] }), uploads: [{ data: WEBP }] }).products.at(-1);
   assert.deepEqual(named.personalization.text_fields.map(f => f.key), ['name', 'second-name', 'text-1']);
 });
+
+test('GitHub settings pasted with spaces, newlines, quotes or the full URL still work', () => {
+  const base = { ADMIN_PASSWORD_HASH: 'pbkdf2-sha256.600000.KVTQMHut9yV4ePwegM-3sA.a4P6i90FRzntUSE54zhjcYOnECxrDxGW65aMuH1EVdk', ADMIN_SESSION_SECRET: 'x'.repeat(40) };
+  for (const [repo, token] of [[' Lichalaid/yuma3d-studio\n', 'github_pat_ABC_123\n'], ['https://github.com/Lichalaid/yuma3d-studio.git', '"github_pat_ABC_123"'], ['Lichalaid/yuma3d-studio/', ' Bearer github_pat_ABC_123 ']]) {
+    assert.equal(adminConfig({ ...base, GITHUB_REPO: repo, GITHUB_TOKEN: token }).configured, true, `${JSON.stringify(repo)} ${JSON.stringify(token)}`);
+  }
+  assert.equal(adminConfig({ ...base, GITHUB_REPO: 'Lichalaid/yuma3d-studio', GITHUB_TOKEN: 'my token' }).configured, false);
+});

@@ -90,10 +90,15 @@ export async function verifyPassword(password, stored) {
   return sameBytes(derived, fromB64url(match[3]));
 }
 
+// Values pasted into Vercel often carry a stray space, newline or quotes, or the full GitHub URL: accept them.
+const unquote = value => String(value || '').trim().replace(/^(["'])(.*)\1$/s, '$2').trim();
+export const githubRepo = env => unquote(env.GITHUB_REPO).replace(/^https?:\/\/(?:www\.)?github\.com\//i, '').replace(/\.git$/i, '').replace(/\/+$/, '');
+export const githubToken = env => unquote(env.GITHUB_TOKEN).replace(/^Bearer\s+/i, '');
+
 export function adminConfig(env) {
   const passwordConfigured = HASH_FORMAT.test(env.ADMIN_PASSWORD_HASH || '');
   const secretConfigured = typeof env.ADMIN_SESSION_SECRET === 'string' && env.ADMIN_SESSION_SECRET.length >= 32;
-  const storeConfigured = typeof env.ADMIN_STORE_IMPL === 'object' || (/^[\w.-]+\/[\w.-]+$/.test(env.GITHUB_REPO || '') && /^(?:github_pat_|ghp_)[A-Za-z0-9_]+$/.test(env.GITHUB_TOKEN || ''));
+  const storeConfigured = typeof env.ADMIN_STORE_IMPL === 'object' || (/^[\w.-]+\/[\w.-]+$/.test(githubRepo(env)) && /^(?:github_pat_|ghp_)[A-Za-z0-9_]+$/.test(githubToken(env)));
   return { passwordConfigured, secretConfigured, storeConfigured, configured: passwordConfigured && secretConfigured && storeConfigured };
 }
 
@@ -145,14 +150,14 @@ function localOnly(value, fallback) {
 
 export function githubStore(env, fetcher = (url, init) => fetch(url, init)) {
   const api = localOnly(env.GITHUB_API_BASE, 'https://api.github.com');
-  const repo = env.GITHUB_REPO;
+  const repo = githubRepo(env);
   const branch = env.GITHUB_BRANCH || 'main';
   if (!/^[\w./-]{1,100}$/.test(branch)) throw new AdminError('GITHUB_BRANCH inválido.', 503);
 
   async function call(method, path, body, accept = 'application/vnd.github+json') {
     const response = await fetcher(`${api}/repos/${repo}${path}`, {
       method,
-      headers: { Authorization: `Bearer ${env.GITHUB_TOKEN}`, Accept: accept, 'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'yuma3d-admin', ...(body ? { 'Content-Type': 'application/json' } : {}) },
+      headers: { Authorization: `Bearer ${githubToken(env)}`, Accept: accept, 'X-GitHub-Api-Version': '2022-11-28', 'User-Agent': 'yuma3d-admin', ...(body ? { 'Content-Type': 'application/json' } : {}) },
       body: body ? JSON.stringify(body) : undefined,
     });
     if (response.ok) return accept.includes('raw') ? response.text() : response.json();
