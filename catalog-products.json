@@ -802,13 +802,13 @@
     "price_cents": 1500,
     "currency": "USD",
     "images": [
-      "assets/catalog/clean-v2/two-names-keychain.webp"
+      "assets/catalog/cord/two-names-el-turco.webp"
     ],
     "source": {
       "file": "image(20261028-124144).png",
       "price_text": "$15",
       "note": "",
-      "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
+      "image_treatment": "Fotos enviadas por Yuma el 2 nov 2026, recortadas en cuadrado de 1024 × 1024 px."
     },
     "description": {
       "es": [
@@ -956,13 +956,14 @@
     "price_cents": 1500,
     "currency": "USD",
     "images": [
-      "assets/catalog/clean-v2/charms-keychain.webp"
+      "assets/catalog/cord/one-name-nancy.webp",
+      "assets/catalog/cord/one-name-sebastian.webp"
     ],
     "source": {
       "file": "image(20261028-124144).png",
       "price_text": "$15",
       "note": "",
-      "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
+      "image_treatment": "Fotos enviadas por Yuma el 2 nov 2026, recortadas en cuadrado de 1024 × 1024 px."
     },
     "description": {
       "es": [
