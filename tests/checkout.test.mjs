@@ -85,17 +85,20 @@ test('webhook checks signature and five minute replay tolerance', async () => {
   assert.equal(await verifySignature(raw, `t=${stamp},v1=${signature}`, 'whsec_other'), false);
 });
 
-test('live activation requires Yuma, a matching mode, webhook, email and explicit enablement', async () => {
+test('live activation requires Yuma, a matching mode, webhook and explicit enablement (email is optional)', async () => {
   const config = { STRIPE_MODE: 'live', CHECKOUT_ENABLED: 'true', STRIPE_ACCOUNT_ID: 'acct_1UVgaICbK0UdCU0G', STRIPE_SECRET_KEY: 'rk_live_unit', STRIPE_WEBHOOK_SECRET: 'whsec_unit', ORDER_EMAIL_API_KEY: 'unit', ORDER_EMAIL_FROM: 'orders@example.com' };
   const status = async env => (await handleApi(new Request('https://example.com/api/checkout/status'), env)).json();
   assert.equal((await status(config)).configured, true);
-  for (const key of ['CHECKOUT_ENABLED', 'STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'ORDER_EMAIL_API_KEY', 'ORDER_EMAIL_FROM']) {
+  for (const key of ['CHECKOUT_ENABLED', 'STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET']) {
     const env = { ...config }; delete env[key];
     assert.equal((await status(env)).configured, false, key);
   }
   assert.equal((await status({ ...config, STRIPE_ACCOUNT_ID: 'acct_unrelated' })).configured, false);
   assert.equal((await status({ ...config, STRIPE_SECRET_KEY: 'rk_test_unit' })).configured, false);
-  assert.equal((await status({ ...config, ORDER_EMAIL_MODE: 'log', ORDER_EMAIL_API_KEY: '' })).configured, false, 'log mode never counts as email in live mode');
+  const noEmail = await status({ ...config, ORDER_EMAIL_API_KEY: '', ORDER_EMAIL_FROM: '' });
+  assert.equal(noEmail.configured, true, 'payments work without the email service');
+  assert.equal(noEmail.emailConfigured, false);
+  assert.equal((await status({ ...config, ORDER_EMAIL_MODE: 'log', ORDER_EMAIL_API_KEY: '' })).emailConfigured, false, 'log mode never counts as email in live mode');
   await assert.rejects(() => handleApi(new Request('https://example.com/api/checkout', { method: 'POST', headers: { Origin: 'https://example.com', Cookie: 'yuma_checkout=' + nonce } }), {}), e => e.status === 503);
 });
 
@@ -500,4 +503,24 @@ test('cord keychains: "1 name + accessories" (3 cord + 2 external, two colors) a
   assert.ok(!twoLines.some(line => line.startsWith('Accesorios del cordón')));
   assert.throws(() => validateCart(cart('two-names-keychain', { ...two, accessories: { external: ['camera'] } })), /color/);
   assert.equal(validateCart(cart('two-names-keychain', two)).total, 1500);
+});
+
+test('without the email service the paid order is kept in Stripe, readable, and the webhook never loops', async () => {
+  const fake = createFakeStripe();
+  const env = { ...TEST_ENV, ORDER_EMAIL_API_KEY: '', ORDER_EMAIL_FROM: '' };
+  const input = { nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'charms-keychain', quantity: 2, options: { colors: { baseColor: 'purple', detailColor: 'white' }, text: { name: 'Laura' }, font: 'Allura', accessories: { cord: ['heart', 'stars'], external: ['camera'] } } }] };
+  const { id } = await paidSession(fake, input, env);
+  const readable = fake.sessions.get(id)._params.payment_intent_data.metadata;
+  assert.equal(readable.entrega, 'Retiro en Katy, TX');
+  assert.match(readable.pieza_1, /^2 × Llavero 1 nombre \+ accesorios · Nombre: Laura/);
+  assert.ok(readable.pieza_1.includes('Accesorios del cordón: Corazón, Estrella'));
+  assert.ok(readable.pieza_1.includes('Primer color: Morado'));
+  await withFake(fake, async () => {
+    assert.equal((await handleApi(webhookRequest(fake, id), env)).status, 200);
+    assert.equal((await handleApi(webhookRequest(fake, id), env)).status, 200);
+  });
+  assert.equal(fake.emails.length, 0);
+  assert.equal(fake.sessions.get(id).metadata.shop_notified, 'stripe');
+  assert.equal(fake.sessions.get(id).metadata.payment_verified, 'true');
+  assert.deepEqual(fake.contractErrors, []);
 });

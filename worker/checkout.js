@@ -173,7 +173,8 @@ export function checkoutConfig(env) {
   const enabled = env.CHECKOUT_ENABLED === 'true';
   return {
     mode, enabled, keyConfigured, merchantConfigured, webhookConfigured, emailConfigured, emailDelivery,
-    configured: enabled && keyConfigured && merchantConfigured && webhookConfigured && emailConfigured,
+    // Emails are optional: without them the order lives in Stripe (readable payment metadata) and Stripe notifies Yuma.
+    configured: enabled && keyConfigured && merchantConfigured && webhookConfigured,
     automaticTax: env.STRIPE_AUTOMATIC_TAX === 'true',
     promotionCodes: env.ALLOW_PROMOTION_CODES === 'true',
     buyerEmail: env.BUYER_CONFIRMATION_EMAIL !== 'off',
@@ -376,6 +377,16 @@ function shortReference(hexDigest) {
   return 'YM-' + out;
 }
 
+// The whole order in plain Spanish on the Stripe payment, so Yuma can read it in the Dashboard even without emails.
+function readableOrder(order) {
+  const lines = { entrega: truncate(order.delivery === 'pickup' ? 'Retiro en Katy, TX' : 'Envío UPS (dirección en el pago)', 500) };
+  order.items.forEach((item, i) => {
+    const name = PRODUCTS.get(item.productId)?.name?.es || item.name;
+    lines[`pieza_${i + 1}`] = truncate([`${item.quantity} × ${name}`, ...itemDetails(item, 'es')].join(' · '), 500);
+  });
+  return lines;
+}
+
 function shippingLabel(order) {
   const es = order.language === 'es';
   if (order.delivery === 'pickup') return es ? 'Retiro sin cargo · Katy, TX' : 'Free pickup · Katy, TX';
@@ -436,7 +447,7 @@ export async function createSession(input, origin, visitor, stripe, mode = 'test
       },
     }],
     phone_number_collection: { enabled: true },
-    payment_intent_data: { description: `Yuma 3D Studio · ${reference}`, metadata: { order_ref: reference } },
+    payment_intent_data: { description: `Yuma 3D Studio · ${reference}`, metadata: { order_ref: reference, ...readableOrder(order) } },
     custom_text: { submit: { message: submitMessage(order) } },
     automatic_tax: { enabled: Boolean(options.automaticTax) },
     ...(options.promotionCodes ? { allow_promotion_codes: true } : {}),
@@ -533,6 +544,14 @@ async function fulfill(session, env, config, stripe) {
   const issues = amountIssues(session, order);
   if (issues.length) log('error', 'order_amount_mismatch', { reference: session.metadata.order_ref, issues });
   const metadata = session.metadata;
+  if (config.emailDelivery === 'none') {
+    // No email service: the paid order stays in Stripe with every detail, and Stripe's own notification tells Yuma.
+    if (metadata.shop_notified !== 'stripe' && metadata.shop_notified !== 'true') {
+      await updateMetadata(stripe, session.id, { shop_notified: 'stripe', payment_verified: 'true' });
+      log('info', 'order_paid_without_email', { reference: metadata.order_ref, mode: config.mode });
+    }
+    return;
+  }
   if (metadata.shop_notified !== 'true' && metadata.notification_sent !== 'true') {
     const sent = await sendEmail(env, config, shopEmail(session, order, config, issues));
     // Yuma must always learn about a paid order: keep asking Stripe to retry until the email goes out.
@@ -759,6 +778,8 @@ async function resultRequest(env, url, visitor) {
     delivery: order.delivery,
     language: order.language,
     email: session.customer_details?.email || null,
+    // Who emails the buyer: the store's own confirmation, or only Stripe's receipt when store emails are off.
+    confirmationBy: config.emailDelivery !== 'none' && config.buyerEmail ? 'store' : 'stripe',
     whatsapp: SHOP_WHATSAPP,
     subtotal: session.amount_subtotal,
     shipping: session.total_details?.amount_shipping ?? order.shipping,

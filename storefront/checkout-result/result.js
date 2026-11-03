@@ -23,7 +23,9 @@
       : data.status === 'complete' ? say('Confirming your payment…', 'Confirmando tu pago…') : say('Your payment is not complete.', 'Tu pago todavía no se completó.');
     const notes = [];
     if (test) notes.push(say('This is a Stripe sandbox test. No real money was charged.', 'Esta es una prueba de Stripe. No se cobró dinero real.'));
-    if (data.paid && data.email) notes.push(say(`We sent a confirmation to ${data.email}.`, `Te enviamos una confirmación a ${data.email}.`));
+    if (data.paid && data.email) notes.push(data.confirmationBy === 'stripe'
+      ? say(`Stripe will email your receipt to ${data.email}.`, `Stripe te enviará el recibo a ${data.email}.`)
+      : say(`We sent a confirmation to ${data.email}.`, `Te enviamos una confirmación a ${data.email}.`));
     else if (data.paid) notes.push(say('Thank you for your order.', 'Gracias por tu pedido.'));
     if (!data.paid && data.status === 'complete') notes.push(say('Some payment methods take a little longer. This page updates by itself.', 'Algunos medios de pago tardan un poco más. Esta página se actualiza sola.'));
     if (!data.paid && data.status !== 'complete') notes.push(say('No payment was taken. Your bag is still saved.', 'No se realizó ningún cobro. Tu bolsa sigue guardada.'));
