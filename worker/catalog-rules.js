@@ -124,6 +124,7 @@ export function catalogErrors(products, categories, { imageExists } = {}) {
       if ('accessory_groups' in option) accessoryGroupErrors(option.accessory_groups, problem);
       if ('text_fields' in option) textFieldErrors(option.text_fields, problem);
     }
+    if ('accessory_colors' in config && typeof config.accessory_colors !== 'boolean') problem('valor de «colores de accesorios» inválido.');
     if ('send_after_payment' in config && !SEND_AFTER_PAYMENT.includes(config.send_after_payment)) problem('archivo a enviar después del pago inválido.');
     if (config.color_mode === 'bicolor' && config.colors?.includes('rainbow')) problem('el modo de dos colores no admite arcoíris.');
     if (!Array.isArray(config.colors) || !config.colors.every(c => PALETTE_IDS.includes(c)) || new Set(config.colors).size !== config.colors.length) {

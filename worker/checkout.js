@@ -241,7 +241,7 @@ function productParts(product, designId, accessories) {
   return {
     config, design, groups, chosen,
     colorFields: [...(design?.color_fields || config.color_fields || []),
-      ...(config.colors?.length ? chosen.map(({ group, option }) => ({ key: `acc-${group.key}-${option.id}`, label: option.label })) : [])],
+      ...(config.colors?.length && config.accessory_colors !== false ? chosen.map(({ group, option }) => ({ key: `acc-${group.key}-${option.id}`, label: option.label })) : [])],
     textFields: [...designTextFields(config, design), ...(design?.extra_text_fields || []), ...chosen.flatMap(({ option }) => option.extra_text_fields || [])],
   };
 }

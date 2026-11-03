@@ -796,8 +796,8 @@
     "id": "two-names-keychain",
     "category": "keychains",
     "name": {
-      "en": "Cord keychain: name + accessories or 2 names",
-      "es": "Llavero de cordón: nombre + accesorios o 2 nombres"
+      "en": "Two-name keychain",
+      "es": "Llavero de 2 nombres"
     },
     "price_cents": 1500,
     "currency": "USD",
@@ -812,14 +812,14 @@
     },
     "description": {
       "es": [
-        "Un llavero con letras tipo charm en un cordón. Elige entre dos opciones: 1 nombre con accesorios, o 2 nombres sin accesorios.",
-        "Con 1 nombre puedes agregar hasta 3 accesorios en el cordón (corazón, estrella, flor, lazo o patita de perrito) y hasta 2 accesorios externos (cámara, flor, porta lipgloss, lazo, corazón o mariposa). Con 2 nombres, el llavero no lleva accesorios.",
-        "Escribe el nombre o los nombres y elige los colores de las letras y de cada accesorio. La foto muestra un ejemplo del estilo."
+        "Un llavero de cordón con letras tipo charm y un nombre en cada lado del cordón.",
+        "Como los dos lados del cordón llevan nombre, este llavero no lleva accesorios en el cordón. Puedes agregar hasta 2 accesorios externos: cámara, flor, porta lipgloss, lazo, corazón o mariposa.",
+        "Escribe los dos nombres y elige los colores de las letras y de cada accesorio. La foto muestra un ejemplo del estilo."
       ],
       "en": [
-        "A keychain with charm-style letters on a cord. Choose one of two options: 1 name with accessories, or 2 names without accessories.",
-        "With 1 name you can add up to 3 cord accessories (heart, star, flower, bow or dog paw) and up to 2 external accessories (camera, flower, lip gloss holder, bow, heart or butterfly). With 2 names, the keychain has no accessories.",
-        "Enter the name or names and choose the colors of the letters and of each accessory. The photo shows an example of the style."
+        "A cord keychain with charm-style letters and one name on each side of the cord.",
+        "Since both sides of the cord carry a name, this keychain has no cord accessories. You can add up to 2 external accessories: camera, flower, lip gloss holder, bow, heart or butterfly.",
+        "Enter both names and choose the colors of the letters and of each accessory. The photo shows an example of the style."
       ]
     },
     "personalization": {
@@ -841,191 +841,101 @@
         "black"
       ],
       "component_mode": true,
-      "design_label": {
-        "en": "Option",
-        "es": "Opción"
-      },
-      "design_options": [
+      "color_fields": [
         {
-          "id": "one-name",
+          "key": "baseColor",
           "label": {
-            "en": "1 name + accessories",
-            "es": "1 nombre + accesorios"
-          },
-          "text_fields": [
-            {
-              "key": "name",
-              "label": {
-                "en": "Name",
-                "es": "Nombre"
-              }
-            }
-          ],
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "Letter bases",
-                "es": "Bases de las letras"
-              }
-            },
-            {
-              "key": "detailColor",
-              "label": {
-                "en": "Lettering",
-                "es": "Letras del nombre"
-              }
-            }
-          ],
-          "accessory_groups": [
-            {
-              "key": "cord",
-              "label": {
-                "en": "Cord accessories",
-                "es": "Accesorios del cordón"
-              },
-              "max": 3,
-              "options": [
-                {
-                  "id": "heart",
-                  "label": {
-                    "en": "Heart",
-                    "es": "Corazón"
-                  }
-                },
-                {
-                  "id": "stars",
-                  "label": {
-                    "en": "Star",
-                    "es": "Estrella"
-                  }
-                },
-                {
-                  "id": "flowers",
-                  "label": {
-                    "en": "Flower",
-                    "es": "Flor"
-                  }
-                },
-                {
-                  "id": "bows",
-                  "label": {
-                    "en": "Bow",
-                    "es": "Lazo"
-                  }
-                },
-                {
-                  "id": "paws",
-                  "label": {
-                    "en": "Dog paw",
-                    "es": "Patita de perrito"
-                  }
-                }
-              ]
-            },
-            {
-              "key": "external",
-              "label": {
-                "en": "External accessories",
-                "es": "Accesorios externos"
-              },
-              "max": 2,
-              "options": [
-                {
-                  "id": "camera",
-                  "label": {
-                    "en": "Camera",
-                    "es": "Cámara"
-                  }
-                },
-                {
-                  "id": "flower",
-                  "label": {
-                    "en": "Flower",
-                    "es": "Flor"
-                  }
-                },
-                {
-                  "id": "lipgloss",
-                  "label": {
-                    "en": "Lip gloss holder",
-                    "es": "Porta lipgloss"
-                  }
-                },
-                {
-                  "id": "bow",
-                  "label": {
-                    "en": "Bow",
-                    "es": "Lazo"
-                  }
-                },
-                {
-                  "id": "heart",
-                  "label": {
-                    "en": "Heart",
-                    "es": "Corazón"
-                  }
-                },
-                {
-                  "id": "butterfly",
-                  "label": {
-                    "en": "Butterfly",
-                    "es": "Mariposa"
-                  }
-                }
-              ]
-            }
-          ]
+            "en": "First name letter bases",
+            "es": "Bases de letras del primer nombre"
+          }
         },
         {
-          "id": "two-names",
+          "key": "detailColor",
           "label": {
-            "en": "2 names (no accessories)",
-            "es": "2 nombres (sin accesorios)"
+            "en": "First name lettering",
+            "es": "Letras del primer nombre"
+          }
+        },
+        {
+          "key": "second-base",
+          "label": {
+            "en": "Second name letter bases",
+            "es": "Bases de letras del segundo nombre"
+          }
+        },
+        {
+          "key": "second-name",
+          "label": {
+            "en": "Second name lettering",
+            "es": "Letras del segundo nombre"
+          }
+        }
+      ],
+      "text_fields": [
+        {
+          "key": "first-name",
+          "label": {
+            "en": "First name",
+            "es": "Primer nombre"
+          }
+        },
+        {
+          "key": "second-name",
+          "label": {
+            "en": "Second name",
+            "es": "Segundo nombre"
+          }
+        }
+      ],
+      "accessory_groups": [
+        {
+          "key": "external",
+          "label": {
+            "en": "External accessories",
+            "es": "Accesorios externos"
           },
-          "text_fields": [
+          "max": 2,
+          "options": [
             {
-              "key": "first-name",
+              "id": "camera",
               "label": {
-                "en": "First name",
-                "es": "Primer nombre"
+                "en": "Camera",
+                "es": "Cámara"
               }
             },
             {
-              "key": "second-name",
+              "id": "flower",
               "label": {
-                "en": "Second name",
-                "es": "Segundo nombre"
-              }
-            }
-          ],
-          "color_fields": [
-            {
-              "key": "baseColor",
-              "label": {
-                "en": "First name letter bases",
-                "es": "Bases de letras del primer nombre"
+                "en": "Flower",
+                "es": "Flor"
               }
             },
             {
-              "key": "detailColor",
+              "id": "lipgloss",
               "label": {
-                "en": "First name lettering",
-                "es": "Letras del primer nombre"
+                "en": "Lip gloss holder",
+                "es": "Porta lipgloss"
               }
             },
             {
-              "key": "second-base",
+              "id": "bow",
               "label": {
-                "en": "Second name letter bases",
-                "es": "Bases de letras del segundo nombre"
+                "en": "Bow",
+                "es": "Lazo"
               }
             },
             {
-              "key": "second-name",
+              "id": "heart",
               "label": {
-                "en": "Second name lettering",
-                "es": "Letras del segundo nombre"
+                "en": "Heart",
+                "es": "Corazón"
+              }
+            },
+            {
+              "id": "butterfly",
+              "label": {
+                "en": "Butterfly",
+                "es": "Mariposa"
               }
             }
           ]
@@ -1035,6 +945,185 @@
     "production_mode": "made_to_order",
     "compare_at_cents": 1800,
     "discount_percent": 17
+  },
+  {
+    "id": "charms-keychain",
+    "category": "keychains",
+    "name": {
+      "en": "One name + accessories keychain",
+      "es": "Llavero 1 nombre + accesorios"
+    },
+    "price_cents": 1500,
+    "currency": "USD",
+    "images": [
+      "assets/catalog/clean-v2/charms-keychain.webp"
+    ],
+    "source": {
+      "file": "image(20261028-124144).png",
+      "price_text": "$15",
+      "note": "",
+      "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
+    },
+    "description": {
+      "es": [
+        "Un llavero de cordón con letras tipo charm: el nombre va en un lado del cordón y el otro lado queda libre para accesorios.",
+        "Elige hasta 3 accesorios para el cordón (corazón, estrella, flor, lazo o patita de perrito) y hasta 2 accesorios externos (cámara, flor, porta lipgloss, lazo, corazón o mariposa).",
+        "Se hace en dos colores: elige dos colores diferentes para el nombre y sus accesorios. La foto muestra un ejemplo del estilo."
+      ],
+      "en": [
+        "A cord keychain with charm-style letters: the name goes on one side of the cord and the other side is free for accessories.",
+        "Choose up to 3 cord accessories (heart, star, flower, bow or dog paw) and up to 2 external accessories (camera, flower, lip gloss holder, bow, heart or butterfly).",
+        "Made in two colors: choose two different colors for the name and its accessories. The photo shows an example of the style."
+      ]
+    },
+    "personalization": {
+      "type": "colors",
+      "colors": [
+        "blue",
+        "dark-blue",
+        "pink",
+        "dark-pink",
+        "red",
+        "yellow",
+        "green",
+        "purple",
+        "beige",
+        "brown",
+        "gold",
+        "white",
+        "black"
+      ],
+      "color_fields": [
+        {
+          "key": "baseColor",
+          "label": {
+            "en": "First color",
+            "es": "Primer color"
+          }
+        },
+        {
+          "key": "detailColor",
+          "label": {
+            "en": "Second color",
+            "es": "Segundo color"
+          }
+        }
+      ],
+      "component_mode": true,
+      "text_fields": [
+        {
+          "key": "name",
+          "label": {
+            "en": "Name",
+            "es": "Nombre"
+          }
+        }
+      ],
+      "color_mode": "bicolor",
+      "accessory_groups": [
+        {
+          "key": "cord",
+          "label": {
+            "en": "Cord accessories",
+            "es": "Accesorios del cordón"
+          },
+          "max": 3,
+          "options": [
+            {
+              "id": "heart",
+              "label": {
+                "en": "Heart",
+                "es": "Corazón"
+              }
+            },
+            {
+              "id": "stars",
+              "label": {
+                "en": "Star",
+                "es": "Estrella"
+              }
+            },
+            {
+              "id": "flowers",
+              "label": {
+                "en": "Flower",
+                "es": "Flor"
+              }
+            },
+            {
+              "id": "bows",
+              "label": {
+                "en": "Bow",
+                "es": "Lazo"
+              }
+            },
+            {
+              "id": "paws",
+              "label": {
+                "en": "Dog paw",
+                "es": "Patita de perrito"
+              }
+            }
+          ]
+        },
+        {
+          "key": "external",
+          "label": {
+            "en": "External accessories",
+            "es": "Accesorios externos"
+          },
+          "max": 2,
+          "options": [
+            {
+              "id": "camera",
+              "label": {
+                "en": "Camera",
+                "es": "Cámara"
+              }
+            },
+            {
+              "id": "flower",
+              "label": {
+                "en": "Flower",
+                "es": "Flor"
+              }
+            },
+            {
+              "id": "lipgloss",
+              "label": {
+                "en": "Lip gloss holder",
+                "es": "Porta lipgloss"
+              }
+            },
+            {
+              "id": "bow",
+              "label": {
+                "en": "Bow",
+                "es": "Lazo"
+              }
+            },
+            {
+              "id": "heart",
+              "label": {
+                "en": "Heart",
+                "es": "Corazón"
+              }
+            },
+            {
+              "id": "butterfly",
+              "label": {
+                "en": "Butterfly",
+                "es": "Mariposa"
+              }
+            }
+          ]
+        }
+      ],
+      "accessory_colors": false
+    },
+    "production_mode": "made_to_order",
+    "compare_at_cents": 1900,
+    "discount_percent": 21
   },
   {
     "id": "can-opener-keychain",
@@ -1224,83 +1313,6 @@
     "production_mode": "made_to_order",
     "compare_at_cents": 600,
     "discount_percent": 17
-  },
-  {
-    "id": "charms-keychain",
-    "category": "keychains",
-    "name": {
-      "en": "Charm keychain",
-      "es": "Llavero de charms"
-    },
-    "price_cents": 1500,
-    "currency": "USD",
-    "images": [
-      "assets/catalog/clean-v2/charms-keychain.webp"
-    ],
-    "source": {
-      "file": "image(20261028-124144).png",
-      "price_text": "$15",
-      "note": "",
-      "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
-    },
-    "description": {
-      "en": [
-        "A personalized charm keychain that combines a name with a coordinated cord and small decorative pieces. The catalog example spells Laura in raised letters and uses a purple palette with star and flower details and a textured cylindrical accessory.",
-        "This charm keychain is available in two colors only. Choose two different colors for the coordinated name and charms, then enter the name for your order. The original Laura photo is a reference; the keychain is made to order in your selected combination."
-      ],
-      "es": [
-        "Un llavero de charms que combina un nombre con un cordón y pequeñas piezas decorativas a juego. El ejemplo del catálogo lleva Laura en letras en relieve y utiliza una paleta violeta, con detalles de estrellas, flores y un accesorio cilíndrico con textura.",
-        "Este llavero de charms se ofrece únicamente en dos colores. Elige dos colores diferentes para el nombre y sus adornos, y escribe el nombre de tu pedido. La foto original de Laura es una referencia; el llavero se fabrica a pedido con la combinación elegida."
-      ]
-    },
-    "personalization": {
-      "type": "colors",
-      "colors": [
-        "blue",
-        "dark-blue",
-        "pink",
-        "dark-pink",
-        "red",
-        "yellow",
-        "green",
-        "purple",
-        "beige",
-        "brown",
-        "gold",
-        "white",
-        "black"
-      ],
-      "color_fields": [
-        {
-          "key": "baseColor",
-          "label": {
-            "en": "First color",
-            "es": "Primer color"
-          }
-        },
-        {
-          "key": "detailColor",
-          "label": {
-            "en": "Second color",
-            "es": "Segundo color"
-          }
-        }
-      ],
-      "component_mode": true,
-      "text_fields": [
-        {
-          "key": "name",
-          "label": {
-            "en": "Name",
-            "es": "Nombre"
-          }
-        }
-      ],
-      "color_mode": "bicolor"
-    },
-    "production_mode": "made_to_order",
-    "compare_at_cents": 1900,
-    "discount_percent": 21
   },
   {
     "id": "social-display",

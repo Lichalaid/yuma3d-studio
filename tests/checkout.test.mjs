@@ -475,29 +475,29 @@ test('charms: exactly two different solid colors; cooler needs name and colors; 
   assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'raised-name-keychain', quantity: 1, options: {} }] }), /no longer available/);
 });
 
-test('cord keychain: "1 name + accessories" (3 cord + 2 external) or "2 names" without accessories', () => {
-  const cart = options => ({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options }] });
-  const one = { designId: 'one-name', colors: { baseColor: 'white', detailColor: 'dark-pink' }, text: { name: 'Ana' }, font: 'Allura' };
-  const order = validateCart(cart({ ...one, accessories: { cord: ['heart', 'paws', 'stars'], external: ['camera', 'bow'] },
-    colors: { ...one.colors, 'acc-cord-heart': 'red', 'acc-cord-paws': 'brown', 'acc-cord-stars': 'gold', 'acc-external-camera': 'white', 'acc-external-bow': 'pink' } }));
+test('cord keychains: "1 name + accessories" (3 cord + 2 external, two colors) and "2 names" (only external accessories)', () => {
+  const cart = (productId, options) => ({ nonce, language: 'es', delivery: 'pickup', items: [{ productId, quantity: 1, options }] });
+  const one = { colors: { baseColor: 'purple', detailColor: 'white' }, text: { name: 'Laura' }, font: 'Allura' };
+  const order = validateCart(cart('charms-keychain', { ...one, accessories: { cord: ['heart', 'paws', 'stars'], external: ['camera', 'bow'] } }));
   const lines = itemDetails(order.items[0], 'es');
-  assert.ok(lines.includes('Opción: 1 nombre + accesorios'));
-  assert.ok(lines.includes('Nombre: Ana'));
+  assert.ok(lines.includes('Nombre: Laura'));
   assert.ok(lines.includes('Accesorios del cordón: Corazón, Patita de perrito, Estrella'));
   assert.ok(lines.includes('Accesorios externos: Cámara, Lazo'));
-  assert.ok(lines.includes('Patita de perrito: Marrón'));
-  assert.throws(() => validateCart(cart({ ...one, accessories: { cord: [], external: ['flower', 'camera', 'lipgloss'] } })), /accessories/);
-  assert.throws(() => validateCart(cart({ ...one, accessories: { cord: ['heart', 'stars', 'bows', 'paws'] } })), /accessories/);
-  assert.throws(() => validateCart(cart({ ...one, accessories: { cord: ['bows'] } })), /color/);
-  assert.equal(validateCart(cart(one)).total, 1500, 'accessories are optional');
+  assert.deepEqual(Object.keys(order.items[0].colors), ['baseColor', 'detailColor'], 'accessories are made in the same two colors');
+  assert.throws(() => validateCart(cart('charms-keychain', { ...one, accessories: { cord: ['heart', 'stars', 'bows', 'paws'] } })), /accessories/);
+  assert.throws(() => validateCart(cart('charms-keychain', { ...one, accessories: { external: ['flower', 'camera', 'lipgloss'] } })), /accessories/);
+  assert.throws(() => validateCart(cart('charms-keychain', { ...one, colors: { baseColor: 'purple', detailColor: 'purple' } })), /two different colors|dos colores/i);
+  assert.equal(validateCart(cart('charms-keychain', one)).total, 1500, 'accessories are optional');
 
-  const two = { designId: 'two-names', colors: { baseColor: 'white', detailColor: 'dark-pink', 'second-base': 'white', 'second-name': 'dark-pink' }, text: { 'first-name': 'Ana', 'second-name': 'Luz' }, font: 'Lobster' };
-  const twoOrder = validateCart(cart({ ...two, accessories: { cord: ['heart'], external: ['camera'] } }));
-  assert.equal(twoOrder.items[0].accessories, undefined, '2 names never carries accessories');
+  const two = { colors: { baseColor: 'white', detailColor: 'dark-pink', 'second-base': 'white', 'second-name': 'dark-pink' }, text: { 'first-name': 'Ana', 'second-name': 'Luz' }, font: 'Lobster' };
+  const twoOrder = validateCart(cart('two-names-keychain', { ...two, accessories: { cord: ['heart'], external: ['camera', 'heart'] },
+    colors: { ...two.colors, 'acc-external-camera': 'white', 'acc-external-heart': 'pink' } }));
+  assert.deepEqual(twoOrder.items[0].accessories, { external: ['camera', 'heart'] }, 'no cord accessories with two names');
   const twoLines = itemDetails(twoOrder.items[0], 'es');
-  assert.ok(twoLines.includes('Opción: 2 nombres (sin accesorios)'));
   assert.ok(twoLines.includes('Primer nombre: Ana') && twoLines.includes('Segundo nombre: Luz'));
-  assert.ok(!twoLines.some(line => line.startsWith('Accesorios')));
-  assert.throws(() => validateCart(cart({ ...two, text: { 'first-name': 'Ana' } })), /required|complete/i);
-  assert.throws(() => validateCart(cart({ ...one, designId: undefined })), /design/i);
+  assert.ok(twoLines.includes('Accesorios externos: Cámara, Corazón'));
+  assert.ok(twoLines.includes('Cámara: Blanco'));
+  assert.ok(!twoLines.some(line => line.startsWith('Accesorios del cordón')));
+  assert.throws(() => validateCart(cart('two-names-keychain', { ...two, accessories: { external: ['camera'] } })), /color/);
+  assert.equal(validateCart(cart('two-names-keychain', two)).total, 1500);
 });

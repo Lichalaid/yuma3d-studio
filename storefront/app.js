@@ -129,7 +129,7 @@ function productDraft(product){
 const accessoryGroups=(product,draft)=>productDesign(product,draft)?.accessory_groups||product.personalization.accessory_groups||[];
 const accessoryColorKey=(group,id)=>`acc-${group}-${id}`;
 function selectedAccessories(product,draft){const chosen=draft?.accessories||{};return accessoryGroups(product,draft).flatMap(group=>(chosen[group.key]||[]).map(id=>({group,option:group.options.find(option=>option.id===id)})).filter(entry=>entry.option));}
-function productColorFields(product,draft){const base=product.personalization.design_options?.find(option=>option.id===draft.designId)?.color_fields||product.personalization.color_fields||[];const extra=product.personalization.colors?.length?selectedAccessories(product,draft).map(({group,option})=>({key:accessoryColorKey(group.key,option.id),label:option.label})):[];return [...base,...extra];}
+function productColorFields(product,draft){const base=product.personalization.design_options?.find(option=>option.id===draft.designId)?.color_fields||product.personalization.color_fields||[];const extra=product.personalization.colors?.length&&product.personalization.accessory_colors!==false?selectedAccessories(product,draft).map(({group,option})=>({key:accessoryColorKey(group.key,option.id),label:option.label})):[];return [...base,...extra];}
 function variantColorName(id){return variantColors.find(color=>color.id===id)?.[lang]||'';}
 function customizationText(draft,product){
  const fields=draft.parts||(!product?defaultColorFields:[{key:'baseColor',label:{en:'Main color',es:'Color principal'}},{key:'detailColor',label:{en:'Detail color',es:'Color de los detalles'}}]);
