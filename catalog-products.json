@@ -9,13 +9,13 @@
     "price_cents": 3500,
     "currency": "USD",
     "images": [
-      "assets/catalog/clean-v2/wall-name-seven.webp"
+      "assets/catalog/wall/eleanor-7-accesorios.webp"
     ],
     "source": {
       "file": "image(20261028-124119).png",
       "price_text": "$35",
       "note": "",
-      "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
+      "image_treatment": "Foto enviada el 3 nov 2026; fondo rosa extendido a los costados para formato cuadrado de 1024 × 1024 px."
     },
     "description": {
       "en": [
@@ -142,13 +142,13 @@
     "price_cents": 3000,
     "currency": "USD",
     "images": [
-      "assets/catalog/clean-v2/wall-name-four.webp"
+      "assets/catalog/wall/sophia-4-accesorios.webp"
     ],
     "source": {
       "file": "image(20261028-124119).png",
       "price_text": "$30",
       "note": "",
-      "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
+      "image_treatment": "Foto enviada el 3 nov 2026; fondo rosa extendido a los costados para formato cuadrado de 1024 × 1024 px."
     },
     "description": {
       "en": [
