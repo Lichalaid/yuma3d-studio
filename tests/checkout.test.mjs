@@ -475,18 +475,29 @@ test('charms: exactly two different solid colors; cooler needs name and colors; 
   assert.throws(() => validateCart({ nonce, language: 'en', delivery: 'pickup', items: [{ productId: 'raised-name-keychain', quantity: 1, options: {} }] }), /no longer available/);
 });
 
-test('2 names + accessories: up to 3 cord accessories and up to 2 external ones, each with its own color', () => {
-  const base = { colors: { baseColor: 'white', detailColor: 'dark-pink', 'second-base': 'white', 'second-name': 'dark-pink' }, text: { 'first-name': 'Ana', 'second-name': 'Luz' }, font: 'Allura' };
-  const order = validateCart({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options: {
-    ...base, accessories: { cord: ['heart', 'paws', 'stars'], external: ['camera', 'heart'] },
-    colors: { ...base.colors, 'acc-cord-heart': 'red', 'acc-cord-paws': 'brown', 'acc-cord-stars': 'gold', 'acc-external-camera': 'white', 'acc-external-heart': 'pink' } } }] });
+test('cord keychain: "1 name + accessories" (3 cord + 2 external) or "2 names" without accessories', () => {
+  const cart = options => ({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options }] });
+  const one = { designId: 'one-name', colors: { baseColor: 'white', detailColor: 'dark-pink' }, text: { name: 'Ana' }, font: 'Allura' };
+  const order = validateCart(cart({ ...one, accessories: { cord: ['heart', 'paws', 'stars'], external: ['camera', 'bow'] },
+    colors: { ...one.colors, 'acc-cord-heart': 'red', 'acc-cord-paws': 'brown', 'acc-cord-stars': 'gold', 'acc-external-camera': 'white', 'acc-external-bow': 'pink' } }));
   const lines = itemDetails(order.items[0], 'es');
-  assert.ok(lines.includes('Accesorios del cordón: Corazón, Patitas de perro, Estrellas'));
-  assert.ok(lines.includes('Accesorios externos: Camarita, Corazón'));
-  assert.ok(lines.includes('Patitas de perro: Marrón'));
-  const tooMany = { nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options: { ...base, accessories: { cord: [], external: ['flower', 'camera', 'lipgloss'] } } }] };
-  assert.throws(() => validateCart(tooMany), /accessories/);
-  const noColor = { nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options: { ...base, accessories: { cord: ['bows'] } } }] };
-  assert.throws(() => validateCart(noColor), /color/);
-  assert.equal(validateCart({ nonce, language: 'es', delivery: 'pickup', items: [{ productId: 'two-names-keychain', quantity: 1, options: base }] }).total, 1500, 'accessories are optional');
+  assert.ok(lines.includes('Opción: 1 nombre + accesorios'));
+  assert.ok(lines.includes('Nombre: Ana'));
+  assert.ok(lines.includes('Accesorios del cordón: Corazón, Patita de perrito, Estrella'));
+  assert.ok(lines.includes('Accesorios externos: Cámara, Lazo'));
+  assert.ok(lines.includes('Patita de perrito: Marrón'));
+  assert.throws(() => validateCart(cart({ ...one, accessories: { cord: [], external: ['flower', 'camera', 'lipgloss'] } })), /accessories/);
+  assert.throws(() => validateCart(cart({ ...one, accessories: { cord: ['heart', 'stars', 'bows', 'paws'] } })), /accessories/);
+  assert.throws(() => validateCart(cart({ ...one, accessories: { cord: ['bows'] } })), /color/);
+  assert.equal(validateCart(cart(one)).total, 1500, 'accessories are optional');
+
+  const two = { designId: 'two-names', colors: { baseColor: 'white', detailColor: 'dark-pink', 'second-base': 'white', 'second-name': 'dark-pink' }, text: { 'first-name': 'Ana', 'second-name': 'Luz' }, font: 'Lobster' };
+  const twoOrder = validateCart(cart({ ...two, accessories: { cord: ['heart'], external: ['camera'] } }));
+  assert.equal(twoOrder.items[0].accessories, undefined, '2 names never carries accessories');
+  const twoLines = itemDetails(twoOrder.items[0], 'es');
+  assert.ok(twoLines.includes('Opción: 2 nombres (sin accesorios)'));
+  assert.ok(twoLines.includes('Primer nombre: Ana') && twoLines.includes('Segundo nombre: Luz'));
+  assert.ok(!twoLines.some(line => line.startsWith('Accesorios')));
+  assert.throws(() => validateCart(cart({ ...two, text: { 'first-name': 'Ana' } })), /required|complete/i);
+  assert.throws(() => validateCart(cart({ ...one, designId: undefined })), /design/i);
 });

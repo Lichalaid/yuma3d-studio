@@ -796,8 +796,8 @@
     "id": "two-names-keychain",
     "category": "keychains",
     "name": {
-      "en": "Two names + accessories keychain",
-      "es": "2 nombres + accesorios"
+      "en": "Cord keychain: name + accessories or 2 names",
+      "es": "Llavero de cordón: nombre + accesorios o 2 nombres"
     },
     "price_cents": 1500,
     "currency": "USD",
@@ -812,12 +812,14 @@
     },
     "description": {
       "es": [
-        "Un llavero de dos nombres con letras tipo charm en cordón y accesorios a elegir. Agrega hasta 3 accesorios del cordón (corazón, flores, patitas de perro, estrellas o lazos) y hasta 2 accesorios externos (flor, camarita, lipgloss, corazón o mariposa).",
-        "Escribe los dos nombres y elige los colores de las letras y de cada accesorio. La foto muestra un ejemplo del estilo."
+        "Un llavero con letras tipo charm en un cordón. Elige entre dos opciones: 1 nombre con accesorios, o 2 nombres sin accesorios.",
+        "Con 1 nombre puedes agregar hasta 3 accesorios en el cordón (corazón, estrella, flor, lazo o patita de perrito) y hasta 2 accesorios externos (cámara, flor, porta lipgloss, lazo, corazón o mariposa). Con 2 nombres, el llavero no lleva accesorios.",
+        "Escribe el nombre o los nombres y elige los colores de las letras y de cada accesorio. La foto muestra un ejemplo del estilo."
       ],
       "en": [
-        "A two-name keychain with charm-style letters on a cord and accessories to choose. Add up to 3 cord accessories (heart, flowers, dog paws, stars or bows) and up to 2 external accessories (flower, little camera, lip gloss, heart or butterfly).",
-        "Enter both names and choose the colors of the letters and of each accessory. The photo shows an example of the style."
+        "A keychain with charm-style letters on a cord. Choose one of two options: 1 name with accessories, or 2 names without accessories.",
+        "With 1 name you can add up to 3 cord accessories (heart, star, flower, bow or dog paw) and up to 2 external accessories (camera, flower, lip gloss holder, bow, heart or butterfly). With 2 names, the keychain has no accessories.",
+        "Enter the name or names and choose the colors of the letters and of each accessory. The photo shows an example of the style."
       ]
     },
     "personalization": {
@@ -838,140 +840,192 @@
         "white",
         "black"
       ],
-      "color_fields": [
-        {
-          "key": "baseColor",
-          "label": {
-            "en": "First name letter bases",
-            "es": "Bases de letras del primer nombre"
-          }
-        },
-        {
-          "key": "detailColor",
-          "label": {
-            "en": "First name lettering",
-            "es": "Letras del primer nombre"
-          }
-        },
-        {
-          "key": "second-base",
-          "label": {
-            "en": "Second name letter bases",
-            "es": "Bases de letras del segundo nombre"
-          }
-        },
-        {
-          "key": "second-name",
-          "label": {
-            "en": "Second name lettering",
-            "es": "Letras del segundo nombre"
-          }
-        }
-      ],
       "component_mode": true,
-      "text_fields": [
+      "design_label": {
+        "en": "Option",
+        "es": "Opción"
+      },
+      "design_options": [
         {
-          "key": "first-name",
+          "id": "one-name",
           "label": {
-            "en": "First name",
-            "es": "Primer nombre"
-          }
-        },
-        {
-          "key": "second-name",
-          "label": {
-            "en": "Second name",
-            "es": "Segundo nombre"
-          }
-        }
-      ],
-      "accessory_groups": [
-        {
-          "key": "cord",
-          "label": {
-            "en": "Cord accessories",
-            "es": "Accesorios del cordón"
+            "en": "1 name + accessories",
+            "es": "1 nombre + accesorios"
           },
-          "max": 3,
-          "options": [
+          "text_fields": [
             {
-              "id": "heart",
+              "key": "name",
               "label": {
-                "en": "Heart",
-                "es": "Corazón"
+                "en": "Name",
+                "es": "Nombre"
+              }
+            }
+          ],
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "Letter bases",
+                "es": "Bases de las letras"
               }
             },
             {
-              "id": "flowers",
+              "key": "detailColor",
               "label": {
-                "en": "Flowers",
-                "es": "Flores"
+                "en": "Lettering",
+                "es": "Letras del nombre"
               }
+            }
+          ],
+          "accessory_groups": [
+            {
+              "key": "cord",
+              "label": {
+                "en": "Cord accessories",
+                "es": "Accesorios del cordón"
+              },
+              "max": 3,
+              "options": [
+                {
+                  "id": "heart",
+                  "label": {
+                    "en": "Heart",
+                    "es": "Corazón"
+                  }
+                },
+                {
+                  "id": "stars",
+                  "label": {
+                    "en": "Star",
+                    "es": "Estrella"
+                  }
+                },
+                {
+                  "id": "flowers",
+                  "label": {
+                    "en": "Flower",
+                    "es": "Flor"
+                  }
+                },
+                {
+                  "id": "bows",
+                  "label": {
+                    "en": "Bow",
+                    "es": "Lazo"
+                  }
+                },
+                {
+                  "id": "paws",
+                  "label": {
+                    "en": "Dog paw",
+                    "es": "Patita de perrito"
+                  }
+                }
+              ]
             },
             {
-              "id": "paws",
+              "key": "external",
               "label": {
-                "en": "Dog paws",
-                "es": "Patitas de perro"
-              }
-            },
-            {
-              "id": "stars",
-              "label": {
-                "en": "Stars",
-                "es": "Estrellas"
-              }
-            },
-            {
-              "id": "bows",
-              "label": {
-                "en": "Bows",
-                "es": "Lazos"
-              }
+                "en": "External accessories",
+                "es": "Accesorios externos"
+              },
+              "max": 2,
+              "options": [
+                {
+                  "id": "camera",
+                  "label": {
+                    "en": "Camera",
+                    "es": "Cámara"
+                  }
+                },
+                {
+                  "id": "flower",
+                  "label": {
+                    "en": "Flower",
+                    "es": "Flor"
+                  }
+                },
+                {
+                  "id": "lipgloss",
+                  "label": {
+                    "en": "Lip gloss holder",
+                    "es": "Porta lipgloss"
+                  }
+                },
+                {
+                  "id": "bow",
+                  "label": {
+                    "en": "Bow",
+                    "es": "Lazo"
+                  }
+                },
+                {
+                  "id": "heart",
+                  "label": {
+                    "en": "Heart",
+                    "es": "Corazón"
+                  }
+                },
+                {
+                  "id": "butterfly",
+                  "label": {
+                    "en": "Butterfly",
+                    "es": "Mariposa"
+                  }
+                }
+              ]
             }
           ]
         },
         {
-          "key": "external",
+          "id": "two-names",
           "label": {
-            "en": "External accessories",
-            "es": "Accesorios externos"
+            "en": "2 names (no accessories)",
+            "es": "2 nombres (sin accesorios)"
           },
-          "max": 2,
-          "options": [
+          "text_fields": [
             {
-              "id": "flower",
+              "key": "first-name",
               "label": {
-                "en": "Flower",
-                "es": "Flor"
+                "en": "First name",
+                "es": "Primer nombre"
               }
             },
             {
-              "id": "camera",
+              "key": "second-name",
               "label": {
-                "en": "Little camera",
-                "es": "Camarita"
+                "en": "Second name",
+                "es": "Segundo nombre"
+              }
+            }
+          ],
+          "color_fields": [
+            {
+              "key": "baseColor",
+              "label": {
+                "en": "First name letter bases",
+                "es": "Bases de letras del primer nombre"
               }
             },
             {
-              "id": "lipgloss",
+              "key": "detailColor",
               "label": {
-                "en": "Lip gloss",
-                "es": "Lipgloss"
+                "en": "First name lettering",
+                "es": "Letras del primer nombre"
               }
             },
             {
-              "id": "heart",
+              "key": "second-base",
               "label": {
-                "en": "Heart",
-                "es": "Corazón"
+                "en": "Second name letter bases",
+                "es": "Bases de letras del segundo nombre"
               }
             },
             {
-              "id": "butterfly",
+              "key": "second-name",
               "label": {
-                "en": "Butterfly",
-                "es": "Mariposa"
+                "en": "Second name lettering",
+                "es": "Letras del segundo nombre"
               }
             }
           ]

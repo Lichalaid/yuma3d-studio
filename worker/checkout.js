@@ -225,20 +225,24 @@ function cleanText(value, max = 80) {
 }
 
 // Accessory groups (e.g. "up to 3 accessories"): each chosen accessory adds a color part and its extra texts.
-function chosenAccessories(config, accessories) {
-  return (config.accessory_groups || []).flatMap(group => (accessories?.[group.key] || [])
+// A design option may bring its own texts and accessories ("1 name + accessories" / "2 names, no accessories").
+const designAccessoryGroups = (config, design) => design?.accessory_groups || config.accessory_groups || [];
+const designTextFields = (config, design) => design?.text_fields || config.text_fields || [];
+function chosenAccessories(groups, accessories) {
+  return groups.flatMap(group => (accessories?.[group.key] || [])
     .map(id => ({ group, option: group.options.find(option => option.id === id) })).filter(entry => entry.option));
 }
 
 function productParts(product, designId, accessories) {
   const config = product?.personalization || {};
   const design = config.design_options?.find(option => option.id === designId);
-  const chosen = chosenAccessories(config, accessories);
+  const groups = designAccessoryGroups(config, design);
+  const chosen = chosenAccessories(groups, accessories);
   return {
-    config, design, chosen,
+    config, design, groups, chosen,
     colorFields: [...(design?.color_fields || config.color_fields || []),
       ...(config.colors?.length ? chosen.map(({ group, option }) => ({ key: `acc-${group.key}-${option.id}`, label: option.label })) : [])],
-    textFields: [...(config.text_fields || []), ...(design?.extra_text_fields || []), ...chosen.flatMap(({ option }) => option.extra_text_fields || [])],
+    textFields: [...designTextFields(config, design), ...(design?.extra_text_fields || []), ...chosen.flatMap(({ option }) => option.extra_text_fields || [])],
   };
 }
 
@@ -250,10 +254,12 @@ function validateItem(item, language) {
   if (product.personalization?.type === 'photos') throw fail(MESSAGES.photos);
   if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_QUANTITY) throw fail(MESSAGES.quantity);
   const draft = item.options && typeof item.options === 'object' ? item.options : {};
+  const chosenDesign = product.personalization?.design_options?.find(option => option.id === draft.designId);
+  const groups = designAccessoryGroups(product.personalization || {}, chosenDesign);
   let accessories;
-  if (product.personalization?.accessory_groups) {
+  if (groups.length) {
     accessories = {};
-    for (const group of product.personalization?.accessory_groups) {
+    for (const group of groups) {
       const list = draft.accessories?.[group.key] ?? [];
       if (!Array.isArray(list) || list.length > group.max || new Set(list).size !== list.length
         || !list.every(id => typeof id === 'string' && group.options.some(option => option.id === id))) throw fail(MESSAGES.accessories);
@@ -280,7 +286,7 @@ function validateItem(item, language) {
     text[field.key] = value;
   }
   // Same rule as the storefront (hasNameFields): products with a name field take one of the name fonts.
-  const hasName = (config.text_fields || []).some(field => NAME_FIELD_KEYS.includes(field.key));
+  const hasName = designTextFields(config, design).some(field => NAME_FIELD_KEYS.includes(field.key));
   if (hasName && !NAME_FONTS.includes(draft.font)) throw fail(MESSAGES.font);
   let profiles;
   if (config.type === 'social') {
@@ -311,7 +317,7 @@ export function validateCart(input) {
 /** Human-readable personalization lines, e.g. ["Initial: E", "Name: Emma", "Initial color: Blue"]. */
 export function itemDetails(item, lang = 'en') {
   const product = PRODUCTS.get(item.productId);
-  const { config, design, chosen, colorFields, textFields } = productParts(product, item.designId, item.accessories);
+  const { config, design, groups, chosen, colorFields, textFields } = productParts(product, item.designId, item.accessories);
   const label = (fields, key) => {
     const field = fields.find(f => f.key === key);
     return field?.label?.[lang] || field?.label?.en || key;
@@ -321,7 +327,7 @@ export function itemDetails(item, lang = 'en') {
   if (item.nameFont) lines.push(`${lang === 'es' ? 'Tipografía del nombre' : 'Name font'}: ${item.nameFont}`);
   if (item.initialFont) lines.push(`${lang === 'es' ? 'Tipografía de la inicial' : 'Initial font'}: ${item.initialFont}`);
   if (design) lines.push(`${config.design_label?.[lang] || (lang === 'es' ? 'Diseño' : 'Design')}: ${design.label?.[lang] || design.id}`);
-  for (const group of config.accessory_groups || []) {
+  for (const group of groups) {
     const names = chosen.filter(entry => entry.group.key === group.key).map(({ option }) => option.label?.[lang] || option.id);
     lines.push(`${group.label?.[lang] || group.key}: ${names.length ? names.join(', ') : (lang === 'es' ? 'ninguno' : 'none')}`);
   }
