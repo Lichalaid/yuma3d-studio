@@ -51,11 +51,11 @@ const settings = JSON.parse(readFileSync(new URL('../site-settings.json', import
 const origin = /^https:\/\/[^/]+$/.test(env.SITE_ORIGIN || '') ? env.SITE_ORIGIN : settings.origin;
 const created = await step('Creating a Checkout Session (permissions: Checkout Sessions, Products, Prices, Shipping Rates → Write)',
   () => createSession(cart, origin, crypto.randomUUID(), stripe, 'test', config));
-ok(`Checkout Session created: ${created.reference} · $${(created.total / 100).toFixed(2)} (expected $47.99)`);
+ok(`Checkout Session created: ${created.reference} · $${(created.total / 100).toFixed(2)} (expected $45.99)`);
 
 const session = await step('Reading the session back', () => stripe.request('GET', `/checkout/sessions/${created.id}`));
 const order = await decodeOrder(session.metadata);
-if (session.amount_subtotal !== 4300 || session.total_details?.amount_shipping !== 499) stop(`Unexpected amounts: subtotal ${session.amount_subtotal}, shipping ${session.total_details?.amount_shipping}`);
+if (session.amount_subtotal !== 4300 || session.total_details?.amount_shipping !== 299) stop(`Unexpected amounts: subtotal ${session.amount_subtotal}, shipping ${session.total_details?.amount_shipping}`);
 if (order.items[0].text.name !== 'Emma' || order.items[0].colors['star-3'] !== 'rainbow') stop('The order snapshot did not survive the round trip');
 ok(`Stripe stored the full personalization (${Object.keys(session.metadata).length} metadata keys)`);
 

@@ -134,7 +134,7 @@ try {
   await step('checkout status is enabled in test mode', async () => assert.deepEqual(status, { configured: true, mode: 'test', webhookConfigured: true, emailConfigured: true }));
 
   let sessionA;
-  await step('EN · initial + name and a keychain · UPS shipping $4.99 · one Stripe checkout · paid', async () => {
+  await step('EN · initial + name and a keychain · UPS shipping $2.99 · one Stripe checkout · paid', async () => {
     const { context, page } = await newContext(browser);
     await addInitialName(page, { initial: 'e', name: 'Emma', colors: { baseColor: 'blue', detailColor: 'white' } });
     await addKeychain(page, { name: 'Rose' });
@@ -142,16 +142,16 @@ try {
     sessionA = await goToStripe(page, 'ship');
     const s = fake.sessions.get(sessionA);
     assert.equal(s.amount_subtotal, 4300);
-    assert.equal(s.total_details.amount_shipping, 499);
-    assert.equal(s.amount_total, 4799);
+    assert.equal(s.total_details.amount_shipping, 299);
+    assert.equal(s.amount_total, 4599);
     assert.equal(s._params.line_items.length, 2);
     assert.equal(s.locale, 'en');
-    assert.match(await page.textContent('#total'), /47\.99/);
+    assert.match(await page.textContent('#total'), /45\.99/);
     await page.click('#pay');
     await page.waitForURL(/\/checkout-result\/\?session_id=cs_test_/);
     await page.waitForFunction(() => /confirmed/i.test(document.querySelector('#result-title').textContent));
     const body = await page.textContent('main');
-    for (const text of ['Test payment confirmed.', 'Reference: YM-', 'Initial: E', 'Name: Emma', 'Initial color: Sky blue', 'Paddle-shaped can opener: Sky blue', '$47.99 USD', 'ana@example.com']) assert.ok(body.includes(text), text);
+    for (const text of ['Test payment confirmed.', 'Reference: YM-', 'Initial: E', 'Name: Emma', 'Initial color: Sky blue', 'Paddle-shaped can opener: Sky blue', '$45.99 USD', 'ana@example.com']) assert.ok(body.includes(text), text);
     assert.equal(await page.evaluate(() => sessionStorage.getItem('yuma-demo-bag')), null, 'bag cleared after payment');
     await page.screenshot({ path: SHOTS + 'e2e-result-desktop.png', fullPage: true });
     assert.deepEqual(page.errors, []);
@@ -163,7 +163,7 @@ try {
     const shop = fake.emails.filter(e => e.to[0] === 'yuma3dstudio@gmail.com');
     const buyer = fake.emails.filter(e => e.to[0] === 'ana@example.com');
     assert.equal(shop.length, 1); assert.equal(buyer.length, 1);
-    for (const line of ['Letra inicial: E', 'Nombre: Emma', 'Color de la inicial: Azul cielo', 'Color del nombre: Blanco', 'Mancuerna: Rosa pastel', 'Abridor de latas en forma de paleta: Azul cielo', 'Envío UPS a: Ana Pérez', 'Total cobrado: $47.99 USD']) {
+    for (const line of ['Letra inicial: E', 'Nombre: Emma', 'Color de la inicial: Azul cielo', 'Color del nombre: Blanco', 'Mancuerna: Rosa pastel', 'Abridor de latas en forma de paleta: Azul cielo', 'Envío UPS a: Ana Pérez', 'Total cobrado: $45.99 USD']) {
       assert.ok(shop[0].text.includes(line), `shop email: ${line}`);
     }
     assert.match(buyer[0].subject, /^\[TEST\] Your Yuma 3D Studio order YM-/);

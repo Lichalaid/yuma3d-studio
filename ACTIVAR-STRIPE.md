@@ -92,7 +92,7 @@ Después: **Deployments → Redeploy**. Las variables no se pisan con los deploy
 
 ## 5. Prueba en el sitio publicado (sandbox)
 
-1. Inicial + nombre (USD 35) y un llavero (USD 8): el total tiene que ser **USD 47,99** (43 + 4,99 de envío).
+1. Inicial + nombre (USD 35) y un llavero (USD 8): el total tiene que ser **USD 45,99** (43 + 2,99 de envío).
 2. Inicial + nombre y dos llaveros: **USD 51,00**, con envío gratis.
 3. Retiro en Katy: envío en USD 0 y Stripe no pide dirección.
 4. Pagá con `4242…`. La página de regreso dice "Test payment confirmed" y muestra el pedido completo.

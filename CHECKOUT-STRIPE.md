@@ -7,7 +7,7 @@ Para activar los pagos, seguí [ACTIVAR-STRIPE.md](ACTIVAR-STRIPE.md). Este docu
 1. **Navegador.** La bolsa envía a `POST /api/checkout` los IDs de producto, las cantidades, los colores y textos elegidos, la entrega, el idioma y un `nonce` por intento. Ningún precio enviado por el navegador se usa.
 2. **Servidor** (`worker/checkout.js`, que corre como función de Vercel en `api/` o como Cloudflare Worker):
    - Valida cada producto contra `catalog-products.json`, el mismo archivo que edita el panel ([PANEL-ADMIN.md](PANEL-ADMIN.md)): colores ofrecidos, campos obligatorios, letra inicial, largo de los nombres y perfiles sociales. Los productos ocultos no se pueden comprar.
-   - Calcula subtotal y envío: USD 4,99, o gratis desde USD 50 o con retiro.
+   - Calcula subtotal y envío: USD 2,99, o gratis desde USD 50 o con retiro.
    - Crea **una** Checkout Session con todos los productos y una clave de idempotencia igual al hash de la solicitud.
    - El pedido completo viaja comprimido en la metadata de la sesión. No hay base de datos.
 3. **Stripe Checkout:**

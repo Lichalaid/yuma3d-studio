@@ -11,7 +11,7 @@ Boceto estático bilingüe (inglés por defecto y español), basado en el cuesti
 - Inicial + nombre: precio del catálogo USD 35; 25 × 25 cm; PLA; máximo 15 caracteres.
 - El dato del cuestionario sobre juguetes sensoriales (USD 9,99) se conserva como referencia; no se inventó una foto ni se mezcló con los 16 productos de las capturas.
 - Letra inicial, nombre, adorno, colores y cantidad en la ficha de inicial + nombre, sin un personalizador adicional debajo. Nacimiento agrega fecha, hora y peso.
-- Fabricación hasta 2 días, envío UPS USD 4,99, gratuito desde USD 50, entrega 3–5 días luego de producción. Retiro en Katy, TX 77449.
+- Fabricación hasta 2 días, envío UPS USD 2,99, gratuito desde USD 50, entrega 3–5 días luego de producción. Retiro en Katy, TX 77449.
 - Bolsa de prueba almacenada en sessionStorage. La revisión prepara un correo dirigido al negocio para revisión y envío manual desde la aplicación de email del visitante. Sin cobros, pedidos confirmados ni correo automático.
 
 ## Panel de administración

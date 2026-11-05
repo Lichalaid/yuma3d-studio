@@ -24,7 +24,7 @@ test('server calculates prices, quantities and one shipping fee', () => {
   const order = validateCart(p);
   assert.equal(order.subtotal, 5100); assert.equal(order.shipping, 0); assert.equal(order.total, 5100);
   assert.equal(order.items[0].text.initial, 'E');
-  p.items.pop(); assert.equal(validateCart(p).total, 3999);
+  p.items.pop(); assert.equal(validateCart(p).total, 3799);
   p.delivery = 'pickup'; assert.equal(validateCart(p).total, 3500);
 });
 
