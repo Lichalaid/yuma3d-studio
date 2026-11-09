@@ -1858,7 +1858,7 @@
       "en": "Christmas decoration sets",
       "es": "Sets decorativos de Navidad"
     },
-    "price_cents": 1000,
+    "price_cents": 1500,
     "currency": "USD",
     "images": [
       "assets/christmas/reindeer-original.jpg",
@@ -1871,19 +1871,21 @@
       "note": "Fotos originales completas, sin reconstrucción ni recortes de WhatsApp."
     },
     "description": {
-      "en": [
-        "Choose one of these three complete Christmas sets for $10 USD: three reindeer with a tray; two trees and Santa with a tray; or a tree, Santa and a nativity scene with a tray. The price includes all pieces shown in the photo of your selected set.",
-        "Select the set you want; the photo changes to show it. Each set is made to order, and the $10 price is for one complete set as pictured."
-      ],
       "es": [
         "Elige uno de estos tres sets completos de Navidad por $10 USD: tres renos con bandeja; dos árboles y Santa con bandeja; o un árbol, Santa y un nacimiento con bandeja. El precio incluye todas las piezas que aparecen en la foto del set elegido.",
         "Elige el set que quieres; la foto cambia para mostrarlo. Cada set se fabrica a pedido y el precio de $10 corresponde a un set completo como en la foto."
+      ],
+      "en": [
+        "Choose one of these three complete Christmas sets for $10 USD: three reindeer with a tray; two trees and Santa with a tray; or a tree, Santa and a nativity scene with a tray. The price includes all pieces shown in the photo of your selected set.",
+        "Select the set you want; the photo changes to show it. Each set is made to order, and the $10 price is for one complete set as pictured."
       ]
     },
     "production_mode": "made_to_order",
     "personalization": {
       "type": "colors",
-      "colors": [],
+      "colors": [
+        "pink"
+      ],
       "color_fields": [],
       "design_label": {
         "en": "Choose your Christmas set",
