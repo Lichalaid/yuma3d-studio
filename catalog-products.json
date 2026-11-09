@@ -1838,7 +1838,18 @@
         }
       ],
       "component_mode": true,
-      "send_after_payment": "photos"
+      "send_after_payment": "photos",
+      "text_fields": [
+        {
+          "key": "name",
+          "label": {
+            "en": "I would choose you a thousand times over as my brother.",
+            "es": "Te elegiría mil veces como mi hermano"
+          },
+          "max_length": 40,
+          "kind": "name"
+        }
+      ]
     }
   },
   {
