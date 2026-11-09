@@ -1326,7 +1326,8 @@
     "currency": "USD",
     "images": [
       "assets/catalog/clean-v2/social-display-white.webp",
-      "assets/catalog/clean-v2/social-display-pink.webp"
+      "assets/catalog/clean-v2/social-display-pink.webp",
+      "assets/catalog/uploads/social-display-4a4iiw.jpg"
     ],
     "source": {
       "file": "image(20261028-124111).png",
@@ -1335,13 +1336,11 @@
       "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
     },
     "description": {
-      "en": [
-        "A countertop NFC social media display with a freestanding base and spaces for your social profiles. The two catalog photos show the same design in different colors. The featured brand is only a visual example.",
-        "Choose a color for each part and type the name of each social network plus your profile name exactly as it appears, including periods, hyphens, underscores and numbers. You do not need to provide a link or upload a logo."
-      ],
       "es": [
-        "Un exhibidor de mostrador con NFC, base independiente y espacios para tus redes sociales. Las dos fotos del catálogo muestran el mismo diseño en distintos colores. La marca de la foto es solo un ejemplo.",
-        "Elige un color para cada pieza y escribe cada red social y el nombre del perfil exactamente como aparece, incluidos puntos, guiones, guiones bajos y números. No hace falta un enlace ni subir un logo."
+        "Un exhibidor de mostrador con NFC, base independiente y espacios para tus redes sociales. Elige un color para cada pieza y escribe cada red social y el nombre del perfil exactamente como aparece, incluidos puntos, guiones, guiones bajos y números. No hace falta un enlace ni subir un logo."
+      ],
+      "en": [
+        "A countertop NFC social media display with a freestanding base and spaces for your social profiles. Choose a color for each part and type the name of each social network plus your profile name exactly as it appears, including periods, hyphens, underscores and numbers. You do not need to provide a link or upload a logo."
       ]
     },
     "personalization": {
