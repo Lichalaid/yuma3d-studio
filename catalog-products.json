@@ -1843,8 +1843,8 @@
         {
           "key": "name",
           "label": {
-            "en": "I would choose you a thousand times over as my brother.",
-            "es": "Te elegiría mil veces como mi hermano"
+            "en": "personalized phrase",
+            "es": "Frase personalizada"
           },
           "max_length": 40,
           "kind": "name"
