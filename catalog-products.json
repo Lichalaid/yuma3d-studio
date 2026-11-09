@@ -143,7 +143,7 @@
     "price_cents": 3000,
     "currency": "USD",
     "images": [
-      "assets/catalog/wall/sophia-4-accesorios.webp"
+      "assets/catalog/uploads/wall-name-four-dzrzd4.jpg"
     ],
     "source": {
       "file": "image(20261028-124119).png",
@@ -152,13 +152,13 @@
       "image_treatment": "Foto enviada el 3 nov 2026; fondo rosa extendido a los costados para formato cuadrado de 1024 × 1024 px."
     },
     "description": {
-      "en": [
-        "A cloud-shaped wall-name plaque with four decorative accessories. The catalog reference features the name Sophia in raised pink script, with a crescent moon and three smaller clouds arranged below the main piece.",
-        "This is the four-accessory version of the wall-name design. The photograph shows the layout and lettering style, so you can compare it with the seven-accessory option and choose the arrangement you prefer."
-      ],
       "es": [
         "Una placa con forma de nube y un nombre personalizado, acompañada por cuatro accesorios decorativos. La referencia del catálogo muestra Sophia en letras rosas en relieve, con una luna y tres nubes pequeñas debajo de la pieza principal.",
         "Esta es la versión de cuatro accesorios del nombre de pared. La foto permite ver la distribución y el estilo de las letras para compararla con la opción de siete accesorios y elegir la composición que prefieras."
+      ],
+      "en": [
+        "A cloud-shaped wall-name plaque with four decorative accessories. The catalog reference features the name Sophia in raised pink script, with a crescent moon and three smaller clouds arranged below the main piece.",
+        "This is the four-accessory version of the wall-name design. The photograph shows the layout and lettering style, so you can compare it with the seven-accessory option and choose the arrangement you prefer."
       ]
     },
     "personalization": {
@@ -237,7 +237,8 @@
           "label": {
             "en": "Name",
             "es": "Nombre"
-          }
+          },
+          "max_length": 20
         }
       ]
     },
