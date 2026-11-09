@@ -9,7 +9,7 @@
     "price_cents": 3500,
     "currency": "USD",
     "images": [
-      "assets/catalog/wall/eleanor-7-accesorios.webp"
+      "assets/catalog/uploads/wall-name-seven-cmbezq.jpg"
     ],
     "source": {
       "file": "image(20261028-124119).png",
@@ -18,13 +18,13 @@
       "image_treatment": "Foto enviada el 3 nov 2026; fondo rosa extendido a los costados para formato cuadrado de 1024 × 1024 px."
     },
     "description": {
-      "en": [
-        "A personalized wall-name plaque paired with seven decorative accessories. The catalog example combines a cloud-shaped plaque with raised pink lettering, a crescent moon, stars and small clouds, arranged together as a matching set.",
-        "Use the photographed arrangement as a reference for a bedroom or nursery name display. The name shown is an example of the design; check the spelling of your own name before ordering."
-      ],
       "es": [
         "Un nombre personalizado para pared acompañado por siete accesorios decorativos. La referencia del catálogo combina una placa con forma de nube y letras rosas en relieve con una luna, estrellas y pequeñas nubes, organizadas como un conjunto.",
         "La composición de la foto sirve como referencia para decorar un dormitorio o un cuarto infantil. El nombre mostrado es un ejemplo del diseño; revisa la escritura de tu nombre antes de comprar."
+      ],
+      "en": [
+        "A personalized wall-name plaque paired with seven decorative accessories. The catalog example combines a cloud-shaped plaque with raised pink lettering, a crescent moon, stars and small clouds, arranged together as a matching set.",
+        "Use the photographed arrangement as a reference for a bedroom or nursery name display. The name shown is an example of the design; check the spelling of your own name before ordering."
       ]
     },
     "personalization": {
@@ -124,7 +124,8 @@
           "label": {
             "en": "Name",
             "es": "Nombre"
-          }
+          },
+          "max_length": 20
         }
       ]
     },
