@@ -1775,7 +1775,10 @@
     "price_cents": 3500,
     "currency": "USD",
     "images": [
-      "assets/photo-frame-original.jpeg"
+      "assets/catalog/uploads/photo-frame-f9781r.jpg",
+      "assets/catalog/uploads/photo-frame-vzzums.jpg",
+      "assets/catalog/uploads/photo-frame-k3ngfi.jpg",
+      "assets/catalog/uploads/photo-frame-hwxwze.jpg"
     ],
     "source": {
       "file": "WhatsApp Image 2026-10-28 at 1.04.52 PM.jpeg",
@@ -1783,13 +1786,13 @@
       "note": "Precio confirmado por la clienta: USD 35. Fotos tamaño 2 × 3, sin unidad especificada."
     },
     "description": {
-      "en": [
-        "A 3D-printed photo frame for your favorite memories. The reference shows a white frame with photos on its different sides. Choose the colors of your frame and add up to four photos for your personalized piece.",
-        "Photo size: 2 × 3. After paying, send 1 to 4 photos on WhatsApp to +1 832 507 2768 with your order number."
-      ],
       "es": [
         "Un portafotos impreso en 3D para guardar tus recuerdos. La referencia muestra un marco blanco con fotos en sus distintas caras. Elige los colores del portafotos y añade hasta cuatro fotos para personalizar tu pieza.",
         "Tamaño de las fotos: 2 × 3. Después de pagar, envía de 1 a 4 fotos por WhatsApp al +1 832 507 2768 con tu número de pedido."
+      ],
+      "en": [
+        "A 3D-printed photo frame for your favorite memories. The reference shows a white frame with photos on its different sides. Choose the colors of your frame and add up to four photos for your personalized piece.",
+        "Photo size: 2 × 3. After paying, send 1 to 4 photos on WhatsApp to +1 832 507 2768 with your order number."
       ]
     },
     "production_mode": "made_to_order",
@@ -1824,6 +1827,13 @@
           "label": {
             "en": "Top color",
             "es": "Color de la parte superior"
+          }
+        },
+        {
+          "key": "part-1",
+          "label": {
+            "en": "customizable phrase",
+            "es": "Frase personalizable"
           }
         }
       ],
