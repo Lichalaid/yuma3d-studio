@@ -256,8 +256,8 @@
     "price_cents": 3500,
     "currency": "USD",
     "images": [
-      "assets/catalog/clean-v2/initial-name.webp",
       "assets/catalog/initial-name/kimberly-lazo-mariposa-flores.webp",
+      "assets/catalog/clean-v2/initial-name.webp",
       "assets/catalog/initial-name/alan-nacimiento-osito.webp",
       "assets/catalog/initial-name/lia-ramas-flores.webp",
       "assets/catalog/initial-name/sebastian-nacimiento-estrellas-osito.webp",
@@ -270,13 +270,13 @@
       "image_treatment": "Restauración y reencuadre a partir de la captura; formato cuadrado de 1024 × 1024 px."
     },
     "description": {
-      "en": [
-        "A freestanding decorative initial with a personalized name across the front. Choose the letter and the name, and add up to 3 different accessories included in the price: stars, clouds, hot-air balloon, bow, teddy bear, branches, flowers, butterflies or the birth details with date, time and weight.",
-        "The piece measures 25 × 25 cm and is printed in PLA. Enter one initial and a name of up to 15 characters, then choose the color of each part and each accessory. The photos show accessory examples."
-      ],
       "es": [
         "Una inicial decorativa con base y un nombre personalizado en el frente. Elige la letra y el nombre, y agrega hasta 3 adornos diferentes incluidos en el precio: estrellas, nubes, globo, lazo, osito, ramas, flores, mariposas o el detalle de nacimiento con fecha, hora y peso.",
         "La pieza mide 25 × 25 cm y está impresa en PLA. Escribe una letra inicial y un nombre de hasta 15 caracteres; después elige el color de cada parte y de cada adorno. Las fotos muestran ejemplos de adornos."
+      ],
+      "en": [
+        "A freestanding decorative initial with a personalized name across the front. Choose the letter and the name, and add up to 3 different accessories included in the price: stars, clouds, hot-air balloon, bow, teddy bear, branches, flowers, butterflies or the birth details with date, time and weight.",
+        "The piece measures 25 × 25 cm and is printed in PLA. Enter one initial and a name of up to 15 characters, then choose the color of each part and each accessory. The photos show accessory examples."
       ]
     },
     "personalization": {
